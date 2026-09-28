@@ -204,7 +204,19 @@ resultados/                    salidas de cada corrida (ignorado por git)
   - El importador normaliza los URN publicados sin `:vendor:shopee` (id ≥ 100000) y cuenta cuántos había en `actual.urnsSinVendor`.
 - **Bugs reales del proceso actual que sirven de demo:** 26306808 con URN sin sufijo y el id del atributo como valor; 88904447 con "Código OEM" = "ABS Plastic" (el material copiado a otro atributo); 24581199 con "Quantity" 10 veces; 98500020 con atributos legacy de ML publicados sin mapear; 98550368 con 14 de 15 URN sin sufijo.
 - **Línea de base del proceso actual sobre los 30 reales (28/09):** 9/30 exactos, 28/30 categorías correctas, precisión 0,72, **47 valores inválidos** (`-1` o fuera de dominio) y 5 duplicados. Comando: `scripts/correr.sh --version actual --datos real`.
-- **Pendiente:** correr la V1 sobre los 30 reales (se venció la sesión SSO a las pocas horas: renovarla antes de cada tanda).
+- **Comparación sobre los 30 reales (28/09, contra el `expected` mock):**
+
+  | Métrica | Proceso de hoy | V1 | V2 | V3 |
+  |---|---|---|---|---|
+  | Casos exactos | 7 | 5 | 4 | 4 |
+  | Categoría correcta | 28 | 26 | 30 | 28 |
+  | Valores inválidos (`-1` o fuera de lista) | 47 | 19 | 9 | **0** |
+  | Duplicados | 5 | 0 | 0 | **0** |
+  | Obligatorios faltantes sin informar | 2 | 2 | 0 | **0** |
+  | Tokens de entrada sin caché por producto | — | ~22.000 | ~1.600 (+12.000 de caché) | ~3.100 (+15.000 de caché) |
+  | Segundos por producto | 13 (informado el 25/08) | 12,3 | 18,3 | 23,2 |
+
+  Los "exactos" son bajos en todas las columnas porque la vara es estricta y el `expected` es mock: hereda omisiones del proceso actual (lo favorece) y cualquier atributo extra bien mapeado cuenta como error. La lectura que vale: la V3 nunca entrega un valor inválido, un duplicado ni un obligatorio sin informar. Resultados en `resultados/` (fuera de git). La sesión SSO de `sandbox` dura pocas horas: renovarla antes de cada tanda.
 - Los archivos crudos pesan ~15 MB, casi todo `relations` (compatibilidades con vehículos), que no hace falta para el mapeo.
 
 ### Datos mock
@@ -234,7 +246,7 @@ resultados/                    salidas de cada corrida (ignorado por git)
 | Atributos por categoría de Shopee | Gastón | **Mock generado** (28/09). Reemplazar por los reales si Alephee los pasa |
 | Salida esperada de los 30 reales | Gastón | **Mock generado** (28/09). Validar con catálogo si hay tiempo |
 | Adaptar el evaluador a los datos reales | Gastón | **Hecho.** Línea de base del proceso actual: 9/30 exactos, 47 inválidos |
-| Correr la V1 sobre los 30 reales | Gastón | Pendiente (sesión SSO vencida) |
+| Correr V1, V2 y V3 sobre los 30 reales | Gastón | **Hecho** (28/09) |
 | Pedirle a Rick un repo de Alephee para dejar el código a las 17:00 | Gastón | Pendiente |
 | Pedir a Maximiliano: modelo y parámetros exactos, el código del merge y del lookup de `reference_category`, y la lista de atributos de Calotas en Shopee | Gastón | Pendiente |
 | Pedir acceso para integrar: `API_KEY` y `accountId` de prueba de la API v2 (con licencia PIM), y cómo se leen y escriben publicaciones y tablas `reference_*` en la plataforma nueva | Gastón → Maximiliano / Rick | Pendiente |
@@ -245,7 +257,8 @@ resultados/                    salidas de cada corrida (ignorado por git)
 | Integrar el agente de catálogo al chat (`mapear_producto`) + mock | Gastón | Pendiente |
 | Crear el repo en `craftech-io` y primer commit | Gastón | Pendiente (esperando OK) |
 | Primer deploy a sandbox **desde local** (Docker buildx + ARM64), stage a definir | Gastón | Pendiente |
-| Preparar V2 (herramientas: lookup en `reference_*` + normalización de valores) | Gastón / Luciano | Pendiente |
+| Preparar V2 y V3 | Gastón | **Hecho** (28/09), tag `v3` |
+| Presentación del war room | Gastón | **Hecho** (28/09): deck de 16 diapositivas en claude.ai; los resultados del agente se completan en vivo |
 | Checkpoint Gastón / Jesus | Hoy 25/09, 10:30 | — |
 
 ## Contexto comercial (no es alcance del war room)
