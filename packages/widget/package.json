@@ -1,0 +1,21 @@
+{
+  "name": "@alephee-catalogo/widget",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "private": true,
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "happy-dom": "20.11.2",
+    "typescript": "7.0.2",
+    "vite": "8.2.1",
+    "vitest": "4.1.11"
+  },
+  "dependencies": {
+    "@alephee-catalogo/shared": "*"
+  }
+}

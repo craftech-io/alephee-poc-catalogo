@@ -1,0 +1,27 @@
+{
+  "_nota": "MOCK. Esquema inferido de index.ts y de la reunión del 25/08 (tabla reference_category de Alephee). Solo la fila 734701 → 102529 sale del ejemplo real (mail 25/08); el resto es inventado para las pruebas. Reemplazar por la exportación real cuando llegue WarRoom.zip.",
+  "vendor": "shopee",
+  "rows": [
+    {
+      "legacyId": "urn:category:734701",
+      "legacyName": "Acessórios para Veículos / Aces. de Carros e Caminhonetes / Exterior / Calotas (MLB22664)",
+      "urn": "urn:category:102529:vendor:shopee",
+      "name": "Calotas",
+      "_origen": "real (ejemplo 25/08)"
+    },
+    {
+      "legacyId": "urn:category:900001",
+      "legacyName": "Acessórios para Veículos / Peças de Carros e Caminhonetes / Suspensão / Amortecedores (MOCK)",
+      "urn": "urn:category:900101:vendor:shopee",
+      "name": "Amortecedores (MOCK)",
+      "_origen": "mock"
+    },
+    {
+      "legacyId": "urn:category:900002",
+      "legacyName": "Acessórios para Veículos / Aces. de Carros e Caminhonetes / Exterior / Emblemas (MOCK)",
+      "urn": "urn:category:900102:vendor:shopee",
+      "name": "Emblemas (MOCK)",
+      "_origen": "mock"
+    }
+  ]
+}

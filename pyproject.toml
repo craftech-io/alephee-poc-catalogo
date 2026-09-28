@@ -1,0 +1,31 @@
+[project]
+name = "alephee-catalogo"
+version = "0.1.0"
+requires-python = ">=3.13"
+dependencies = [
+    "boto3>=1.43.74",
+    "httpx>=0.28.1",
+    "httpx2>=2.12.0",
+    "llama-index-llms-bedrock-converse>=0.14.18",
+    "llama-index-workflows>=2.23.2",
+    "mcp>=2.1.1",
+    # Observabilidad (spec §17, capa 2). El distro de ADOT trae el SDK de
+    # OpenTelemetry, el exporter y el entrypoint `opentelemetry-instrument`; el
+    # instrumentor de OpenInference es el que produce los spans semánticos del
+    # interior del turno (CHAIN/TOOL/LLM con contadores de tokens) enganchando el
+    # dispatcher de llama_index_instrumentation, el mismo que usa `workflows`.
+    "aws-opentelemetry-distro>=0.18.0",
+    "openinference-instrumentation-llama-index>=4.4.8",
+    "starlette>=1.6.0",
+    "uvicorn>=0.52.4",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "pytest-asyncio>=1.4.0",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+pythonpath = ["core/src", "core"]

@@ -1,0 +1,14 @@
+{
+  "_nota": "MOCK. Esquema {legacyId, urn, name} tomado de attributeReferencePrompt en index.ts. Las filas marcadas 'inferida del ejemplo' salen de cruzar producto y publicación reales (mail 25/08), pero NO está confirmado que vengan de la tabla real y no de la llamada sin referencia. Las filas 'mock' son inventadas. Reemplazar por la exportación real (~735 filas para Shopee).",
+  "vendor": "shopee",
+  "rows": [
+    { "legacyId": "1673", "urn": "urn:attribute:101638:vendor:shopee", "name": "Condição do Item", "_origen": "inferida del ejemplo" },
+    { "legacyId": "1741", "urn": "urn:attribute:101652:vendor:shopee", "name": "Origem", "_origen": "inferida del ejemplo" },
+    { "legacyId": "159", "urn": "urn:attribute:102293:vendor:shopee", "name": "Número da Peça", "_origen": "inferida del ejemplo" },
+    { "legacyId": "1610", "urn": "urn:attribute:100095:vendor:shopee", "name": "Weight", "_origen": "inferida del ejemplo" },
+    { "legacyId": "4619", "urn": "urn:attribute:101730:vendor:shopee", "name": "Type of shell", "_origen": "inferida del ejemplo" },
+    { "legacyId": "4618", "urn": "urn:attribute:101731:vendor:shopee", "name": "Is it insurable", "_origen": "inferida del ejemplo" },
+    { "legacyId": "6875", "urn": "urn:attribute:990001:vendor:shopee", "name": "Aro (MOCK)", "_origen": "mock" },
+    { "legacyId": "3120", "urn": "urn:attribute:990002:vendor:shopee", "name": "Cor (MOCK)", "_origen": "mock" }
+  ]
+}

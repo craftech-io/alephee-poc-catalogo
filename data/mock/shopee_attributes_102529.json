@@ -1,0 +1,36 @@
+{
+  "_nota": "MOCK de los atributos que Shopee espera para la categoría Calotas (102529). Los 6 primeros URNs y los value IDs 14703, 14710, 14728 y 14730 salen de la publicación real (mail 25/08); el resto de valores, los flags 'mandatory' y los atributos 99000x son inventados. En la publicación real 'Origem' figura como FREE_TEXT_FIELD pero con value id 14710: acá se modela como SINGLE_COMBO_BOX para que sea consistente. Reemplazar por la lista real de Shopee (API de Shopee o la que use Alephee).",
+  "category": { "urn": "urn:category:102529:vendor:shopee", "name": "Calotas" },
+  "attributes": [
+    {
+      "urn": "urn:attribute:101638:vendor:shopee", "name": "Condição do Item", "type": "MULTI_COMBO_BOX", "mandatory": true,
+      "values": [ { "id": "14703", "name": "Novo" }, { "id": "14704", "name": "Usado" }, { "id": "14705", "name": "Recondicionado" } ]
+    },
+    {
+      "urn": "urn:attribute:101652:vendor:shopee", "name": "Origem", "type": "SINGLE_COMBO_BOX", "mandatory": false,
+      "values": [ { "id": "14710", "name": "Brasil" }, { "id": "14711", "name": "Importado" } ]
+    },
+    { "urn": "urn:attribute:102293:vendor:shopee", "name": "Número da Peça", "type": "FREE_TEXT_FIELD", "mandatory": true, "values": [] },
+    { "urn": "urn:attribute:100095:vendor:shopee", "name": "Weight", "type": "SINGLE_COMBO_BOX", "mandatory": false, "units": ["Kilogramos"], "values": [] },
+    {
+      "urn": "urn:attribute:101730:vendor:shopee", "name": "Type of shell", "type": "MULTI_COMBO_BOX", "mandatory": false,
+      "values": [ { "id": "14728", "name": "Completa" }, { "id": "14729", "name": "Parcial" } ]
+    },
+    {
+      "urn": "urn:attribute:101731:vendor:shopee", "name": "Is it insurable", "type": "MULTI_COMBO_BOX", "mandatory": false,
+      "values": [ { "id": "14730", "name": "Sim" }, { "id": "14731", "name": "Não" } ]
+    },
+    {
+      "urn": "urn:attribute:990001:vendor:shopee", "name": "Aro (MOCK)", "type": "SINGLE_DROP_DOWN", "mandatory": true,
+      "values": [ { "id": "99101", "name": "13\"" }, { "id": "99102", "name": "14\"" }, { "id": "99103", "name": "15\"" }, { "id": "99104", "name": "16\"" } ]
+    },
+    {
+      "urn": "urn:attribute:990002:vendor:shopee", "name": "Cor (MOCK)", "type": "SINGLE_COMBO_BOX", "mandatory": false,
+      "values": [ { "id": "99201", "name": "Prateado" }, { "id": "99202", "name": "Preto" }, { "id": "99203", "name": "Cinza" } ]
+    },
+    {
+      "urn": "urn:attribute:990003:vendor:shopee", "name": "Material (MOCK)", "type": "SINGLE_COMBO_BOX", "mandatory": false,
+      "values": [ { "id": "99301", "name": "Plástico" }, { "id": "99302", "name": "ABS" }, { "id": "99303", "name": "Aço" } ]
+    }
+  ]
+}

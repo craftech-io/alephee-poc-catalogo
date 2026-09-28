@@ -1,0 +1,21 @@
+__pycache__/
+.venv/
+*.pyc
+node_modules/
+.sst/
+dist/
+.env
+*.local
+.superpowers/
+.cognito-demo.local
+wt/
+sst.pyi
+packages/*/sst-env.d.ts
+apps/*/sst-env.d.ts
+
+# War room
+.env.*
+!.env.example
+.DS_Store
+resultados/
+inputs/warroom-zip/*.zip
