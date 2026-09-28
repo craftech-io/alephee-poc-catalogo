@@ -19,3 +19,4 @@ apps/*/sst-env.d.ts
 .DS_Store
 resultados/
 inputs/warroom-zip/*.zip
+inputs/warroom-zip/WarRoom/

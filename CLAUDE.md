@@ -73,8 +73,8 @@ Alephee migra catálogos desde su producto legacy (**V2**, que usa la taxonomía
 - Si un atributo es obligatorio en el canal y no existe en el origen, alguien tiene que cargarlo a mano. El agente no puede inventarlo.
 
 ### Tablas de referencia (las mantiene el equipo de catálogo de Alephee)
-- `reference_attribute`: ID de atributo legacy (V2/ML) → ID de atributo del canal. Tiene unos 735 registros para Shopee. Mapea **campos, no valores**.
-- `reference_category`: categoría legacy → categoría del canal. Tiene unas 2500 para Shopee.
+- `reference_attribute`: ID de atributo legacy (V2/ML) → ID de atributo del canal. Mapea **campos, no valores**. La exportación real tiene **2.567 filas para Shopee sobre 930 ids legacy, y 306 ids legacy apuntan a más de un atributo de Shopee** (el atributo de destino depende de la categoría). En la reunión se habló de 735.
+- `reference_category`: categoría legacy → categoría del canal. La exportación real tiene **2.866 filas, una por id legacy**. El `legacyId` es el número pelado (`"1106872"`); en el producto la categoría viene como `urn:category:<número>`.
 - Hay una tabla de cada tipo por canal. El equipo de catálogo no participa del flujo en tiempo real: actualiza las tablas cada tanto.
 
 ### Prompts actuales (`inputs/prompts-actuales/index.ts`)
@@ -150,8 +150,10 @@ core/                          el agente (Python / LlamaIndex Workflows), contra
 packages/                      bff, worker, widget, shared (TypeScript)
 apps/web, apps/api             app web de demo (modo mock sin AWS) y stand-in de la API del cliente
 infra/sst/                     IaC (SST): Runtime, Gateway, Guardrail, Memory, tablas, colas
-data/mock/                     datos MOCK mientras no llegue WarRoom.zip
-inputs/                        ejemplos reales, prompts actuales (index.ts), WarRoom.zip (pendiente)
+data/mock/                     datos MOCK (10 casos con salida esperada inventada, salvo el 01)
+data/real/                     datos REALES de WarRoom.zip: 2 tablas + 30 productos con la publicación actual
+inputs/                        ejemplos, prompts actuales (index.ts) y WarRoom.zip + WarRoom/ crudo (ignorado por git)
+scripts/importar_warroom.py    WarRoom/ → data/real/ (saca relations e _id de Mongo)
 decisiones/                    una decisión por archivo, completada en la sala
 scripts/correr.sh              atajo del modo batch
 resultados/                    salidas de cada corrida (ignorado por git)
@@ -179,6 +181,14 @@ resultados/                    salidas de cada corrida (ignorado por git)
 - **Cómo sumar V2 y V3:** un Workflow nuevo en `core/src/catalogo/` que reciba `MapeoStart` y devuelva `MapeoDone`, registrado en `VERSIONES` de `correr.py`.
 - **Cómo llega al chat (pendiente):** una `FunctionTool` `mapear_producto(sku)` en `core/server.py` que corre el workflow de catálogo; su texto mock va en `apps/web/mock.mjs`. El Dockerfile hoy copia solo `core/`: hay que sumar `data/`.
 
+### Datos reales (WarRoom.zip, recibido el 24/09, importado el 28/09)
+- **30 productos de 22 categorías de Shopee, ninguno de Calotas**: 20 publicados y 10 rechazados por Shopee. Cada caso trae el producto, la publicación que genera hoy el proceso (`actual`) y, si fue rechazado, el motivo (`actual.error`).
+- **Motivos de rechazo:** obligatorio faltante (Inmetro Certification, GTIN, Manufacturer, Auto-Part Number), "Attribute value is not linked to <atributo>" (valor fuera de la lista del canal) y "Only support to fill one value".
+- **Errores del proceso actual que Shopee acepta igual:** valores `-1` publicados como valores en 9 de 30, atributos duplicados en 4 (uno con 9 repetidos) y 2 publicaciones cuya categoría no es la de `reference_category`.
+- **`expected` es null en todos:** la publicación de hoy es la línea de base, no la respuesta correcta. Para medir aciertos hay que validar salidas esperadas con el equipo de catálogo, o medir contra reglas de Shopee.
+- **Falta para la V2 y la V3:** los atributos por categoría de Shopee (cuáles son obligatorios y la lista de valores válidos) para las 22 categorías. No vinieron en el zip y sin eso no se puede elegir entre los 306 destinos ambiguos ni validar "value is not linked". Alephee los tiene: son los "External Attributes" que hoy pasa al prompt.
+- Los archivos crudos pesan ~15 MB, casi todo `relations` (compatibilidades con vehículos), que no hace falta para el mapeo.
+
 ### Datos mock
 - Todo lo inventado está marcado con `_origen: "mock"`, con `(MOCK)` en el nombre o con SKU `MOCK-*`. Lo que sale del ejemplo real está marcado como tal. **Nunca presentar un dato mock como real.**
 - El dataset cubre: caso real, caso feliz, valor en otro idioma, booleano falso, valor fuera de dominio, obligatorio faltante, unidad distinta, categoría sin referencia, producto sin categoría y dato que solo está en la descripción.
@@ -202,8 +212,11 @@ resultados/                    salidas de cada corrida (ignorado por git)
 | Corregir la fecha en el temario (dice 14/10) | Jesus / Gastón | Pendiente |
 | Instructivo de instalación de Kiro a Alephee (vencía "una semana antes", o sea, alrededor del 24/09) | Craftech (Juan David o Lucas lo tienen) | **Verificar si ya se envió** |
 | Licencias de Kiro: 9 usuarios, falta el AWS Account ID donde se asignan los créditos | Mariale ↔ Rick | Esperando respuesta de Rick (24/09) |
-| Tablas de referencia exportadas y 30 productos de ejemplo | Alephee | Probablemente llegaron en `WarRoom.zip` (24/09). Revisar |
-| Bajar `WarRoom.zip` a `inputs/warroom-zip/` (`index.ts` ya está) | Gastón | Pendiente |
+| Tablas de referencia exportadas y 30 productos de ejemplo | Alephee | **Hecho.** Importados a `data/real/` el 28/09 |
+| Pedir a Maximiliano los atributos por categoría de Shopee (obligatorios + valores válidos) de las 22 categorías del dataset | Gastón | Pendiente. **Bloquea la V2 y la V3 sobre datos reales** |
+| Validar con el equipo de catálogo la salida esperada de al menos los 10 rechazados | Alephee | Pendiente |
+| Adaptar el evaluador a los datos reales (reglas de Shopee + comparación contra `actual`) | Gastón | Pendiente |
+| Pedirle a Rick un repo de Alephee para dejar el código a las 17:00 | Gastón | Pendiente |
 | Pedir a Maximiliano: modelo y parámetros exactos, el código del merge y del lookup de `reference_category`, y la lista de atributos de Calotas en Shopee | Gastón | Pendiente |
 | Pedir acceso para integrar: `API_KEY` y `accountId` de prueba de la API v2 (con licencia PIM), y cómo se leen y escriben publicaciones y tablas `reference_*` en la plataforma nueva | Gastón → Maximiliano / Rick | Pendiente |
 | Cuenta AWS con Bedrock habilitado y acceso al modelo elegido, para el día del war room | Mariale / Juan David | Pendiente |
