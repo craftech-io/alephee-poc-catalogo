@@ -1,5 +1,5 @@
 {
- "_nota": "30 productos reales de Alephee (WarRoom.zip, 24/09): 20 publicados y 10 rechazados por Shopee. `actual` = lo que genera hoy el proceso; `expected` = null hasta que el equipo de catálogo la valide.",
+ "_nota": "30 productos reales de Alephee (WarRoom.zip, 24/09): 20 publicados y 10 rechazados por Shopee. `actual` = lo que genera hoy el proceso; `expected` = null hasta que el equipo de catálogo la valide. `expected` generado por scripts/generar_mocks_reales.py (MOCK).",
  "vendor": "shopee",
  "cases": [
   {
@@ -190,6 +190,7 @@
     "status": "published",
     "error": null,
     "category": "urn:category:102276:vendor:shopee",
+    "urnsSinVendor": 0,
     "attributes": [
      {
       "urn": "urn:attribute:101638:vendor:shopee",
@@ -221,7 +222,26 @@
      }
     ]
    },
-   "expected": null
+   "expected": {
+    "_origen": "derivado de la publicación actual (MOCK), a validar por catálogo",
+    "category": "urn:category:102276:vendor:shopee",
+    "attributes": [
+     {
+      "urn": "urn:attribute:101638:vendor:shopee",
+      "valueId": "14703",
+      "value": "Novo",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102293:vendor:shopee",
+      "valueId": "0",
+      "value": "12645126",
+      "unit": null
+     }
+    ],
+    "missing": [],
+    "rejected": []
+   }
   },
   {
    "id": "publicados-12671625",
@@ -467,6 +487,7 @@
     "status": "published",
     "error": null,
     "category": "urn:category:102337:vendor:shopee",
+    "urnsSinVendor": 0,
     "attributes": [
      {
       "urn": "urn:attribute:101638:vendor:shopee",
@@ -512,7 +533,50 @@
      }
     ]
    },
-   "expected": null
+   "expected": {
+    "_origen": "derivado de la publicación actual (MOCK), a validar por catálogo",
+    "category": "urn:category:102337:vendor:shopee",
+    "attributes": [
+     {
+      "urn": "urn:attribute:101638:vendor:shopee",
+      "valueId": "14703",
+      "value": "Novo",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101652:vendor:shopee",
+      "valueId": "14710",
+      "value": "Brasil",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101881:vendor:shopee",
+      "valueId": "15363",
+      "value": "Macho",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102178:vendor:shopee",
+      "valueId": "15995",
+      "value": "1 \"",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102179:vendor:shopee",
+      "valueId": "15999",
+      "value": "1 \"",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102293:vendor:shopee",
+      "valueId": "0",
+      "value": "12671625",
+      "unit": null
+     }
+    ],
+    "missing": [],
+    "rejected": []
+   }
   },
   {
    "id": "publicados-13508023",
@@ -765,6 +829,7 @@
     "status": "published",
     "error": null,
     "category": "urn:category:102359:vendor:shopee",
+    "urnsSinVendor": 0,
     "attributes": [
      {
       "urn": "urn:attribute:100134:vendor:shopee",
@@ -824,7 +889,62 @@
      }
     ]
    },
-   "expected": null
+   "expected": {
+    "_origen": "derivado de la publicación actual (MOCK), a validar por catálogo",
+    "category": "urn:category:102356:vendor:shopee",
+    "attributes": [
+     {
+      "urn": "urn:attribute:100134:vendor:shopee",
+      "valueId": "14647",
+      "value": "Papel de celulose",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:100687:vendor:shopee",
+      "valueId": "14589",
+      "value": "Carro/Caminhonete",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101638:vendor:shopee",
+      "valueId": "0",
+      "value": "Novo",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101717:vendor:shopee",
+      "valueId": "14803",
+      "value": "1",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101846:vendor:shopee",
+      "valueId": "15814",
+      "value": "Retangular",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101847:vendor:shopee",
+      "valueId": "15813",
+      "value": "1 mm",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101848:vendor:shopee",
+      "valueId": "15816",
+      "value": "1",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102293:vendor:shopee",
+      "valueId": "0",
+      "value": "13508023",
+      "unit": null
+     }
+    ],
+    "missing": [],
+    "rejected": []
+   }
   },
   {
    "id": "publicados-24579729",
@@ -1098,6 +1218,7 @@
     "status": "published",
     "error": null,
     "category": "urn:category:102273:vendor:shopee",
+    "urnsSinVendor": 0,
     "attributes": [
      {
       "urn": "urn:attribute:101672:vendor:shopee",
@@ -1150,7 +1271,26 @@
      }
     ]
    },
-   "expected": null
+   "expected": {
+    "_origen": "derivado de la publicación actual (MOCK), a validar por catálogo",
+    "category": "urn:category:102273:vendor:shopee",
+    "attributes": [
+     {
+      "urn": "urn:attribute:101029:vendor:shopee",
+      "valueId": "0",
+      "value": "3.25",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102293:vendor:shopee",
+      "valueId": "0",
+      "value": "24579729",
+      "unit": null
+     }
+    ],
+    "missing": [],
+    "rejected": []
+   }
   },
   {
    "id": "publicados-24586382",
@@ -1375,6 +1515,7 @@
     "status": "published",
     "error": null,
     "category": "urn:category:102278:vendor:shopee",
+    "urnsSinVendor": 0,
     "attributes": [
      {
       "urn": "urn:attribute:101638:vendor:shopee",
@@ -1413,7 +1554,38 @@
      }
     ]
    },
-   "expected": null
+   "expected": {
+    "_origen": "derivado de la publicación actual (MOCK), a validar por catálogo",
+    "category": "urn:category:102278:vendor:shopee",
+    "attributes": [
+     {
+      "urn": "urn:attribute:101638:vendor:shopee",
+      "valueId": "14703",
+      "value": "Novo",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101639:vendor:shopee",
+      "valueId": "0",
+      "value": "Vide descrição do anúncio",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:100134:vendor:shopee",
+      "valueId": "0",
+      "value": "Borracha",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102293:vendor:shopee",
+      "valueId": "0",
+      "value": "24586382",
+      "unit": null
+     }
+    ],
+    "missing": [],
+    "rejected": []
+   }
   },
   {
    "id": "publicados-25197657",
@@ -1561,6 +1733,7 @@
     "status": "published",
     "error": null,
     "category": "urn:category:102348:vendor:shopee",
+    "urnsSinVendor": 0,
     "attributes": [
      {
       "urn": "urn:attribute:101640:vendor:shopee",
@@ -1620,7 +1793,44 @@
      }
     ]
    },
-   "expected": null
+   "expected": {
+    "_origen": "derivado de la publicación actual (MOCK), a validar por catálogo",
+    "category": "urn:category:102348:vendor:shopee",
+    "attributes": [
+     {
+      "urn": "urn:attribute:101640:vendor:shopee",
+      "valueId": "0",
+      "value": "Peças genuínas",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101639:vendor:shopee",
+      "valueId": "0",
+      "value": "Gm",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101638:vendor:shopee",
+      "valueId": "0",
+      "value": "Novo",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102007:vendor:shopee",
+      "valueId": "0",
+      "value": "1",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102293:vendor:shopee",
+      "valueId": "0",
+      "value": "25197657",
+      "unit": null
+     }
+    ],
+    "missing": [],
+    "rejected": []
+   }
   },
   {
    "id": "publicados-25824251",
@@ -1838,6 +2048,7 @@
     "status": "published",
     "error": null,
     "category": "urn:category:102367:vendor:shopee",
+    "urnsSinVendor": 0,
     "attributes": [
      {
       "urn": "urn:attribute:101638:vendor:shopee",
@@ -1869,7 +2080,32 @@
      }
     ]
    },
-   "expected": null
+   "expected": {
+    "_origen": "derivado de la publicación actual (MOCK), a validar por catálogo",
+    "category": "urn:category:102367:vendor:shopee",
+    "attributes": [
+     {
+      "urn": "urn:attribute:101638:vendor:shopee",
+      "valueId": "14703",
+      "value": "Novo",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101639:vendor:shopee",
+      "valueId": "0",
+      "value": "Vide descrição do anúncio",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102293:vendor:shopee",
+      "valueId": "0",
+      "value": "25824251",
+      "unit": null
+     }
+    ],
+    "missing": [],
+    "rejected": []
+   }
   },
   {
    "id": "publicados-26332158",
@@ -2087,6 +2323,7 @@
     "status": "published",
     "error": null,
     "category": "urn:category:102360:vendor:shopee",
+    "urnsSinVendor": 0,
     "attributes": [
      {
       "urn": "urn:attribute:101638:vendor:shopee",
@@ -2146,7 +2383,38 @@
      }
     ]
    },
-   "expected": null
+   "expected": {
+    "_origen": "derivado de la publicación actual (MOCK), a validar por catálogo",
+    "category": "urn:category:102360:vendor:shopee",
+    "attributes": [
+     {
+      "urn": "urn:attribute:101638:vendor:shopee",
+      "valueId": "14703",
+      "value": "Novo",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101029:vendor:shopee",
+      "valueId": "0",
+      "value": "6 meses",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101675:vendor:shopee",
+      "valueId": "15294",
+      "value": "Sim",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102293:vendor:shopee",
+      "valueId": "0",
+      "value": "26332158",
+      "unit": null
+     }
+    ],
+    "missing": [],
+    "rejected": []
+   }
   },
   {
    "id": "publicados-26345528",
@@ -2385,6 +2653,7 @@
     "status": "published",
     "error": null,
     "category": "urn:category:102276:vendor:shopee",
+    "urnsSinVendor": 0,
     "attributes": [
      {
       "urn": "urn:attribute:100870:vendor:shopee",
@@ -2444,7 +2713,56 @@
      }
     ]
    },
-   "expected": null
+   "expected": {
+    "_origen": "derivado de la publicación actual (MOCK), a validar por catálogo",
+    "category": "urn:category:102276:vendor:shopee",
+    "attributes": [
+     {
+      "urn": "urn:attribute:100870:vendor:shopee",
+      "valueId": "4534",
+      "value": "Gasoline",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101638:vendor:shopee",
+      "valueId": "14703",
+      "value": "Novo",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101644:vendor:shopee",
+      "valueId": "0",
+      "value": "NA",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101740:vendor:shopee",
+      "valueId": "15125",
+      "value": "Não",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101741:vendor:shopee",
+      "valueId": "16032",
+      "value": "Sim",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101742:vendor:shopee",
+      "valueId": "16033",
+      "value": "Sim",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102293:vendor:shopee",
+      "valueId": "0",
+      "value": "26345528",
+      "unit": null
+     }
+    ],
+    "missing": [],
+    "rejected": []
+   }
   },
   {
    "id": "publicados-42566753",
@@ -2683,6 +3001,7 @@
     "status": "published",
     "error": null,
     "category": "urn:category:102307:vendor:shopee",
+    "urnsSinVendor": 0,
     "attributes": [
      {
       "urn": "urn:attribute:100134:vendor:shopee",
@@ -2707,7 +3026,32 @@
      }
     ]
    },
-   "expected": null
+   "expected": {
+    "_origen": "derivado de la publicación actual (MOCK), a validar por catálogo",
+    "category": "urn:category:102307:vendor:shopee",
+    "attributes": [
+     {
+      "urn": "urn:attribute:102292:vendor:shopee",
+      "valueId": "0",
+      "value": "001799/2016",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102293:vendor:shopee",
+      "valueId": "0",
+      "value": "42566753",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101638:vendor:shopee",
+      "valueId": "14703",
+      "value": "Novo",
+      "unit": null
+     }
+    ],
+    "missing": [],
+    "rejected": []
+   }
   },
   {
    "id": "publicados-52054522",
@@ -2855,6 +3199,7 @@
     "status": "published",
     "error": null,
     "category": "urn:category:102320:vendor:shopee",
+    "urnsSinVendor": 0,
     "attributes": [
      {
       "urn": "urn:attribute:100134:vendor:shopee",
@@ -2879,7 +3224,32 @@
      }
     ]
    },
-   "expected": null
+   "expected": {
+    "_origen": "derivado de la publicación actual (MOCK), a validar por catálogo",
+    "category": "urn:category:102320:vendor:shopee",
+    "attributes": [
+     {
+      "urn": "urn:attribute:100134:vendor:shopee",
+      "valueId": "0",
+      "value": "Metal",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102292:vendor:shopee",
+      "valueId": "0",
+      "value": "004167/2012",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102293:vendor:shopee",
+      "valueId": "0",
+      "value": "52054522",
+      "unit": null
+     }
+    ],
+    "missing": [],
+    "rejected": []
+   }
   },
   {
    "id": "publicados-52090372",
@@ -3055,6 +3425,7 @@
     "status": "published",
     "error": null,
     "category": "urn:category:102297:vendor:shopee",
+    "urnsSinVendor": 0,
     "attributes": [
      {
       "urn": "urn:attribute:101638:vendor:shopee",
@@ -3114,7 +3485,62 @@
      }
     ]
    },
-   "expected": null
+   "expected": {
+    "_origen": "derivado de la publicación actual (MOCK), a validar por catálogo",
+    "category": "urn:category:102297:vendor:shopee",
+    "attributes": [
+     {
+      "urn": "urn:attribute:101638:vendor:shopee",
+      "valueId": "14703",
+      "value": "Novo",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101877:vendor:shopee",
+      "valueId": "15944",
+      "value": "Sim",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101741:vendor:shopee",
+      "valueId": "15836",
+      "value": "Não",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101876:vendor:shopee",
+      "valueId": "15946",
+      "value": "Não",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:100687:vendor:shopee",
+      "valueId": "14589",
+      "value": "Carro/Caminhonete",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:100780:vendor:shopee",
+      "valueId": "0",
+      "value": "Halógena",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102200:vendor:shopee",
+      "valueId": "0",
+      "value": "Brasil",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102293:vendor:shopee",
+      "valueId": "0",
+      "value": "52090372",
+      "unit": null
+     }
+    ],
+    "missing": [],
+    "rejected": []
+   }
   },
   {
    "id": "publicados-52096865",
@@ -3360,6 +3786,7 @@
     "status": "published",
     "error": null,
     "category": "urn:category:102275:vendor:shopee",
+    "urnsSinVendor": 0,
     "attributes": [
      {
       "urn": "urn:attribute:102293:vendor:shopee",
@@ -3370,7 +3797,20 @@
      }
     ]
    },
-   "expected": null
+   "expected": {
+    "_origen": "derivado de la publicación actual (MOCK), a validar por catálogo",
+    "category": "urn:category:102275:vendor:shopee",
+    "attributes": [
+     {
+      "urn": "urn:attribute:102293:vendor:shopee",
+      "valueId": "0",
+      "value": "52096865",
+      "unit": null
+     }
+    ],
+    "missing": [],
+    "rejected": []
+   }
   },
   {
    "id": "publicados-52123842",
@@ -3602,6 +4042,7 @@
     "status": "published",
     "error": null,
     "category": "urn:category:102394:vendor:shopee",
+    "urnsSinVendor": 0,
     "attributes": [
      {
       "urn": "weight",
@@ -3640,7 +4081,20 @@
      }
     ]
    },
-   "expected": null
+   "expected": {
+    "_origen": "derivado de la publicación actual (MOCK), a validar por catálogo",
+    "category": "urn:category:102394:vendor:shopee",
+    "attributes": [
+     {
+      "urn": "urn:attribute:102293:vendor:shopee",
+      "valueId": "0",
+      "value": "52123842",
+      "unit": null
+     }
+    ],
+    "missing": [],
+    "rejected": []
+   }
   },
   {
    "id": "publicados-84277409",
@@ -3893,6 +4347,7 @@
     "status": "published",
     "error": null,
     "category": "urn:category:102298:vendor:shopee",
+    "urnsSinVendor": 0,
     "attributes": [
      {
       "urn": "urn:attribute:102293:vendor:shopee",
@@ -3938,7 +4393,50 @@
      }
     ]
    },
-   "expected": null
+   "expected": {
+    "_origen": "derivado de la publicación actual (MOCK), a validar por catálogo",
+    "category": "urn:category:102298:vendor:shopee",
+    "attributes": [
+     {
+      "urn": "urn:attribute:102293:vendor:shopee",
+      "valueId": "0",
+      "value": "84277409",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101638:vendor:shopee",
+      "valueId": "14703",
+      "value": "Novo",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:100773:vendor:shopee",
+      "valueId": "0",
+      "value": "Led",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102292:vendor:shopee",
+      "valueId": "17633",
+      "value": "N/A – NBR not applicable",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:100095:vendor:shopee",
+      "valueId": "0",
+      "value": "0.37",
+      "unit": "kg"
+     },
+     {
+      "urn": "urn:attribute:100942:vendor:shopee",
+      "valueId": "0",
+      "value": "0.73 x 0.08 x 0.08",
+      "unit": "m"
+     }
+    ],
+    "missing": [],
+    "rejected": []
+   }
   },
   {
    "id": "publicados-90530169",
@@ -4107,6 +4605,7 @@
     "status": "published",
     "error": "Validation failed: price: Price must be greater than 0",
     "category": "urn:category:102273:vendor:shopee",
+    "urnsSinVendor": 0,
     "attributes": [
      {
       "urn": "urn:attribute:100037:vendor:shopee",
@@ -4152,7 +4651,44 @@
      }
     ]
    },
-   "expected": null
+   "expected": {
+    "_origen": "derivado de la publicación actual (MOCK), a validar por catálogo",
+    "category": "urn:category:102273:vendor:shopee",
+    "attributes": [
+     {
+      "urn": "urn:attribute:100049:vendor:shopee",
+      "valueId": "0",
+      "value": "#NA",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:100413:vendor:shopee",
+      "valueId": "0",
+      "value": "Novo",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:100095:vendor:shopee",
+      "valueId": "515",
+      "value": "708g",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:100250:vendor:shopee",
+      "valueId": "0",
+      "value": "Não",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102293:vendor:shopee",
+      "valueId": "0",
+      "value": "90530169",
+      "unit": null
+     }
+    ],
+    "missing": [],
+    "rejected": []
+   }
   },
   {
    "id": "publicados-93231111",
@@ -4419,6 +4955,7 @@
     "status": "published",
     "error": null,
     "category": "urn:category:102376:vendor:shopee",
+    "urnsSinVendor": 0,
     "attributes": [
      {
       "urn": "urn:attribute:100248:vendor:shopee",
@@ -4450,7 +4987,38 @@
      }
     ]
    },
-   "expected": null
+   "expected": {
+    "_origen": "derivado de la publicación actual (MOCK), a validar por catálogo",
+    "category": "urn:category:102376:vendor:shopee",
+    "attributes": [
+     {
+      "urn": "urn:attribute:100248:vendor:shopee",
+      "valueId": "0",
+      "value": "1 l",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:100999:vendor:shopee",
+      "valueId": "0",
+      "value": "1",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101029:vendor:shopee",
+      "valueId": "0",
+      "value": "1",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102293:vendor:shopee",
+      "valueId": "0",
+      "value": "93231111",
+      "unit": null
+     }
+    ],
+    "missing": [],
+    "rejected": []
+   }
   },
   {
    "id": "publicados-93356557",
@@ -4696,6 +5264,7 @@
     "status": "published",
     "error": null,
     "category": "urn:category:102397:vendor:shopee",
+    "urnsSinVendor": 0,
     "attributes": [
      {
       "urn": "urn:attribute:101638:vendor:shopee",
@@ -4748,7 +5317,56 @@
      }
     ]
    },
-   "expected": null
+   "expected": {
+    "_origen": "derivado de la publicación actual (MOCK), a validar por catálogo",
+    "category": "urn:category:102397:vendor:shopee",
+    "attributes": [
+     {
+      "urn": "urn:attribute:101638:vendor:shopee",
+      "valueId": "14703",
+      "value": "Novo",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:100134:vendor:shopee",
+      "valueId": "1207",
+      "value": "Plastic",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101639:vendor:shopee",
+      "valueId": "0",
+      "value": "Vide descrição do anúncio",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101824:vendor:shopee",
+      "valueId": "16086",
+      "value": "Sim",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101823:vendor:shopee",
+      "valueId": "16088",
+      "value": "Não",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101029:vendor:shopee",
+      "valueId": "0",
+      "value": "6 meses",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102293:vendor:shopee",
+      "valueId": "0",
+      "value": "93356557",
+      "unit": null
+     }
+    ],
+    "missing": [],
+    "rejected": []
+   }
   },
   {
    "id": "publicados-94702726",
@@ -4994,6 +5612,7 @@
     "status": "published",
     "error": "Validation failed: dimensions: Total dimension sum {value: 207}cm exceeds maximum allowed {value: 200}cm for logistics channel {value:\"Shopee Xpress\"}",
     "category": "urn:category:102294:vendor:shopee",
+    "urnsSinVendor": 0,
     "attributes": [
      {
       "urn": "urn:attribute:101638:vendor:shopee",
@@ -5025,7 +5644,26 @@
      }
     ]
    },
-   "expected": null
+   "expected": {
+    "_origen": "derivado de la publicación actual (MOCK), a validar por catálogo",
+    "category": "urn:category:102287:vendor:shopee",
+    "attributes": [
+     {
+      "urn": "urn:attribute:101638:vendor:shopee",
+      "valueId": "14703",
+      "value": "Novo",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102293:vendor:shopee",
+      "valueId": "0",
+      "value": "94702726",
+      "unit": null
+     }
+    ],
+    "missing": [],
+    "rejected": []
+   }
   },
   {
    "id": "publicados-98550368",
@@ -5369,100 +6007,101 @@
     "status": "published",
     "error": null,
     "category": "urn:category:102552:vendor:shopee",
+    "urnsSinVendor": 14,
     "attributes": [
      {
-      "urn": "urn:attribute:101638",
+      "urn": "urn:attribute:101638:vendor:shopee",
       "type": "NORMAL",
       "valueId": "14703",
       "value": "Novo",
       "unit": null
      },
      {
-      "urn": "urn:attribute:101639",
+      "urn": "urn:attribute:101639:vendor:shopee",
       "type": "MULTI_COMBO_BOX",
       "valueId": "0",
       "value": "265/60R18 110T  DUELER H/T 684 II ECOPIA NRFT Bridgestone",
       "unit": null
      },
      {
-      "urn": "urn:attribute:101640",
+      "urn": "urn:attribute:101640:vendor:shopee",
       "type": "MULTI_COMBO_BOX",
       "valueId": "0",
       "value": "DUELER H/T 684 II ECOPIA",
       "unit": null
      },
      {
-      "urn": "urn:attribute:101644",
+      "urn": "urn:attribute:101644:vendor:shopee",
       "type": "MULTI_COMBO_BOX",
       "valueId": "0",
       "value": "-1",
       "unit": null
      },
      {
-      "urn": "urn:attribute:100687",
+      "urn": "urn:attribute:100687:vendor:shopee",
       "type": "NORMAL",
       "valueId": "14589",
       "value": "Carro/Caminhonete",
       "unit": null
      },
      {
-      "urn": "urn:attribute:102121",
+      "urn": "urn:attribute:102121:vendor:shopee",
       "type": "MULTI_COMBO_BOX",
       "valueId": "16410",
       "value": "420AA",
       "unit": null
      },
      {
-      "urn": "urn:attribute:102107",
+      "urn": "urn:attribute:102107:vendor:shopee",
       "type": "MULTI_COMBO_BOX",
       "valueId": "16415",
       "value": "82",
       "unit": null
      },
      {
-      "urn": "urn:attribute:102120",
+      "urn": "urn:attribute:102120:vendor:shopee",
       "type": "MULTI_COMBO_BOX",
       "valueId": "16406",
       "value": "LT",
       "unit": null
      },
      {
-      "urn": "urn:attribute:102124",
+      "urn": "urn:attribute:102124:vendor:shopee",
       "type": "MULTI_COMBO_BOX",
       "valueId": "16375",
       "value": "B",
       "unit": null
      },
      {
-      "urn": "urn:attribute:102125",
+      "urn": "urn:attribute:102125:vendor:shopee",
       "type": "MULTI_COMBO_BOX",
       "valueId": "16403",
       "value": "C",
       "unit": null
      },
      {
-      "urn": "urn:attribute:102126",
+      "urn": "urn:attribute:102126:vendor:shopee",
       "type": "MULTI_COMBO_BOX",
       "valueId": "16381",
       "value": "B",
       "unit": null
      },
      {
-      "urn": "urn:attribute:102127",
+      "urn": "urn:attribute:102127:vendor:shopee",
       "type": "MULTI_COMBO_BOX",
       "valueId": "16377",
       "value": "475 kg",
       "unit": null
      },
      {
-      "urn": "urn:attribute:102129",
+      "urn": "urn:attribute:102129:vendor:shopee",
       "type": "MULTI_COMBO_BOX",
       "valueId": "16411",
       "value": "210 km/h",
       "unit": null
      },
      {
-      "urn": "urn:attribute:102130",
+      "urn": "urn:attribute:102130:vendor:shopee",
       "type": "MULTI_COMBO_BOX",
       "valueId": "16413",
       "value": "Não",
@@ -5477,7 +6116,98 @@
      }
     ]
    },
-   "expected": null
+   "expected": {
+    "_origen": "derivado de la publicación actual (MOCK), a validar por catálogo",
+    "category": "urn:category:102552:vendor:shopee",
+    "attributes": [
+     {
+      "urn": "urn:attribute:101638:vendor:shopee",
+      "valueId": "0",
+      "value": "Novo",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101639:vendor:shopee",
+      "valueId": "0",
+      "value": "265/60R18 110T  DUELER H/T 684 II ECOPIA NRFT Bridgestone",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101640:vendor:shopee",
+      "valueId": "0",
+      "value": "DUELER H/T 684 II ECOPIA",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:100687:vendor:shopee",
+      "valueId": "0",
+      "value": "Carro/Caminhonete",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102121:vendor:shopee",
+      "valueId": "16410",
+      "value": "420AA",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102107:vendor:shopee",
+      "valueId": "16415",
+      "value": "82",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102120:vendor:shopee",
+      "valueId": "16406",
+      "value": "LT",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102124:vendor:shopee",
+      "valueId": "16375",
+      "value": "B",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102125:vendor:shopee",
+      "valueId": "16403",
+      "value": "C",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102126:vendor:shopee",
+      "valueId": "16381",
+      "value": "B",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102127:vendor:shopee",
+      "valueId": "16377",
+      "value": "475 kg",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102129:vendor:shopee",
+      "valueId": "16411",
+      "value": "210 km/h",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102130:vendor:shopee",
+      "valueId": "16413",
+      "value": "Não",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102293:vendor:shopee",
+      "valueId": "0",
+      "value": "98550368",
+      "unit": null
+     }
+    ],
+    "missing": [],
+    "rejected": []
+   }
   },
   {
    "id": "error-19380534",
@@ -5744,6 +6474,7 @@
     "status": "error",
     "error": "Attribute \"Inmetro Certification\" is mandatory required, please check and update",
     "category": "urn:category:102307:vendor:shopee",
+    "urnsSinVendor": 0,
     "attributes": [
      {
       "urn": "urn:attribute:101639:vendor:shopee",
@@ -5789,7 +6520,56 @@
      }
     ]
    },
-   "expected": null
+   "expected": {
+    "_origen": "derivado de la publicación actual (MOCK), a validar por catálogo",
+    "category": "urn:category:102307:vendor:shopee",
+    "attributes": [
+     {
+      "urn": "urn:attribute:101639:vendor:shopee",
+      "valueId": "0",
+      "value": "PD/1517 N2031 SYL3117",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:100037:vendor:shopee",
+      "valueId": "6737",
+      "value": "Brasil",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:100134:vendor:shopee",
+      "valueId": "1221",
+      "value": "Leather",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:100413:vendor:shopee",
+      "valueId": "0",
+      "value": "Novo",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102293:vendor:shopee",
+      "valueId": "0",
+      "value": "19380534",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102292:vendor:shopee",
+      "valueId": "0",
+      "value": "003788/2020",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101638:vendor:shopee",
+      "valueId": "14703",
+      "value": "Novo",
+      "unit": null
+     }
+    ],
+    "missing": [],
+    "rejected": []
+   }
   },
   {
    "id": "error-24581199",
@@ -6049,6 +6829,7 @@
     "status": "error",
     "error": "Attribute \"Auto-Part Number\" is mandatory required, please check and update",
     "category": "urn:category:102273:vendor:shopee",
+    "urnsSinVendor": 0,
     "attributes": [
      {
       "urn": "urn:attribute:101639:vendor:shopee",
@@ -6150,7 +6931,44 @@
      }
     ]
    },
-   "expected": null
+   "expected": {
+    "_origen": "derivado de la publicación actual (MOCK), a validar por catálogo",
+    "category": "urn:category:102273:vendor:shopee",
+    "attributes": [
+     {
+      "urn": "urn:attribute:101639:vendor:shopee",
+      "valueId": "0",
+      "value": "Vide descrição do anúncio",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:100037:vendor:shopee",
+      "valueId": "6737",
+      "value": "Brasil",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:100413:vendor:shopee",
+      "valueId": "0",
+      "value": "Novo",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:100999:vendor:shopee",
+      "valueId": "0",
+      "value": "0.71",
+      "unit": "Kilogramos"
+     },
+     {
+      "urn": "urn:attribute:102293:vendor:shopee",
+      "valueId": "0",
+      "value": "24581199",
+      "unit": null
+     }
+    ],
+    "missing": [],
+    "rejected": []
+   }
   },
   {
    "id": "error-26301167",
@@ -6424,6 +7242,7 @@
     "status": "error",
     "error": "Attribute \"Manufacturer\" is mandatory required, please check and update",
     "category": "urn:category:102412:vendor:shopee",
+    "urnsSinVendor": 0,
     "attributes": [
      {
       "urn": "urn:attribute:101638:vendor:shopee",
@@ -6455,7 +7274,43 @@
      }
     ]
    },
-   "expected": null
+   "expected": {
+    "_origen": "derivado de la publicación actual (MOCK), a validar por catálogo",
+    "category": "urn:category:102412:vendor:shopee",
+    "attributes": [
+     {
+      "urn": "urn:attribute:101638:vendor:shopee",
+      "valueId": "14703",
+      "value": "Novo",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101639:vendor:shopee",
+      "valueId": "0",
+      "value": "Aplicável também ao Novo Onix Plus Sedan 1.0 3cil 2020 / 2023 (Sem Sistema GPS)",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102292:vendor:shopee",
+      "valueId": "17633",
+      "value": "N/A – NBR not applicable",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102293:vendor:shopee",
+      "valueId": "0",
+      "value": "26301167",
+      "unit": null
+     }
+    ],
+    "missing": [
+     {
+      "urn": "urn:attribute:990101:vendor:shopee",
+      "reason": "obligatorio sin dato en el producto"
+     }
+    ],
+    "rejected": []
+   }
   },
   {
    "id": "error-26306808",
@@ -6694,30 +7549,31 @@
     "status": "error",
     "error": "Attribute value is not linked to Chrome. Please select a valid value.",
     "category": "urn:category:102287:vendor:shopee",
+    "urnsSinVendor": 4,
     "attributes": [
      {
-      "urn": "urn:attribute:101752",
+      "urn": "urn:attribute:101752:vendor:shopee",
       "type": "MULTI_COMBO_BOX",
       "valueId": "101752",
       "value": "Sim",
       "unit": null
      },
      {
-      "urn": "urn:attribute:101638",
+      "urn": "urn:attribute:101638:vendor:shopee",
       "type": "MULTI_COMBO_BOX",
       "valueId": "14703",
       "value": "Novo",
       "unit": null
      },
      {
-      "urn": "urn:attribute:100687",
+      "urn": "urn:attribute:100687:vendor:shopee",
       "type": "SINGLE_COMBO_BOX",
       "valueId": "14589",
       "value": "Carro/Caminhonete",
       "unit": null
      },
      {
-      "urn": "urn:attribute:101751",
+      "urn": "urn:attribute:101751:vendor:shopee",
       "type": "MULTI_COMBO_BOX",
       "valueId": "15316",
       "value": "Não",
@@ -6732,7 +7588,44 @@
      }
     ]
    },
-   "expected": null
+   "expected": {
+    "_origen": "derivado de la publicación actual (MOCK), a validar por catálogo",
+    "category": "urn:category:102287:vendor:shopee",
+    "attributes": [
+     {
+      "urn": "urn:attribute:101752:vendor:shopee",
+      "valueId": "0",
+      "value": "Sim",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101638:vendor:shopee",
+      "valueId": "14703",
+      "value": "Novo",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:100687:vendor:shopee",
+      "valueId": "14589",
+      "value": "Carro/Caminhonete",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101751:vendor:shopee",
+      "valueId": "15316",
+      "value": "Não",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102293:vendor:shopee",
+      "valueId": "0",
+      "value": "26306808",
+      "unit": null
+     }
+    ],
+    "missing": [],
+    "rejected": []
+   }
   },
   {
    "id": "error-52068151",
@@ -6992,6 +7885,7 @@
     "status": "error",
     "error": "Attribute value is not linked to Lamp technology. Please select a valid value.",
     "category": "urn:category:102297:vendor:shopee",
+    "urnsSinVendor": 0,
     "attributes": [
      {
       "urn": "urn:attribute:101638:vendor:shopee",
@@ -7044,7 +7938,50 @@
      }
     ]
    },
-   "expected": null
+   "expected": {
+    "_origen": "derivado de la publicación actual (MOCK), a validar por catálogo",
+    "category": "urn:category:102297:vendor:shopee",
+    "attributes": [
+     {
+      "urn": "urn:attribute:101638:vendor:shopee",
+      "valueId": "14703",
+      "value": "Novo",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101780:vendor:shopee",
+      "valueId": "0",
+      "value": "Halógena",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101698:vendor:shopee",
+      "valueId": "14744",
+      "value": "Não",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101645:vendor:shopee",
+      "valueId": "0",
+      "value": "Vide descrição do anúncio",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101650:vendor:shopee",
+      "valueId": "0",
+      "value": "6 meses",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102293:vendor:shopee",
+      "valueId": "0",
+      "value": "52068151",
+      "unit": null
+     }
+    ],
+    "missing": [],
+    "rejected": []
+   }
   },
   {
    "id": "error-52095432",
@@ -7304,6 +8241,7 @@
     "status": "error",
     "error": "Attribute value is not linked to Car brand. Please select a valid value.",
     "category": "urn:category:102297:vendor:shopee",
+    "urnsSinVendor": 0,
     "attributes": [
      {
       "urn": "urn:attribute:101638:vendor:shopee",
@@ -7335,7 +8273,38 @@
      }
     ]
    },
-   "expected": null
+   "expected": {
+    "_origen": "derivado de la publicación actual (MOCK), a validar por catálogo",
+    "category": "urn:category:102297:vendor:shopee",
+    "attributes": [
+     {
+      "urn": "urn:attribute:101638:vendor:shopee",
+      "valueId": "14703",
+      "value": "Novo",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102200:vendor:shopee",
+      "valueId": "0",
+      "value": "Genérica",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102292:vendor:shopee",
+      "valueId": "0",
+      "value": "Brasil",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102293:vendor:shopee",
+      "valueId": "0",
+      "value": "52095432",
+      "unit": null
+     }
+    ],
+    "missing": [],
+    "rejected": []
+   }
   },
   {
    "id": "error-88904447",
@@ -7581,6 +8550,7 @@
     "status": "error",
     "error": "Attribute value is not linked to OEM code. Please select a valid value.",
     "category": "urn:category:102278:vendor:shopee",
+    "urnsSinVendor": 0,
     "attributes": [
      {
       "urn": "urn:attribute:100370:vendor:shopee",
@@ -7633,7 +8603,62 @@
      }
     ]
    },
-   "expected": null
+   "expected": {
+    "_origen": "derivado de la publicación actual (MOCK), a validar por catálogo",
+    "category": "urn:category:102278:vendor:shopee",
+    "attributes": [
+     {
+      "urn": "urn:attribute:100370:vendor:shopee",
+      "valueId": "2419",
+      "value": "Manufacturer Warranty",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101676:vendor:shopee",
+      "valueId": "0",
+      "value": "ABS Plastic",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:100121:vendor:shopee",
+      "valueId": "810",
+      "value": "6 Months",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102293:vendor:shopee",
+      "valueId": "0",
+      "value": "88904447",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:100413:vendor:shopee",
+      "valueId": "2497",
+      "value": "New",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:100095:vendor:shopee",
+      "valueId": "0",
+      "value": "0.18",
+      "unit": "Kilograms"
+     },
+     {
+      "urn": "urn:attribute:100999:vendor:shopee",
+      "valueId": "0",
+      "value": "1",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101638:vendor:shopee",
+      "valueId": "14703",
+      "value": "Novo",
+      "unit": null
+     }
+    ],
+    "missing": [],
+    "rejected": []
+   }
   },
   {
    "id": "error-93221445",
@@ -7907,6 +8932,7 @@
     "status": "error",
     "error": "Only support to fill one value for the attribute Inmetro Certification ,please check and update",
     "category": "urn:category:102277:vendor:shopee",
+    "urnsSinVendor": 0,
     "attributes": [
      {
       "urn": "urn:attribute:101638:vendor:shopee",
@@ -7952,7 +8978,44 @@
      }
     ]
    },
-   "expected": null
+   "expected": {
+    "_origen": "derivado de la publicación actual (MOCK), a validar por catálogo",
+    "category": "urn:category:102277:vendor:shopee",
+    "attributes": [
+     {
+      "urn": "urn:attribute:101638:vendor:shopee",
+      "valueId": "14703",
+      "value": "Novo",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101652:vendor:shopee",
+      "valueId": "14710",
+      "value": "Brasil",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101676:vendor:shopee",
+      "valueId": "93221445",
+      "value": "93221445",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102292:vendor:shopee",
+      "valueId": "17633",
+      "value": "N/A – NBR not applicable",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102293:vendor:shopee",
+      "valueId": "0",
+      "value": "93221445",
+      "unit": null
+     }
+    ],
+    "missing": [],
+    "rejected": []
+   }
   },
   {
    "id": "error-98500020",
@@ -8135,6 +9198,7 @@
     "status": "error",
     "error": "GTIN code is mandatory for model . Please fill in it.",
     "category": "urn:category:102363:vendor:shopee",
+    "urnsSinVendor": 0,
     "attributes": [
      {
       "urn": "urn:attribute:1606",
@@ -8306,7 +9370,43 @@
      }
     ]
    },
-   "expected": null
+   "expected": {
+    "_origen": "derivado de la publicación actual (MOCK), a validar por catálogo",
+    "category": "urn:category:102363:vendor:shopee",
+    "attributes": [
+     {
+      "urn": "urn:attribute:100095:vendor:shopee",
+      "valueId": "0",
+      "value": "9.03",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102293:vendor:shopee",
+      "valueId": "0",
+      "value": "98500020",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:100942:vendor:shopee",
+      "valueId": "0",
+      "value": "0.18 x 0.405",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102292:vendor:shopee",
+      "valueId": "17633",
+      "value": "N/A – NBR not applicable",
+      "unit": null
+     }
+    ],
+    "missing": [
+     {
+      "urn": "urn:attribute:990102:vendor:shopee",
+      "reason": "obligatorio sin dato en el producto"
+     }
+    ],
+    "rejected": []
+   }
   },
   {
    "id": "error-98550735",
@@ -8552,6 +9652,7 @@
     "status": "error",
     "error": "Attribute \"Inmetro Certification\" is mandatory required, please check and update",
     "category": "urn:category:102307:vendor:shopee",
+    "urnsSinVendor": 0,
     "attributes": [
      {
       "urn": "urn:attribute:101638:vendor:shopee",
@@ -8611,7 +9712,68 @@
      }
     ]
    },
-   "expected": null
+   "expected": {
+    "_origen": "derivado de la publicación actual (MOCK), a validar por catálogo",
+    "category": "urn:category:102307:vendor:shopee",
+    "attributes": [
+     {
+      "urn": "urn:attribute:101638:vendor:shopee",
+      "valueId": "14703",
+      "value": "Novo",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101639:vendor:shopee",
+      "valueId": "0",
+      "value": "PD/94 N367 SYL2114",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101652:vendor:shopee",
+      "valueId": "14710",
+      "value": "Brasil",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101825:vendor:shopee",
+      "valueId": "15860",
+      "value": "4",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101827:vendor:shopee",
+      "valueId": "0",
+      "value": "Código FMSI",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101826:vendor:shopee",
+      "valueId": "15859",
+      "value": "Sim",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:101933:vendor:shopee",
+      "valueId": "14722",
+      "value": "Dianteira",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102293:vendor:shopee",
+      "valueId": "0",
+      "value": "98550735",
+      "unit": null
+     },
+     {
+      "urn": "urn:attribute:102292:vendor:shopee",
+      "valueId": "0",
+      "value": "007077/2015",
+      "unit": null
+     }
+    ],
+    "missing": [],
+    "rejected": []
+   }
   }
  ]
 }

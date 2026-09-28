@@ -1,0 +1,2231 @@
+{
+ "_nota": "MOCK derivado de los datos reales: ver scripts/generar_mocks_reales.py. Reemplazar por los atributos reales de Shopee (los 'External Attributes' que Alephee pasa hoy al prompt).",
+ "vendor": "shopee",
+ "categories": {
+  "urn:category:102273:vendor:shopee": {
+   "urn": "urn:category:102273:vendor:shopee",
+   "attributes": [
+    {
+     "urn": "urn:attribute:101672:vendor:shopee",
+     "type": "MULTIPLE_SELECT_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "INMETRO registration/certification number"
+    },
+    {
+     "urn": "urn:attribute:101029:vendor:shopee",
+     "type": "TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Pack Size"
+    },
+    {
+     "urn": "urn:attribute:101440:vendor:shopee",
+     "type": "TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Expire Date"
+    },
+    {
+     "urn": "urn:attribute:101353:vendor:shopee",
+     "type": "TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Item Code"
+    },
+    {
+     "urn": "urn:attribute:101352:vendor:shopee",
+     "type": "TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Item Batch code"
+    },
+    {
+     "urn": "urn:attribute:102292:vendor:shopee",
+     "type": "TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Inmetro Certification"
+    },
+    {
+     "urn": "urn:attribute:102293:vendor:shopee",
+     "type": "FREE_TEXT_FILED",
+     "mandatory": true,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones + obligatorio según rechazo de Shopee",
+     "name": "Auto-Part Number"
+    },
+    {
+     "urn": "urn:attribute:100037:vendor:shopee",
+     "type": "SINGLE_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [
+      {
+       "id": "6737",
+       "name": "Brasil",
+       "_origen": "visto en publicaciones"
+      },
+      {
+       "id": "990500",
+       "name": "Importado",
+       "_origen": "mock"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Region of Origin"
+    },
+    {
+     "urn": "urn:attribute:100049:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Skin Type"
+    },
+    {
+     "urn": "urn:attribute:100413:vendor:shopee",
+     "type": "SINGLE_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Condition"
+    },
+    {
+     "urn": "urn:attribute:100095:vendor:shopee",
+     "type": "SINGLE_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [
+      {
+       "id": "515",
+       "name": "708g",
+       "_origen": "visto en publicaciones"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Weight"
+    },
+    {
+     "urn": "urn:attribute:100250:vendor:shopee",
+     "type": "SINGLE_DROP_DOWN",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Waterproof"
+    },
+    {
+     "urn": "urn:attribute:101639:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Modelo"
+    },
+    {
+     "urn": "urn:attribute:100999:vendor:shopee",
+     "type": "FREE_TEXT_FIELD",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Quantity"
+    }
+   ],
+   "name": "Peças e Acessórios para Veículos/Peças de Reposição para Automóveis/Motor/Componentes de Motor"
+  },
+  "urn:category:102275:vendor:shopee": {
+   "urn": "urn:category:102275:vendor:shopee",
+   "attributes": [
+    {
+     "urn": "urn:attribute:102293:vendor:shopee",
+     "type": "FREE_TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Auto-Part Number"
+    }
+   ],
+   "name": "Peças e Acessórios para Veículos/Peças de Reposição para Automóveis/Motor/Eletroventiladores"
+  },
+  "urn:category:102276:vendor:shopee": {
+   "urn": "urn:category:102276:vendor:shopee",
+   "attributes": [
+    {
+     "urn": "urn:attribute:101638:vendor:shopee",
+     "type": "MULTIPLE_SELECT_COMBO_BOX",
+     "mandatory": true,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "14703",
+       "name": "Novo",
+       "_origen": "visto en publicaciones"
+      },
+      {
+       "id": "990501",
+       "name": "Usado",
+       "_origen": "mock"
+      },
+      {
+       "id": "990502",
+       "name": "Recondicionado",
+       "_origen": "mock"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Item condition"
+    },
+    {
+     "urn": "urn:attribute:101644:vendor:shopee",
+     "type": "MULTIPLE_SELECT_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Universal product code"
+    },
+    {
+     "urn": "urn:attribute:102292:vendor:shopee",
+     "type": "TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Inmetro Certification"
+    },
+    {
+     "urn": "urn:attribute:102293:vendor:shopee",
+     "type": "FREE_TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Auto-Part Number"
+    },
+    {
+     "urn": "urn:attribute:100870:vendor:shopee",
+     "type": "COMBO_BOX",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [
+      {
+       "id": "4534",
+       "name": "Gasoline",
+       "_origen": "visto en publicaciones"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Fuel Type"
+    },
+    {
+     "urn": "urn:attribute:101740:vendor:shopee",
+     "type": "MULTIPLE_SELECT_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "15125",
+       "name": "Não",
+       "_origen": "visto en publicaciones"
+      },
+      {
+       "id": "990503",
+       "name": "Sim",
+       "_origen": "mock"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Includes filter"
+    },
+    {
+     "urn": "urn:attribute:101741:vendor:shopee",
+     "type": "MULTIPLE_SELECT_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "16032",
+       "name": "Sim",
+       "_origen": "visto en publicaciones"
+      },
+      {
+       "id": "990504",
+       "name": "Não",
+       "_origen": "mock"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Includes mounting kit"
+    },
+    {
+     "urn": "urn:attribute:101742:vendor:shopee",
+     "type": "MULTIPLE_SELECT_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "16033",
+       "name": "Sim",
+       "_origen": "visto en publicaciones"
+      },
+      {
+       "id": "990505",
+       "name": "Não",
+       "_origen": "mock"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "It is electric"
+    }
+   ],
+   "name": "Peças e Acessórios para Veículos/Peças de Reposição para Automóveis/Motor/Bombas"
+  },
+  "urn:category:102277:vendor:shopee": {
+   "urn": "urn:category:102277:vendor:shopee",
+   "attributes": [
+    {
+     "urn": "urn:attribute:101638:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": true,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "14703",
+       "name": "Novo",
+       "_origen": "visto en publicaciones"
+      },
+      {
+       "id": "990506",
+       "name": "Usado",
+       "_origen": "mock"
+      },
+      {
+       "id": "990507",
+       "name": "Recondicionado",
+       "_origen": "mock"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Item condition"
+    },
+    {
+     "urn": "urn:attribute:101652:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "14710",
+       "name": "Brasil",
+       "_origen": "visto en publicaciones"
+      },
+      {
+       "id": "990508",
+       "name": "Importado",
+       "_origen": "mock"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Origin"
+    },
+    {
+     "urn": "urn:attribute:101676:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "93221445",
+       "name": "93221445",
+       "_origen": "visto en publicaciones"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "OEM code"
+    },
+    {
+     "urn": "urn:attribute:102292:vendor:shopee",
+     "type": "SINGLE_COMBO_BOX",
+     "mandatory": true,
+     "maxValues": 1,
+     "values": [
+      {
+       "id": "17633",
+       "name": "N/A – NBR not applicable",
+       "_origen": "visto en publicaciones"
+      }
+     ],
+     "_origen": "visto en publicaciones + obligatorio según rechazo de Shopee",
+     "name": "Inmetro Certification"
+    },
+    {
+     "urn": "urn:attribute:102293:vendor:shopee",
+     "type": "FREE_TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Auto-Part Number"
+    }
+   ],
+   "name": "Peças e Acessórios para Veículos/Peças de Reposição para Automóveis/Motor/Jogos de Juntas"
+  },
+  "urn:category:102278:vendor:shopee": {
+   "urn": "urn:category:102278:vendor:shopee",
+   "attributes": [
+    {
+     "urn": "urn:attribute:101638:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": true,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "14703",
+       "name": "Novo",
+       "_origen": "visto en publicaciones"
+      },
+      {
+       "id": "990509",
+       "name": "Usado",
+       "_origen": "mock"
+      },
+      {
+       "id": "990510",
+       "name": "Recondicionado",
+       "_origen": "mock"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Item condition"
+    },
+    {
+     "urn": "urn:attribute:101639:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Model"
+    },
+    {
+     "urn": "urn:attribute:100134:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Material"
+    },
+    {
+     "urn": "urn:attribute:102292:vendor:shopee",
+     "type": "FREE_TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Inmetro Certification"
+    },
+    {
+     "urn": "urn:attribute:102293:vendor:shopee",
+     "type": "FREE_TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Auto-Part Number"
+    },
+    {
+     "urn": "urn:attribute:100370:vendor:shopee",
+     "type": "SINGLE_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [
+      {
+       "id": "2419",
+       "name": "Manufacturer Warranty",
+       "_origen": "visto en publicaciones"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Tipo de Garantia"
+    },
+    {
+     "urn": "urn:attribute:101676:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Código OEM"
+    },
+    {
+     "urn": "urn:attribute:100121:vendor:shopee",
+     "type": "SINGLE_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [
+      {
+       "id": "810",
+       "name": "6 Months",
+       "_origen": "visto en publicaciones"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Duração da Garantia"
+    },
+    {
+     "urn": "urn:attribute:100413:vendor:shopee",
+     "type": "SINGLE_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [
+      {
+       "id": "2497",
+       "name": "New",
+       "_origen": "visto en publicaciones"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Condition"
+    },
+    {
+     "urn": "urn:attribute:100095:vendor:shopee",
+     "type": "SINGLE_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Weight"
+    },
+    {
+     "urn": "urn:attribute:100999:vendor:shopee",
+     "type": "FREE_TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Quantity"
+    }
+   ],
+   "name": "Peças e Acessórios para Veículos/Peças de Reposição para Automóveis/Motor/Distribuição e Correias"
+  },
+  "urn:category:102287:vendor:shopee": {
+   "urn": "urn:category:102287:vendor:shopee",
+   "attributes": [
+    {
+     "urn": "urn:attribute:101752:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [],
+     "_origen": "visto en publicaciones"
+    },
+    {
+     "urn": "urn:attribute:101638:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": true,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "14703",
+       "name": "Novo",
+       "_origen": "visto en publicaciones"
+      },
+      {
+       "id": "990511",
+       "name": "Usado",
+       "_origen": "mock"
+      },
+      {
+       "id": "990512",
+       "name": "Recondicionado",
+       "_origen": "mock"
+      }
+     ],
+     "_origen": "visto en publicaciones"
+    },
+    {
+     "urn": "urn:attribute:100687:vendor:shopee",
+     "type": "SINGLE_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [
+      {
+       "id": "14589",
+       "name": "Carro/Caminhonete",
+       "_origen": "visto en publicaciones"
+      }
+     ],
+     "_origen": "visto en publicaciones"
+    },
+    {
+     "urn": "urn:attribute:101751:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "15316",
+       "name": "Não",
+       "_origen": "visto en publicaciones"
+      },
+      {
+       "id": "990513",
+       "name": "Sim",
+       "_origen": "mock"
+      }
+     ],
+     "_origen": "visto en publicaciones"
+    },
+    {
+     "urn": "urn:attribute:102293:vendor:shopee",
+     "type": "FREE_TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Auto-Part Number"
+    }
+   ],
+   "name": "Peças e Acessórios para Veículos/Peças de Reposição para Automóveis/Carroceria/Grades de Para-choques"
+  },
+  "urn:category:102294:vendor:shopee": {
+   "urn": "urn:category:102294:vendor:shopee",
+   "attributes": [
+    {
+     "urn": "urn:attribute:101638:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": true,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "14703",
+       "name": "Novo",
+       "_origen": "visto en publicaciones"
+      },
+      {
+       "id": "990514",
+       "name": "Usado",
+       "_origen": "mock"
+      },
+      {
+       "id": "990515",
+       "name": "Recondicionado",
+       "_origen": "mock"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Item condition"
+    },
+    {
+     "urn": "urn:attribute:102158:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "15324",
+       "name": "Não",
+       "_origen": "visto en publicaciones"
+      },
+      {
+       "id": "990516",
+       "name": "Sim",
+       "_origen": "mock"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "It is an original replacement"
+    },
+    {
+     "urn": "urn:attribute:102292:vendor:shopee",
+     "type": "FREE_TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Inmetro Certification"
+    },
+    {
+     "urn": "urn:attribute:102293:vendor:shopee",
+     "type": "FREE_TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Auto-Part Number"
+    }
+   ],
+   "name": "Peças e Acessórios para Veículos/Peças de Reposição para Automóveis/Carroceria/Frisos"
+  },
+  "urn:category:102297:vendor:shopee": {
+   "urn": "urn:category:102297:vendor:shopee",
+   "attributes": [
+    {
+     "urn": "urn:attribute:101638:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": true,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "14703",
+       "name": "Novo",
+       "_origen": "visto en publicaciones"
+      },
+      {
+       "id": "990517",
+       "name": "Usado",
+       "_origen": "mock"
+      },
+      {
+       "id": "990518",
+       "name": "Recondicionado",
+       "_origen": "mock"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Item condition"
+    },
+    {
+     "urn": "urn:attribute:101877:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "15944",
+       "name": "Sim",
+       "_origen": "visto en publicaciones"
+      },
+      {
+       "id": "990519",
+       "name": "Não",
+       "_origen": "mock"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "With position lights"
+    },
+    {
+     "urn": "urn:attribute:101741:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "15836",
+       "name": "Não",
+       "_origen": "visto en publicaciones"
+      },
+      {
+       "id": "990520",
+       "name": "Sim",
+       "_origen": "mock"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Includes mounting kit"
+    },
+    {
+     "urn": "urn:attribute:101876:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "15946",
+       "name": "Não",
+       "_origen": "visto en publicaciones"
+      },
+      {
+       "id": "990521",
+       "name": "Sim",
+       "_origen": "mock"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Includes lamp"
+    },
+    {
+     "urn": "urn:attribute:100687:vendor:shopee",
+     "type": "SINGLE_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [
+      {
+       "id": "14589",
+       "name": "Carro/Caminhonete",
+       "_origen": "visto en publicaciones"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Vehicle Type"
+    },
+    {
+     "urn": "urn:attribute:100780:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Lamp technology"
+    },
+    {
+     "urn": "urn:attribute:102200:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Car brand"
+    },
+    {
+     "urn": "urn:attribute:102293:vendor:shopee",
+     "type": "FREE_TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Auto-Part Number"
+    },
+    {
+     "urn": "urn:attribute:101644:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Universal product code"
+    },
+    {
+     "urn": "urn:attribute:101780:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Lamp technology"
+    },
+    {
+     "urn": "urn:attribute:101698:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "14744",
+       "name": "Não",
+       "_origen": "visto en publicaciones"
+      },
+      {
+       "id": "990522",
+       "name": "Sim",
+       "_origen": "mock"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "It is a kit"
+    },
+    {
+     "urn": "urn:attribute:101645:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Shipping packaging"
+    },
+    {
+     "urn": "urn:attribute:101650:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Package weight"
+    },
+    {
+     "urn": "urn:attribute:102292:vendor:shopee",
+     "type": "FREE_TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Inmetro Certification"
+    }
+   ],
+   "name": "Peças e Acessórios para Veículos/Peças de Reposição para Automóveis/Iluminação/Faróis e Kit Frontal"
+  },
+  "urn:category:102298:vendor:shopee": {
+   "urn": "urn:category:102298:vendor:shopee",
+   "attributes": [
+    {
+     "urn": "urn:attribute:102293:vendor:shopee",
+     "type": "FREE_TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Auto-Part Number"
+    },
+    {
+     "urn": "urn:attribute:101638:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": true,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "14703",
+       "name": "Novo",
+       "_origen": "visto en publicaciones"
+      },
+      {
+       "id": "990523",
+       "name": "Usado",
+       "_origen": "mock"
+      },
+      {
+       "id": "990524",
+       "name": "Recondicionado",
+       "_origen": "mock"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Item condition"
+    },
+    {
+     "urn": "urn:attribute:100773:vendor:shopee",
+     "type": "SINGLE_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Lighting Type"
+    },
+    {
+     "urn": "urn:attribute:102292:vendor:shopee",
+     "type": "SINGLE_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [
+      {
+       "id": "17633",
+       "name": "N/A – NBR not applicable",
+       "_origen": "visto en publicaciones"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Inmetro Certification"
+    },
+    {
+     "urn": "urn:attribute:100095:vendor:shopee",
+     "type": "SINGLE_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Weight"
+    },
+    {
+     "urn": "urn:attribute:100942:vendor:shopee",
+     "type": "FREE_TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Dimension (L x W x H)"
+    }
+   ],
+   "name": "Peças e Acessórios para Veículos/Peças de Reposição para Automóveis/Iluminação/Lanternas Traseiras"
+  },
+  "urn:category:102307:vendor:shopee": {
+   "urn": "urn:category:102307:vendor:shopee",
+   "attributes": [
+    {
+     "urn": "urn:attribute:100134:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "1221",
+       "name": "Leather",
+       "_origen": "visto en publicaciones"
+      },
+      {
+       "id": "1257",
+       "name": "Others",
+       "_origen": "visto en publicaciones"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Material"
+    },
+    {
+     "urn": "urn:attribute:102292:vendor:shopee",
+     "type": "FREE_TEXT_FILED",
+     "mandatory": true,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones + obligatorio según rechazo de Shopee",
+     "name": "Inmetro Certification"
+    },
+    {
+     "urn": "urn:attribute:102293:vendor:shopee",
+     "type": "FREE_TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Auto-Part Number"
+    },
+    {
+     "urn": "urn:attribute:101639:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Modelo"
+    },
+    {
+     "urn": "urn:attribute:100037:vendor:shopee",
+     "type": "SINGLE_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [
+      {
+       "id": "6737",
+       "name": "Brasil",
+       "_origen": "visto en publicaciones"
+      },
+      {
+       "id": "990525",
+       "name": "Importado",
+       "_origen": "mock"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Region of Origin"
+    },
+    {
+     "urn": "urn:attribute:100413:vendor:shopee",
+     "type": "SINGLE_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Condition"
+    },
+    {
+     "urn": "urn:attribute:101638:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": true,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "14703",
+       "name": "Novo",
+       "_origen": "visto en publicaciones"
+      },
+      {
+       "id": "990526",
+       "name": "Usado",
+       "_origen": "mock"
+      },
+      {
+       "id": "990527",
+       "name": "Recondicionado",
+       "_origen": "mock"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Item condition"
+    },
+    {
+     "urn": "urn:attribute:101652:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "14710",
+       "name": "Brasil",
+       "_origen": "visto en publicaciones"
+      },
+      {
+       "id": "990528",
+       "name": "Importado",
+       "_origen": "mock"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Origin"
+    },
+    {
+     "urn": "urn:attribute:101825:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "15860",
+       "name": "4",
+       "_origen": "visto en publicaciones"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Quantity of tablets"
+    },
+    {
+     "urn": "urn:attribute:101827:vendor:shopee",
+     "type": "FREE_TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "FMSI Code"
+    },
+    {
+     "urn": "urn:attribute:101826:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "15859",
+       "name": "Sim",
+       "_origen": "visto en publicaciones"
+      },
+      {
+       "id": "990529",
+       "name": "Não",
+       "_origen": "mock"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Includes wear sensors"
+    },
+    {
+     "urn": "urn:attribute:101933:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "14722",
+       "name": "Dianteira",
+       "_origen": "visto en publicaciones"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Positions"
+    }
+   ],
+   "name": "Peças e Acessórios para Veículos/Peças de Reposição para Automóveis/Freios/Pastilha de Freio"
+  },
+  "urn:category:102320:vendor:shopee": {
+   "urn": "urn:category:102320:vendor:shopee",
+   "attributes": [
+    {
+     "urn": "urn:attribute:100134:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Material"
+    },
+    {
+     "urn": "urn:attribute:102292:vendor:shopee",
+     "type": "FREE_TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Inmetro Certification"
+    },
+    {
+     "urn": "urn:attribute:102293:vendor:shopee",
+     "type": "FREE_TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Auto-Part Number"
+    }
+   ],
+   "name": "Peças e Acessórios para Veículos/Peças de Reposição para Automóveis/Suspensão e Direção/Amortecedores"
+  },
+  "urn:category:102337:vendor:shopee": {
+   "urn": "urn:category:102337:vendor:shopee",
+   "attributes": [
+    {
+     "urn": "urn:attribute:101638:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": true,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "14703",
+       "name": "Novo",
+       "_origen": "visto en publicaciones"
+      },
+      {
+       "id": "990530",
+       "name": "Usado",
+       "_origen": "mock"
+      },
+      {
+       "id": "990531",
+       "name": "Recondicionado",
+       "_origen": "mock"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Item condition"
+    },
+    {
+     "urn": "urn:attribute:101652:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "14710",
+       "name": "Brasil",
+       "_origen": "visto en publicaciones"
+      },
+      {
+       "id": "990532",
+       "name": "Importado",
+       "_origen": "mock"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Origin"
+    },
+    {
+     "urn": "urn:attribute:101881:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "15363",
+       "name": "Macho",
+       "_origen": "visto en publicaciones"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Connector gender"
+    },
+    {
+     "urn": "urn:attribute:102178:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "15995",
+       "name": "1 \"",
+       "_origen": "visto en publicaciones"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Input connector diameter"
+    },
+    {
+     "urn": "urn:attribute:102179:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "15999",
+       "name": "1 \"",
+       "_origen": "visto en publicaciones"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Output connector diameter"
+    },
+    {
+     "urn": "urn:attribute:102293:vendor:shopee",
+     "type": "FREE_TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Auto-Part Number"
+    }
+   ],
+   "name": "Peças e Acessórios para Veículos/Peças de Reposição para Automóveis/Injeção/Sensores"
+  },
+  "urn:category:102348:vendor:shopee": {
+   "urn": "urn:category:102348:vendor:shopee",
+   "attributes": [
+    {
+     "urn": "urn:attribute:101640:vendor:shopee",
+     "type": "MULTIPLE_SELECT_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Line"
+    },
+    {
+     "urn": "urn:attribute:101639:vendor:shopee",
+     "type": "MULTIPLE_SELECT_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Model"
+    },
+    {
+     "urn": "urn:attribute:101644:vendor:shopee",
+     "type": "MULTIPLE_SELECT_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Universal product code"
+    },
+    {
+     "urn": "urn:attribute:101638:vendor:shopee",
+     "type": "MULTIPLE_SELECT_COMBO_BOX",
+     "mandatory": true,
+     "maxValues": null,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Item condition"
+    },
+    {
+     "urn": "urn:attribute:101672:vendor:shopee",
+     "type": "MULTIPLE_SELECT_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "INMETRO registration/certification number"
+    },
+    {
+     "urn": "urn:attribute:102007:vendor:shopee",
+     "type": "MULTIPLE_SELECT_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Number of candles"
+    },
+    {
+     "urn": "urn:attribute:102293:vendor:shopee",
+     "type": "FREE_TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Auto-Part Number"
+    }
+   ],
+   "name": "Peças e Acessórios para Veículos/Peças de Reposição para Automóveis/Ignição/Velas de ignição"
+  },
+  "urn:category:102359:vendor:shopee": {
+   "urn": "urn:category:102359:vendor:shopee",
+   "attributes": [
+    {
+     "urn": "urn:attribute:100134:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "14647",
+       "name": "Papel de celulose",
+       "_origen": "visto en publicaciones"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Material"
+    },
+    {
+     "urn": "urn:attribute:100687:vendor:shopee",
+     "type": "SINGLE_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [
+      {
+       "id": "14589",
+       "name": "Carro/Caminhonete",
+       "_origen": "visto en publicaciones"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Vehicle Type"
+    },
+    {
+     "urn": "urn:attribute:101638:vendor:shopee",
+     "type": "NORMAL",
+     "mandatory": true,
+     "maxValues": null,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Item condition"
+    },
+    {
+     "urn": "urn:attribute:101717:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "14803",
+       "name": "1",
+       "_origen": "visto en publicaciones"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Units per kit"
+    },
+    {
+     "urn": "urn:attribute:101846:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "15814",
+       "name": "Retangular",
+       "_origen": "visto en publicaciones"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Filter shape"
+    },
+    {
+     "urn": "urn:attribute:101847:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "15813",
+       "name": "1 mm",
+       "_origen": "visto en publicaciones"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Inlet diameter"
+    },
+    {
+     "urn": "urn:attribute:101848:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "15816",
+       "name": "1",
+       "_origen": "visto en publicaciones"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Number of kits"
+    },
+    {
+     "urn": "urn:attribute:102293:vendor:shopee",
+     "type": "FREE_TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Auto-Part Number"
+    }
+   ],
+   "name": "Peças e Acessórios para Veículos/Peças de Reposição para Automóveis/Filtros/Outros"
+  },
+  "urn:category:102360:vendor:shopee": {
+   "urn": "urn:category:102360:vendor:shopee",
+   "attributes": [
+    {
+     "urn": "urn:attribute:101638:vendor:shopee",
+     "type": "MULTIPLE_SELECT_COMBO_BOX",
+     "mandatory": true,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "14703",
+       "name": "Novo",
+       "_origen": "visto en publicaciones"
+      },
+      {
+       "id": "990533",
+       "name": "Usado",
+       "_origen": "mock"
+      },
+      {
+       "id": "990534",
+       "name": "Recondicionado",
+       "_origen": "mock"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Condição do Item"
+    },
+    {
+     "urn": "urn:attribute:102292:vendor:shopee",
+     "type": "TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Registro Inmetro"
+    },
+    {
+     "urn": "urn:attribute:101029:vendor:shopee",
+     "type": "TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Tamanho Do Pacote"
+    },
+    {
+     "urn": "urn:attribute:101353:vendor:shopee",
+     "type": "TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Código Anvisa do Produto"
+    },
+    {
+     "urn": "urn:attribute:101352:vendor:shopee",
+     "type": "TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Nr. do Lote do Produto"
+    },
+    {
+     "urn": "urn:attribute:101440:vendor:shopee",
+     "type": "TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Data de validade Anvisa"
+    },
+    {
+     "urn": "urn:attribute:101675:vendor:shopee",
+     "type": "MULTIPLE_SELECT_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "15294",
+       "name": "Sim",
+       "_origen": "visto en publicaciones"
+      },
+      {
+       "id": "990535",
+       "name": "Não",
+       "_origen": "mock"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Tem Compatibilidades"
+    },
+    {
+     "urn": "urn:attribute:102293:vendor:shopee",
+     "type": "FREE_TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Auto-Part Number"
+    }
+   ],
+   "name": "Peças e Acessórios para Veículos/Peças de Reposição para Automóveis/Ar Condicionado/Ar Condicionado"
+  },
+  "urn:category:102363:vendor:shopee": {
+   "urn": "urn:category:102363:vendor:shopee",
+   "attributes": [
+    {
+     "urn": "urn:attribute:100095:vendor:shopee",
+     "type": "SINGLE_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Weight"
+    },
+    {
+     "urn": "urn:attribute:102293:vendor:shopee",
+     "type": "FREE_TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Auto-Part Number"
+    },
+    {
+     "urn": "urn:attribute:100942:vendor:shopee",
+     "type": "FREE_TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Dimension (L x W x H)"
+    },
+    {
+     "urn": "urn:attribute:102292:vendor:shopee",
+     "type": "SINGLE_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [
+      {
+       "id": "17633",
+       "name": "N/A – NBR not applicable",
+       "_origen": "visto en publicaciones"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Inmetro Certification"
+    },
+    {
+     "urn": "urn:attribute:990102:vendor:shopee",
+     "name": "GTIN (MOCK)",
+     "type": "FREE_TEXT_FIELD",
+     "mandatory": true,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "obligatorio según rechazo de Shopee (URN mock)"
+    }
+   ],
+   "name": "Peças e Acessórios para Veículos/Peças de Reposição para Automóveis/Transmissão/Embreagens"
+  },
+  "urn:category:102367:vendor:shopee": {
+   "urn": "urn:category:102367:vendor:shopee",
+   "attributes": [
+    {
+     "urn": "urn:attribute:101638:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": true,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "14703",
+       "name": "Novo",
+       "_origen": "visto en publicaciones"
+      },
+      {
+       "id": "990536",
+       "name": "Usado",
+       "_origen": "mock"
+      },
+      {
+       "id": "990537",
+       "name": "Recondicionado",
+       "_origen": "mock"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Item condition"
+    },
+    {
+     "urn": "urn:attribute:101639:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Model"
+    },
+    {
+     "urn": "urn:attribute:102292:vendor:shopee",
+     "type": "FREE_TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Inmetro Certification"
+    },
+    {
+     "urn": "urn:attribute:102293:vendor:shopee",
+     "type": "FREE_TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Auto-Part Number"
+    }
+   ],
+   "name": "Peças e Acessórios para Veículos/Peças de Reposição para Automóveis/Transmissão/Rolamentos e Semi-eixos"
+  },
+  "urn:category:102376:vendor:shopee": {
+   "urn": "urn:category:102376:vendor:shopee",
+   "attributes": [
+    {
+     "urn": "urn:attribute:100248:vendor:shopee",
+     "type": "SINGLE_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Volume"
+    },
+    {
+     "urn": "urn:attribute:100999:vendor:shopee",
+     "type": "FREE_TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Quantity"
+    },
+    {
+     "urn": "urn:attribute:101029:vendor:shopee",
+     "type": "FREE_TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Pack Size"
+    },
+    {
+     "urn": "urn:attribute:102293:vendor:shopee",
+     "type": "FREE_TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Auto-Part Number"
+    }
+   ],
+   "name": "Peças e Acessórios para Veículos/Peças de Reposição para Automóveis/Aditivos e Lubrificantes/Lubrificantes"
+  },
+  "urn:category:102394:vendor:shopee": {
+   "urn": "urn:category:102394:vendor:shopee",
+   "attributes": [
+    {
+     "urn": "urn:attribute:102293:vendor:shopee",
+     "type": "FREE_TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Auto-Part Number"
+    }
+   ],
+   "name": "Peças e Acessórios para Veículos/Peças de Reposição para Automóveis/Peças Internas/Outros"
+  },
+  "urn:category:102397:vendor:shopee": {
+   "urn": "urn:category:102397:vendor:shopee",
+   "attributes": [
+    {
+     "urn": "urn:attribute:101638:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": true,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "14703",
+       "name": "Novo",
+       "_origen": "visto en publicaciones"
+      },
+      {
+       "id": "990538",
+       "name": "Usado",
+       "_origen": "mock"
+      },
+      {
+       "id": "990539",
+       "name": "Recondicionado",
+       "_origen": "mock"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Item condition"
+    },
+    {
+     "urn": "urn:attribute:100134:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "1207",
+       "name": "Plastic",
+       "_origen": "visto en publicaciones"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Material"
+    },
+    {
+     "urn": "urn:attribute:101639:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Model"
+    },
+    {
+     "urn": "urn:attribute:101824:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "16086",
+       "name": "Sim",
+       "_origen": "visto en publicaciones"
+      },
+      {
+       "id": "990540",
+       "name": "Não",
+       "_origen": "mock"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Front emblem"
+    },
+    {
+     "urn": "urn:attribute:101823:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "16088",
+       "name": "Não",
+       "_origen": "visto en publicaciones"
+      },
+      {
+       "id": "990541",
+       "name": "Sim",
+       "_origen": "mock"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Back emblem"
+    },
+    {
+     "urn": "urn:attribute:101029:vendor:shopee",
+     "type": "FREE_TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Pack Size"
+    },
+    {
+     "urn": "urn:attribute:102293:vendor:shopee",
+     "type": "FREE_TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Auto-Part Number"
+    }
+   ],
+   "name": "Peças e Acessórios para Veículos/Peças de Reposição para Automóveis/Peças Externas/Emblemas"
+  },
+  "urn:category:102412:vendor:shopee": {
+   "urn": "urn:category:102412:vendor:shopee",
+   "attributes": [
+    {
+     "urn": "urn:attribute:101638:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": true,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "14703",
+       "name": "Novo",
+       "_origen": "visto en publicaciones"
+      },
+      {
+       "id": "990542",
+       "name": "Usado",
+       "_origen": "mock"
+      },
+      {
+       "id": "990543",
+       "name": "Recondicionado",
+       "_origen": "mock"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Item condition"
+    },
+    {
+     "urn": "urn:attribute:101639:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Model"
+    },
+    {
+     "urn": "urn:attribute:102292:vendor:shopee",
+     "type": "SINGLE_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [
+      {
+       "id": "17633",
+       "name": "N/A – NBR not applicable",
+       "_origen": "visto en publicaciones"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Inmetro Certification"
+    },
+    {
+     "urn": "urn:attribute:102293:vendor:shopee",
+     "type": "FREE_TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Auto-Part Number"
+    },
+    {
+     "urn": "urn:attribute:990101:vendor:shopee",
+     "name": "Manufacturer (MOCK)",
+     "type": "FREE_TEXT_FIELD",
+     "mandatory": true,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "obligatorio según rechazo de Shopee (URN mock)"
+    }
+   ],
+   "name": "Peças e Acessórios para Veículos/Acessórios Internos para Automóveis/Som Automotivo/Antenas"
+  },
+  "urn:category:102552:vendor:shopee": {
+   "urn": "urn:category:102552:vendor:shopee",
+   "attributes": [
+    {
+     "urn": "urn:attribute:101638:vendor:shopee",
+     "type": "NORMAL",
+     "mandatory": true,
+     "maxValues": null,
+     "values": [],
+     "_origen": "visto en publicaciones"
+    },
+    {
+     "urn": "urn:attribute:101639:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [],
+     "_origen": "visto en publicaciones"
+    },
+    {
+     "urn": "urn:attribute:101640:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [],
+     "_origen": "visto en publicaciones"
+    },
+    {
+     "urn": "urn:attribute:101644:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [],
+     "_origen": "visto en publicaciones"
+    },
+    {
+     "urn": "urn:attribute:100687:vendor:shopee",
+     "type": "NORMAL",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [],
+     "_origen": "visto en publicaciones"
+    },
+    {
+     "urn": "urn:attribute:102121:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "16410",
+       "name": "420AA",
+       "_origen": "visto en publicaciones"
+      }
+     ],
+     "_origen": "visto en publicaciones"
+    },
+    {
+     "urn": "urn:attribute:102107:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "16415",
+       "name": "82",
+       "_origen": "visto en publicaciones"
+      }
+     ],
+     "_origen": "visto en publicaciones"
+    },
+    {
+     "urn": "urn:attribute:102120:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "16406",
+       "name": "LT",
+       "_origen": "visto en publicaciones"
+      }
+     ],
+     "_origen": "visto en publicaciones"
+    },
+    {
+     "urn": "urn:attribute:102124:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "16375",
+       "name": "B",
+       "_origen": "visto en publicaciones"
+      }
+     ],
+     "_origen": "visto en publicaciones"
+    },
+    {
+     "urn": "urn:attribute:102125:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "16403",
+       "name": "C",
+       "_origen": "visto en publicaciones"
+      }
+     ],
+     "_origen": "visto en publicaciones"
+    },
+    {
+     "urn": "urn:attribute:102126:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "16381",
+       "name": "B",
+       "_origen": "visto en publicaciones"
+      }
+     ],
+     "_origen": "visto en publicaciones"
+    },
+    {
+     "urn": "urn:attribute:102127:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "16377",
+       "name": "475 kg",
+       "_origen": "visto en publicaciones"
+      }
+     ],
+     "_origen": "visto en publicaciones"
+    },
+    {
+     "urn": "urn:attribute:102129:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "16411",
+       "name": "210 km/h",
+       "_origen": "visto en publicaciones"
+      }
+     ],
+     "_origen": "visto en publicaciones"
+    },
+    {
+     "urn": "urn:attribute:102130:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "16413",
+       "name": "Não",
+       "_origen": "visto en publicaciones"
+      },
+      {
+       "id": "990544",
+       "name": "Sim",
+       "_origen": "mock"
+      }
+     ],
+     "_origen": "visto en publicaciones"
+    },
+    {
+     "urn": "urn:attribute:102293:vendor:shopee",
+     "type": "FREE_TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Auto-Part Number"
+    }
+   ],
+   "name": "Peças e Acessórios para Veículos/Pneus e Rodas/Pneus para Automóveis"
+  },
+  "urn:category:102356:vendor:shopee": {
+   "urn": "urn:category:102356:vendor:shopee",
+   "name": "Peças e Acessórios para Veículos/Peças de Reposição para Automóveis/Filtros/Outros (MOCK: copia del esquema de urn:category:102359:vendor:shopee)",
+   "attributes": [
+    {
+     "urn": "urn:attribute:100134:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "14647",
+       "name": "Papel de celulose",
+       "_origen": "visto en publicaciones"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Material"
+    },
+    {
+     "urn": "urn:attribute:100687:vendor:shopee",
+     "type": "SINGLE_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [
+      {
+       "id": "14589",
+       "name": "Carro/Caminhonete",
+       "_origen": "visto en publicaciones"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Vehicle Type"
+    },
+    {
+     "urn": "urn:attribute:101638:vendor:shopee",
+     "type": "NORMAL",
+     "mandatory": true,
+     "maxValues": null,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Item condition"
+    },
+    {
+     "urn": "urn:attribute:101717:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "14803",
+       "name": "1",
+       "_origen": "visto en publicaciones"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Units per kit"
+    },
+    {
+     "urn": "urn:attribute:101846:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "15814",
+       "name": "Retangular",
+       "_origen": "visto en publicaciones"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Filter shape"
+    },
+    {
+     "urn": "urn:attribute:101847:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "15813",
+       "name": "1 mm",
+       "_origen": "visto en publicaciones"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Inlet diameter"
+    },
+    {
+     "urn": "urn:attribute:101848:vendor:shopee",
+     "type": "MULTI_COMBO_BOX",
+     "mandatory": false,
+     "maxValues": null,
+     "values": [
+      {
+       "id": "15816",
+       "name": "1",
+       "_origen": "visto en publicaciones"
+      }
+     ],
+     "_origen": "visto en publicaciones",
+     "name": "Number of kits"
+    },
+    {
+     "urn": "urn:attribute:102293:vendor:shopee",
+     "type": "FREE_TEXT_FILED",
+     "mandatory": false,
+     "maxValues": 1,
+     "values": [],
+     "_origen": "visto en publicaciones",
+     "name": "Auto-Part Number"
+    }
+   ]
+  }
+ }
+}

@@ -12,7 +12,7 @@ from llama_index.core.tools import FunctionTool
 from pydantic import ValidationError
 from workflows import Workflow, step
 
-from .datos import cargar_atributos_canal, cargar_referencia_categorias
+from .datos import cargar_esquemas
 from .eventos import MapeoDone, MapeoStart
 from .llm import uso_de
 from .modelos import Publicacion
@@ -22,7 +22,7 @@ NOMBRE_SALIDA = "entregar_publicacion"
 INSTRUCCIONES = """\
 Eres un especialista en catalogación de autopartes para marketplaces. Recibes un producto del \
 catálogo de Alephee (taxonomía de Mercado Libre) y debes adaptarlo a Shopee: elegir la \
-categoría de Shopee y mapear los atributos del producto a los atributos que Shopee espera.
+categoría de Shopee y mapear los atributos del producto a los atributos que esa categoría espera.
 
 Reglas:
 - La categoría y los URN de atributos se copian exactos de las listas que recibes. Nunca inventes un URN.
@@ -51,14 +51,23 @@ HERRAMIENTA_SALIDA = FunctionTool.from_defaults(
 )
 
 
+def _contexto_canal() -> str:
+    # Sin las tablas de referencia (eso es la V2): el modelo ve las categorías que tienen
+    # esquema y sus atributos, y elige solo.
+    esquemas = [
+        {"urn": e["urn"], "name": e.get("name"),
+         "attributes": [{k: a.get(k) for k in ("urn", "name", "type", "mandatory", "maxValues", "values")}
+                        for a in e["attributes"]]}
+        for e in cargar_esquemas().values()
+    ]
+    return "Categorías de Shopee disponibles y los atributos que espera cada una:\n" + json.dumps(
+        esquemas, ensure_ascii=False, separators=(",", ":"))
+
+
 def mensaje_producto(producto: dict) -> str:
-    categorias = [{"urn": f["urn"], "name": f["name"]} for f in cargar_referencia_categorias().values()]
     campos = ("sku", "name", "description", "categories", "brand", "attributes")
     return (
-        "Categorías de Shopee disponibles:\n"
-        + json.dumps(categorias, ensure_ascii=False, indent=1)
-        + "\n\nAtributos que Shopee espera para la categoría urn:category:102529:vendor:shopee (Calotas):\n"
-        + json.dumps(list(cargar_atributos_canal().values()), ensure_ascii=False, indent=1)
+        _contexto_canal()
         + "\n\nProducto:\n"
         + json.dumps({k: producto.get(k) for k in campos}, ensure_ascii=False, indent=1)
     )

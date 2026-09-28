@@ -34,15 +34,26 @@ def _sin_ids(valor):
     return valor
 
 
+def _urn(urn: str) -> str:
+    """El proceso actual a veces publica atributos de Shopee sin `:vendor:shopee` y Shopee
+    los acepta. Los ids de Shopee están por encima de 100000; los legacy (ML), por debajo."""
+    partes = urn.split(":")
+    if len(partes) == 3 and partes[2].isdigit() and int(partes[2]) >= 100000:
+        return f"{urn}:vendor:shopee"
+    return urn
+
+
 def _actual(publi: dict) -> dict:
     errores = [e for e in publi.get("events", []) if e.get("status") == "error"]
+    atributos = publi.get("attributes", [])
     return {
         "status": publi.get("status"),
         "error": errores[-1]["message"] if errores else None,
         "category": next((c["urn"] for c in publi.get("categories", []) if ":vendor:shopee" in c["urn"]), None),
+        "urnsSinVendor": sum(1 for a in atributos if _urn(a["urn"]) != a["urn"]),
         "attributes": [
-            {"urn": a["urn"], "type": a.get("type"), "valueId": v.get("urn"), "value": v.get("name"), "unit": v.get("unit") or None}
-            for a in publi.get("attributes", [])
+            {"urn": _urn(a["urn"]), "type": a.get("type"), "valueId": v.get("urn"), "value": v.get("name"), "unit": v.get("unit") or None}
+            for a in atributos
             for v in a.get("values", [])
         ],
     }

@@ -170,7 +170,10 @@ resultados/                    salidas de cada corrida (ignorado por git)
   uv run pytest core/tests                 # Python, sin AWS
   npm test && npm run typecheck            # TypeScript
   npm run dev                              # chat en modo mock: http://localhost:3000
-  scripts/correr.sh --version v1           # batch contra Bedrock + evaluación
+  scripts/correr.sh --version v1           # batch contra Bedrock + evaluación (10 mock)
+  scripts/correr.sh --version v1 --datos real      # los 30 productos reales
+  scripts/correr.sh --version actual --datos real  # el proceso de hoy, sin modelo
+  uv run python scripts/importar_warroom.py && uv run python scripts/generar_mocks_reales.py  # regenerar data/real
   scripts/correr.sh --version v1 --caso 03-valor-en-otro-idioma
   ```
 - **Métrica de "La prueba":** un caso es **exacto** si la categoría es correcta, no sobra ni falta ningún atributo, no hay valores fuera de dominio ni duplicados, y los faltantes obligatorios coinciden con los esperados. Además se reportan precisión y recall de atributos, tokens y latencia. El umbral de éxito se acuerda en la sala (decisión 5).
@@ -185,8 +188,13 @@ resultados/                    salidas de cada corrida (ignorado por git)
 - **30 productos de 22 categorías de Shopee, ninguno de Calotas**: 20 publicados y 10 rechazados por Shopee. Cada caso trae el producto, la publicación que genera hoy el proceso (`actual`) y, si fue rechazado, el motivo (`actual.error`).
 - **Motivos de rechazo:** obligatorio faltante (Inmetro Certification, GTIN, Manufacturer, Auto-Part Number), "Attribute value is not linked to <atributo>" (valor fuera de la lista del canal) y "Only support to fill one value".
 - **Errores del proceso actual que Shopee acepta igual:** valores `-1` publicados como valores en 9 de 30, atributos duplicados en 4 (uno con 9 repetidos) y 2 publicaciones cuya categoría no es la de `reference_category`.
-- **`expected` es null en todos:** la publicación de hoy es la línea de base, no la respuesta correcta. Para medir aciertos hay que validar salidas esperadas con el equipo de catálogo, o medir contra reglas de Shopee.
-- **Falta para la V2 y la V3:** los atributos por categoría de Shopee (cuáles son obligatorios y la lista de valores válidos) para las 22 categorías. No vinieron en el zip y sin eso no se puede elegir entre los 306 destinos ambiguos ni validar "value is not linked". Alephee los tiene: son los "External Attributes" que hoy pasa al prompt.
+- **Lo que no vino en el zip lo generamos nosotros, marcado como MOCK** (decisión de Gastón, 28/09: "es de prueba"), con `scripts/generar_mocks_reales.py`:
+  - `data/real/shopee_atributos_por_categoria.json`: atributos por categoría (tipo, obligatorio, valores válidos, `maxValues`). Sale de lo visto en las publicaciones, de los rechazos de Shopee (obligatorios y valores "not linked") y de alternativas inventadas para los dominios. Las 2 categorías de la tabla sin publicaciones heredan el esquema de la categoría donde se publicó.
+  - `expected` de cada caso: la publicación actual limpia (sin `-1`, sin duplicados, sin valores fuera de dominio, categoría de la tabla) más los obligatorios que faltan, completados desde el producto vía `reference_attribute` cuando hay dato. **Hereda omisiones del proceso actual:** un atributo que hoy no se mapea tampoco está en `expected`, así que el recall del proceso actual sale inflado. Hay que validarlo con catálogo.
+  - El importador normaliza los URN publicados sin `:vendor:shopee` (id ≥ 100000) y cuenta cuántos había en `actual.urnsSinVendor`.
+- **Bugs reales del proceso actual que sirven de demo:** 26306808 con URN sin sufijo y el id del atributo como valor; 88904447 con "Código OEM" = "ABS Plastic" (el material copiado a otro atributo); 24581199 con "Quantity" 10 veces; 98500020 con atributos legacy de ML publicados sin mapear; 98550368 con 14 de 15 URN sin sufijo.
+- **Línea de base del proceso actual sobre los 30 reales (28/09):** 9/30 exactos, 28/30 categorías correctas, precisión 0,72, **47 valores inválidos** (`-1` o fuera de dominio) y 5 duplicados. Comando: `scripts/correr.sh --version actual --datos real`.
+- **Pendiente:** correr la V1 sobre los 30 reales (se venció la sesión SSO a las pocas horas: renovarla antes de cada tanda).
 - Los archivos crudos pesan ~15 MB, casi todo `relations` (compatibilidades con vehículos), que no hace falta para el mapeo.
 
 ### Datos mock
@@ -213,9 +221,10 @@ resultados/                    salidas de cada corrida (ignorado por git)
 | Instructivo de instalación de Kiro a Alephee (vencía "una semana antes", o sea, alrededor del 24/09) | Craftech (Juan David o Lucas lo tienen) | **Verificar si ya se envió** |
 | Licencias de Kiro: 9 usuarios, falta el AWS Account ID donde se asignan los créditos | Mariale ↔ Rick | Esperando respuesta de Rick (24/09) |
 | Tablas de referencia exportadas y 30 productos de ejemplo | Alephee | **Hecho.** Importados a `data/real/` el 28/09 |
-| Pedir a Maximiliano los atributos por categoría de Shopee (obligatorios + valores válidos) de las 22 categorías del dataset | Gastón | Pendiente. **Bloquea la V2 y la V3 sobre datos reales** |
-| Validar con el equipo de catálogo la salida esperada de al menos los 10 rechazados | Alephee | Pendiente |
-| Adaptar el evaluador a los datos reales (reglas de Shopee + comparación contra `actual`) | Gastón | Pendiente |
+| Atributos por categoría de Shopee | Gastón | **Mock generado** (28/09). Reemplazar por los reales si Alephee los pasa |
+| Salida esperada de los 30 reales | Gastón | **Mock generado** (28/09). Validar con catálogo si hay tiempo |
+| Adaptar el evaluador a los datos reales | Gastón | **Hecho.** Línea de base del proceso actual: 9/30 exactos, 47 inválidos |
+| Correr la V1 sobre los 30 reales | Gastón | Pendiente (sesión SSO vencida) |
 | Pedirle a Rick un repo de Alephee para dejar el código a las 17:00 | Gastón | Pendiente |
 | Pedir a Maximiliano: modelo y parámetros exactos, el código del merge y del lookup de `reference_category`, y la lista de atributos de Calotas en Shopee | Gastón | Pendiente |
 | Pedir acceso para integrar: `API_KEY` y `accountId` de prueba de la API v2 (con licencia PIM), y cómo se leen y escriben publicaciones y tablas `reference_*` en la plataforma nueva | Gastón → Maximiliano / Rick | Pendiente |

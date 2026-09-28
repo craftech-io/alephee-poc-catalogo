@@ -7,6 +7,8 @@ comparar V1, V2 y V3 sobre el mismo dataset.
 from collections import Counter
 from dataclasses import dataclass, field
 
+from .datos import SIN_DATO
+
 
 @dataclass
 class ResultadoCaso:
@@ -42,7 +44,7 @@ def _clave(attr: dict, atributos_canal: dict[str, dict]) -> tuple:
 
 def _es_invalido(attr: dict, atributos_canal: dict[str, dict]) -> bool:
     definicion = atributos_canal.get(attr["urn"])
-    if definicion is None:
+    if definicion is None or str(attr.get("value", "")).strip() in SIN_DATO:
         return True
     dominio = {v["id"] for v in definicion.get("values", [])}
     return bool(dominio) and str(attr.get("valueId")) not in dominio

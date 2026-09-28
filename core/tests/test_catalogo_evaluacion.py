@@ -91,3 +91,13 @@ def test_resumen_calcula_precision_y_recall():
     assert resumen["exactos"] == 1
     assert resumen["precision"] == 1.0
     assert resumen["recall"] == 0.5
+
+
+def test_valor_sin_dato_cuenta_como_invalido():
+    esperado = CASOS["02-calota-aro13-preta-completa"]["expected"]
+    pred = copy.deepcopy(esperado)
+    pred["attributes"][1]["value"] = "-1"
+
+    resultado = evaluar_caso(pred, esperado, ATRIBUTOS)
+
+    assert resultado.invalidos == ["urn:attribute:102293:vendor:shopee"]
