@@ -137,7 +137,7 @@ def _esperado(caso: dict, esquemas: dict, ref_cat: dict, ref_attr: dict) -> dict
     atributos, vistos = [], set()
     for a in caso["actual"]["attributes"]:
         d = esquema.get(a["urn"])
-        if d is None or a["urn"] in vistos or a["value"] in SIN_DATO:
+        if d is None or a["urn"] in vistos or a["value"] in SIN_DATO or (a["urn"], a["valueId"]) in NO_VINCULADOS:
             continue
         dominio = {v["id"] for v in d["values"]}
         if dominio and a["valueId"] not in dominio:

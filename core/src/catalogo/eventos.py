@@ -17,3 +17,4 @@ class MapeoDone(StopEvent):
     publicacion: dict | None
     uso: dict = {}
     error: str | None = None
+    herramientas_usadas: list[str] = []

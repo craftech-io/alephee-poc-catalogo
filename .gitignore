@@ -20,3 +20,4 @@ apps/*/sst-env.d.ts
 resultados/
 inputs/warroom-zip/*.zip
 inputs/warroom-zip/WarRoom/
+memoria/

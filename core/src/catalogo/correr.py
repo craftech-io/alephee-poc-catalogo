@@ -22,9 +22,9 @@ VACIA = {"category": None, "attributes": [], "missing": [], "rejected": []}
 
 
 def _versiones() -> dict:
-    from . import v1
+    from . import v1, v2, v3
 
-    return {"v1": v1.MapeoV1}
+    return {"v1": v1.MapeoV1, "v2": v2.MapeoV2, "v3": v3.MapeoV3}
 
 
 def _proceso_actual(caso: dict) -> dict:
@@ -42,7 +42,7 @@ def _proceso_actual(caso: dict) -> dict:
     return {"publicacion": publicacion, "uso": {}, "error": None}
 
 
-async def _correr(version: str, casos: list[dict], datos: str) -> None:
+async def _correr(version: str, casos: list[dict], datos: str, cache: bool = False) -> None:
     llm = None
     if version != "actual":
         from .llm import crear_llm
@@ -59,8 +59,10 @@ async def _correr(version: str, casos: list[dict], datos: str) -> None:
             salida = _proceso_actual(caso)
         else:
             try:
-                done = await _versiones()[version](llm=llm, timeout=180).run(producto=caso["product"])
-                salida = {"publicacion": done.publicacion, "uso": done.uso, "error": done.error}
+                extra = {"usar_cache": cache} if version == "v3" else {}
+                done = await _versiones()[version](llm=llm, timeout=180, **extra).run(producto=caso["product"])
+                salida = {"publicacion": done.publicacion, "uso": done.uso, "error": done.error,
+                          "herramientas": done.herramientas_usadas}
             except (ClientError, BotoCoreError) as exc:
                 if "sso" in str(exc).lower() or "credential" in str(exc).lower():
                     raise SystemExit(f"Credenciales de AWS vencidas o ausentes: {exc}\n"
@@ -104,13 +106,14 @@ def main() -> None:
     parser.add_argument("--version", choices=["actual", *_versiones()], default="v1")
     parser.add_argument("--datos", choices=["mock", "real"], default="mock")
     parser.add_argument("--caso", help="id de un caso del dataset; por defecto corre todos")
+    parser.add_argument("--cache", action="store_true", help="V3: usar la caché por SKU (memoria/cache_mapeos.json)")
     args = parser.parse_args()
 
     os.environ.setdefault("DATA_DIR", str(RAIZ / "data" / args.datos))
     casos = [c for c in cargar_dataset() if not args.caso or c["id"] == args.caso]
     if not casos:
         raise SystemExit(f"No existe el caso {args.caso}")
-    asyncio.run(_correr(args.version, casos, args.datos))
+    asyncio.run(_correr(args.version, casos, args.datos, args.cache))
 
 
 if __name__ == "__main__":

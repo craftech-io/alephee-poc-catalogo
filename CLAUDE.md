@@ -143,6 +143,12 @@ core/                          el agente (Python / LlamaIndex Workflows), contra
     eventos.py                 MapeoStart / MapeoDone
     llm.py                     crea el BedrockConverse (único módulo que sabe de Bedrock)
     v1.py                      V1 · solo instrucciones: Workflow de un paso, salida por tool `entregar_publicacion`
+    herramientas.py            V2 · buscar_categoria, atributos_del_canal, buscar_atributos_referencia + FuenteCatalogo
+    v2.py                      V2 · agente con herramientas (loop acotado, caché de prompt, entrega forzada en la última ronda)
+    guardrails.py              V3 · revisar (devolución al agente) y limpiar (red final)
+    memoria.py                 V3 · correcciones del equipo de catálogo + caché por SKU (memoria/, fuera de git)
+    v3.py                      V3 · V2 + guardrails con una ronda de corrección + memoria + caché
+    corregir.py                CLI para cargar una corrección (scripts/corregir.sh)
     datos.py                   carga tablas y dataset (DATA_DIR, por defecto data/mock/)
     evaluacion.py              compara contra `expected`: exactos, precisión, recall, inválidos, duplicados, faltantes
     correr.py                  modo batch: corre una versión sobre el dataset y guarda en resultados/
@@ -181,7 +187,11 @@ resultados/                    salidas de cada corrida (ignorado por git)
   - **09 (sin categoría):** el modelo **inventó la categoría** a partir del nombre ("Calota") aunque el producto no traía categoría de origen, y marcó como faltantes atributos que el caso no esperaba. Es el fallo que justifica la V2: sin categoría de origen, la respuesta tiene que ser determinista.
   - **04 (booleano falso):** mapeó bien `Não`, pero descartó `Tipo de taza = Centro` en vez de llevarlo a `Parcial`. Es discutible: el `expected` mock puede ser demasiado generoso. Revisarlo con el equipo de catálogo.
   - **07 (unidad) y 10 (dato en la descripción):** el modelo eligió la opción "generosa" (convirtió 390 g a 0,39 kg y sacó el color de la descripción). Son decisiones pendientes: si la sala las aprueba, pasan a ser correctas.
-- **Cómo sumar V2 y V3:** un Workflow nuevo en `core/src/catalogo/` que reciba `MapeoStart` y devuelva `MapeoDone`, registrado en `VERSIONES` de `correr.py`.
+- **V2 (hecha 28/09):** el agente consulta con herramientas la tabla de categorías, el esquema de la categoría y la tabla de atributos (filtrada por los atributos que tiene la categoría: resuelve los 306 destinos ambiguos). Las herramientas leen a través de `FuenteCatalogo`: hoy los archivos, mañana lo que Alephee exponga. La descripción se recorta a 1.500 caracteres (llegan a 19.000). Hay un punto de caché después del producto y caché de system y tools. En la última de 6 rondas solo queda la herramienta de entrega.
+- **V3 (hecha 28/09):** extiende la V2. Cada entrega pasa por `guardrails.revisar`: si hay problemas, el agente recibe la lista y tiene una ronda para corregir; después `guardrails.limpiar` descarta lo inválido y marca los obligatorios que faltan. Suma la herramienta `buscar_correcciones` (memoria del equipo de catálogo, manda sobre el modelo) y la caché por SKU + categoría legacy (`--cache` en el runner; cargar una corrección la vacía).
+- **Demo de memoria:** `scripts/corregir.sh --categoria <urn> --urn <atributo> --valor-producto <valor> --value-id <id> --value <nombre>` y volver a correr el caso.
+- **Reevaluar sin llamar al modelo:** `uv run python scripts/reevaluar.py resultados/<corrida>.json` (cuando cambia `expected`).
+- **Cómo sumar otra versión:** un Workflow en `core/src/catalogo/` que reciba `MapeoStart` y devuelva `MapeoDone`, registrado en `_versiones()` de `correr.py`.
 - **Cómo llega al chat (pendiente):** una `FunctionTool` `mapear_producto(sku)` en `core/server.py` que corre el workflow de catálogo; su texto mock va en `apps/web/mock.mjs`. El Dockerfile hoy copia solo `core/`: hay que sumar `data/`.
 
 ### Datos reales (WarRoom.zip, recibido el 24/09, importado el 28/09)

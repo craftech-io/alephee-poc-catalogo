@@ -7593,12 +7593,6 @@
     "category": "urn:category:102287:vendor:shopee",
     "attributes": [
      {
-      "urn": "urn:attribute:101752:vendor:shopee",
-      "valueId": "0",
-      "value": "Sim",
-      "unit": null
-     },
-     {
       "urn": "urn:attribute:101638:vendor:shopee",
       "valueId": "14703",
       "value": "Novo",
@@ -7949,12 +7943,6 @@
       "unit": null
      },
      {
-      "urn": "urn:attribute:101780:vendor:shopee",
-      "valueId": "0",
-      "value": "Halógena",
-      "unit": null
-     },
-     {
       "urn": "urn:attribute:101698:vendor:shopee",
       "valueId": "14744",
       "value": "Não",
@@ -8284,12 +8272,6 @@
       "unit": null
      },
      {
-      "urn": "urn:attribute:102200:vendor:shopee",
-      "valueId": "0",
-      "value": "Genérica",
-      "unit": null
-     },
-     {
       "urn": "urn:attribute:102292:vendor:shopee",
       "valueId": "0",
       "value": "Brasil",
@@ -8611,12 +8593,6 @@
       "urn": "urn:attribute:100370:vendor:shopee",
       "valueId": "2419",
       "value": "Manufacturer Warranty",
-      "unit": null
-     },
-     {
-      "urn": "urn:attribute:101676:vendor:shopee",
-      "valueId": "0",
-      "value": "ABS Plastic",
       "unit": null
      },
      {

@@ -16,6 +16,8 @@ def crear_llm(env=os.environ) -> BedrockConverse:
         # En local se usa el perfil SSO; en el Runtime no hay perfil y boto3 toma el rol.
         profile_name=env.get("AWS_PROFILE") or None,
         max_tokens=16000,
+        system_prompt_caching=True,
+        tool_caching=True,
     )
 
 
