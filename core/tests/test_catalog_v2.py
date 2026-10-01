@@ -67,6 +67,45 @@ async def test_exhausted_iterations_clean_the_last_submission_and_do_not_cache()
     done = await _workflow(llm, cache=cache).run(product=PRODUCT)
     assert done.source == "agent" and validate(done.listing, SCHEMAS[CALOTAS], CALOTAS) == []
     assert cache.get(PRODUCT["sku"], "734701", REFERENCE.version, "seed") is None
+    assert done.error == "max iterations reached; last submission cleaned"
+
+
+async def test_four_retries_then_a_valid_submission_on_the_fifth_turn_is_cached():
+    """MAX_ITERATIONS submissions need MAX_ITERATIONS + 1 agent iterations (see run_agent):
+    with the old off-by-one, the fifth (valid) submission's tools would never run."""
+    bad = {**GOOD, "attributes": [*GOOD["attributes"], {"urn": "urn:attribute:1:vendor:shopee", "valueId": "0", "value": "x"}]}
+    cache = InMemoryCache()
+    llm = ScriptedLLM(script=[[call("submit_listing", **bad)] for _ in range(MAX_ITERATIONS - 1)]
+                            + [[call("submit_listing", **GOOD)]])
+    done = await _workflow(llm, cache=cache).run(product=PRODUCT)
+    assert done.source == "agent" and done.error is None
+    assert validate(done.listing, SCHEMAS[CALOTAS], CALOTAS) == []
+    assert cache.get(PRODUCT["sku"], "734701", REFERENCE.version, "seed") == done.listing
+
+
+async def test_agent_exception_after_one_submission_yields_a_listing_and_an_error():
+    bad = {**GOOD, "attributes": [*GOOD["attributes"], {"urn": "urn:attribute:1:vendor:shopee", "valueId": "0", "value": "x"}]}
+
+    class BreaksAfterOneTurn(ScriptedLLM):
+        async def achat_with_tools(self, tools, user_msg=None, chat_history=None, verbose=False,
+                                   allow_parallel_tool_calls=False, **kwargs):
+            if self.seen:
+                raise RuntimeError("boom")
+            return await super().achat_with_tools(tools, user_msg, chat_history, verbose,
+                                                  allow_parallel_tool_calls, **kwargs)
+
+    llm = BreaksAfterOneTurn(script=[[call("submit_listing", **bad)]])
+    done = await _workflow(llm).run(product=PRODUCT)
+    assert done.listing is not None and done.error and "RuntimeError" in done.error
+
+
+async def test_product_without_sku_is_never_cached():
+    cache = InMemoryCache()
+    product = {k: v for k, v in PRODUCT.items() if k != "sku"}
+    llm = ScriptedLLM(script=[[call("submit_listing", **GOOD)]])
+    done = await _workflow(llm, cache=cache).run(product=product)
+    assert done.source == "agent" and done.error is None
+    assert not cache._items
 
 
 async def test_no_submission_is_an_error():

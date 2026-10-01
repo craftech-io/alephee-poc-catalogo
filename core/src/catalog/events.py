@@ -42,3 +42,5 @@ class AgentDone(Event):
     last: Listing | None
     valid: bool
     error: str | None = None
+    # True when the loop stopped because it ran out of iterations, not because of an error.
+    exhausted: bool = False

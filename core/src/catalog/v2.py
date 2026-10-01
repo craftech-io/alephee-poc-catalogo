@@ -67,8 +67,11 @@ class MappingV2(Workflow):
         self.cache = cache
 
     def _cache_key(self, product: dict) -> tuple[str, str] | None:
+        sku = str(product.get("sku") or "").strip()
         categories = product.get("categories") or []
-        return (str(product.get("sku")), legacy_id(categories[0]["urn"])) if categories else None
+        if not sku or not categories:
+            return None
+        return (sku, legacy_id(categories[0]["urn"]))
 
     @step
     async def check_cache(self, ev: MappingRequested) -> MappingCompleted | CacheMissed:
@@ -118,14 +121,20 @@ class MappingV2(Workflow):
                                        description="Deliver the final listing. It is validated in code."),
         ]
         agent = FunctionAgent(name="catalog_v2", description="Maps one Alephee product to a Shopee listing.",
-                              system_prompt=self.system_prompt, tools=tools, llm=self.llm, streaming=False)
+                              system_prompt=self.system_prompt, tools=tools, llm=self.llm, streaming=False,
+                              allow_parallel_tool_calls=False)
         error = None
+        exhausted = False
         try:
+            # `parse_agent_output` raises "Max iterations" before running the tools of the
+            # turn that reaches the limit, so MAX_ITERATIONS submissions need MAX_ITERATIONS + 1
+            # here: otherwise the last model turn is paid for and its tool call never runs.
             await agent.run(user_msg=work_message(ev), memory=ChatMemoryBuffer.from_defaults(token_limit=MEMORY_TOKENS),
-                            max_iterations=MAX_ITERATIONS)
+                            max_iterations=MAX_ITERATIONS + 1)
         except WorkflowRuntimeError as exc:
             if "Max iterations" not in str(exc):
                 raise
+            exhausted = True
         except Exception as exc:  # noqa: BLE001 — reported as an error, except expired credentials
             if is_auth_error(exc) or is_auth_error(exc.__cause__ or exc):
                 raise
@@ -134,7 +143,8 @@ class MappingV2(Workflow):
         # exhausted loop leaves `valid` False and `finalize` cleans the last submission instead.
         valid = bool(submissions) and not validate(submissions[-1], schema, ev.category_urn)
         return AgentDone(product=ev.product, category_urn=ev.category_urn, worklist=ev.worklist,
-                         last=submissions[-1] if submissions else None, valid=valid, error=error)
+                         last=submissions[-1] if submissions else None, valid=valid, error=error,
+                         exhausted=exhausted)
 
     @step
     async def finalize(self, ev: AgentDone) -> MappingCompleted:
@@ -146,4 +156,9 @@ class MappingV2(Workflow):
         if ev.valid and key:
             _safe(lambda: self.cache.put(*key, self.reference.version, self.prompt_version, ev.category_urn, final),
                   None, "cache put")
-        return MappingCompleted(listing=final, source="agent")
+        # Never hide an agent error behind a cleaned listing; an exhausted loop with no other
+        # error gets a specific reason instead of silently looking like a clean success.
+        error = ev.error
+        if error is None and ev.exhausted and not ev.valid:
+            error = "max iterations reached; last submission cleaned"
+        return MappingCompleted(listing=final, source="agent", error=error)
