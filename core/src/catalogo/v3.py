@@ -33,6 +33,7 @@ class MapeoV3(MapeoV2):
         self.memoria = memoria or Memoria()
         self.usar_cache = usar_cache
         self.reintentos = 1
+        self.categoria_referencia = None
 
         def buscar_correcciones(categoria: str) -> str:
             """Devuelve las correcciones que el equipo de catálogo cargó para una categoría de Shopee:
@@ -46,8 +47,12 @@ class MapeoV3(MapeoV2):
         return {a["urn"]: a for a in (esquema or {}).get("attributes", [])}
 
     async def _al_entregar(self, publicacion: dict) -> tuple[dict | None, str | None]:
+        categoria_incorrecta = publicacion["category"] != self.categoria_referencia
+        publicacion = {**publicacion, "category": self.categoria_referencia}
         esquema = self._esquema(publicacion)
         problemas = guardrails.revisar(publicacion, esquema)
+        if categoria_incorrecta:
+            problemas.insert(0, f"La tabla fija category = {self.categoria_referencia}. Usa sus atributos.")
         if problemas and self.reintentos > 0:
             self.reintentos -= 1
             return None, "La entrega no pasó la validación. Corrige y vuelve a entregar:\n- " + "\n- ".join(problemas)
@@ -57,8 +62,17 @@ class MapeoV3(MapeoV2):
     async def mapear(self, ev: MapeoStart) -> MapeoDone:
         cats = ev.producto.get("categories") or []
         clave = (ev.producto.get("sku"), id_categoria(cats[0]["urn"]) if cats else "")
+        referencia = self.fuente.categoria_destino(clave[1]) if clave[1] else None
+        self.categoria_referencia = referencia["urn"] if referencia else None
+        self.reintentos = 1
+        if not self.categoria_referencia or self.fuente.esquema(self.categoria_referencia) is None:
+            return MapeoDone(publicacion={
+                "category": self.categoria_referencia, "attributes": [], "rejected": [],
+                "missing": [{"urn": "category", "reason": "No hay referencia o esquema de categoría disponible; requiere revisión"}],
+            }, herramientas_usadas=["referencia_categoria"])
         if self.usar_cache and (guardado := self.memoria.en_cache(*clave)):
-            return MapeoDone(publicacion=guardado, herramientas_usadas=["cache"])
+            if guardado["category"] == self.categoria_referencia and not guardrails.revisar(guardado, self._esquema(guardado)):
+                return MapeoDone(publicacion=guardrails.limpiar(guardado, self._esquema(guardado)), herramientas_usadas=["cache"])
         done = await MapeoV2.mapear(self, ev)
         if self.usar_cache and done.publicacion is not None:
             self.memoria.guardar_cache(*clave, done.publicacion)

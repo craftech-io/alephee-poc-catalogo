@@ -104,3 +104,46 @@ async def test_el_mismo_sku_sale_de_cache(tmp_path):
 
     assert done.herramientas_usadas == ["cache"]
     assert done.publicacion["attributes"][0]["value"] == "Novo"
+
+
+def test_id_valido_con_etiqueta_incorrecta_se_descarta():
+    pub = _pub([{"urn": CONDICION, "valueId": "14703", "value": "Usado", "unit": None}])
+    assert any("no coincide" in p for p in guardrails.revisar(pub, ESQUEMA))
+    limpia = guardrails.limpiar(pub, ESQUEMA)
+    assert not limpia["attributes"]
+    assert CONDICION in {m["urn"] for m in limpia["missing"]}
+
+
+def test_sin_categoria_se_informa_y_un_atributo_resuelto_no_queda_faltante():
+    vacia = {**_pub([]), "category": None}
+    assert "category" in {m["urn"] for m in guardrails.limpiar(vacia, {})["missing"]}
+    pub = _pub([{"urn": CONDICION, "valueId": "14703", "value": "Novo", "unit": None}],
+               missing=[{"urn": CONDICION, "reason": "sin dato"}, {"urn": "category", "reason": "sin dato"}])
+    assert not {CONDICION, "category"} & {m["urn"] for m in guardrails.limpiar(pub, ESQUEMA)["missing"]}
+
+
+async def test_categoria_de_tabla_prevalece_aunque_el_modelo_insista(tmp_path):
+    mala = {**_pub([]), "category": "urn:category:inventada"}
+    llm = FakeLLM([_entrega(mala), _entrega(mala, "e2")])
+    done = await MapeoV3(llm=llm, memoria=Memoria(tmp_path), timeout=10).run(producto=CASO["product"])
+    assert done.publicacion["category"] == CALOTAS
+    assert "La tabla fija category" in llm.historiales[1][-1].content
+
+
+async def test_sin_categoria_no_consulta_modelo(tmp_path):
+    producto = {**CASO["product"], "categories": []}
+    done = await MapeoV3(llm=FakeLLM([]), memoria=Memoria(tmp_path), timeout=10).run(producto=producto)
+    assert done.publicacion["category"] is None
+    assert done.publicacion["missing"][0]["urn"] == "category"
+
+
+async def test_cache_con_categoria_incorrecta_se_recalcula(tmp_path):
+    memoria = Memoria(tmp_path)
+    from catalogo.datos import id_categoria
+    producto = CASO["product"]
+    memoria.guardar_cache(producto["sku"], id_categoria(producto["categories"][0]["urn"]),
+                         {**_pub([]), "category": "urn:category:inventada"})
+    llm = FakeLLM([_entrega(_pub([])), _entrega(_pub([]), "e2")])
+    done = await MapeoV3(llm=llm, memoria=memoria, timeout=10).run(producto=producto)
+    assert done.publicacion["category"] == CALOTAS
+    assert done.herramientas_usadas != ["cache"]
