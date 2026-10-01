@@ -71,16 +71,16 @@ Las reservas son para pizarra, corridas del lote y preguntas dentro del bloque. 
 
 **En pantalla:**
 
-- Caso real · SKU 88904447 · Correia dentada (ACDelco) · catálogo GM Brasil
+- Caso real · SKU 88904447 · Correia dentada (ACDelco) · la columna Sale es la meta: las filas 1 a 4 coinciden con lo que Alephee publicó; las 5 y 6 son lo que hoy no pasa
 - Entra: el producto (Mercado Libre) / Sale: la publicación (Shopee) / Quién lo resuelve
 - Categoría: Correias Dentadas (738058) / Distribuição e Correias (102278:vendor:shopee) / La tabla reference_category
-- Condición del ítem = Novo / Item condition = Novo (valueId 14703) / La tabla de atributos y la lista del canal
+- Condición del ítem = Novo / Condition = New (valueId 2497) / La tabla de atributos y la lista del canal
 - Tiempo de garantía = 6 meses / Duração da Garantia = 6 Months (valueId 810) / El agente: el valor equivalente de la lista
 - Peso = 0.18 Kilogramos / Weight = 0.18 Kilograms / El agente, con la unidad del canal
 - Código universal de producto = -1 / No se publica: -1 significa sin dato / El guardrail
 - Código OEM: no viene en el producto / missing: Código OEM, sin dato en el origen (hoy salió ABS Plastic y Shopee lo rechazó) / El guardrail; después decide una persona
 
-**Temas para hablar:** Esto es lo que queremos lograr. Leer la tabla de arriba abajo. Entra el producto como está en Alephee: 30 atributos con nombres y valores de Mercado Libre, con -1 y N/A donde no hay dato. Queremos que salga la publicación para Shopee: su categoría, sus atributos con el URN y el valueId del canal, y dos listas más con lo que no se pudo (missing) y lo que se descartó (rejected). La tercera columna anticipa todo el día: algunas filas las resuelve una tabla, otras necesitan interpretar (6 meses → 6 Months), y las últimas necesitan una comprobación en código. El esquema de Shopee que usamos es MOCK derivado de las publicaciones; los valores de la columna del medio salen de la publicación real.
+**Temas para hablar:** Esto es lo que queremos lograr. Leer la tabla de arriba abajo. Entra el producto como está en Alephee: 30 atributos con nombres y valores de Mercado Libre, con -1 y N/A donde no hay dato. Queremos que salga la publicación para Shopee: su categoría, sus atributos con el URN y el valueId del canal, y dos listas más con lo que no se pudo (missing) y lo que se descartó (rejected). La tercera columna anticipa todo el día: algunas filas las resuelve una tabla, otras necesitan interpretar (6 meses → 6 Months), y las últimas necesitan una comprobación en código. Ser exacto con el origen: producto y publicación son reales (WarRoom.zip); las filas de categoría, condición, garantía y peso coinciden con lo que Alephee publicó; las dos últimas son la conducta que queremos y hoy no ocurre (hoy publicó ABS Plastic en Código OEM). El esquema de atributos de Shopee que usamos para validar es MOCK derivado de esas publicaciones.
 
 **Pregunta / participación:** ¿Qué fila les parece la más difícil de automatizar?
 
