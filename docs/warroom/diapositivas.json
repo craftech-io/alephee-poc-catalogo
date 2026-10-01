@@ -1,0 +1,369 @@
+{
+ "title": "War Room · Alephee × Craftech × AWS",
+ "date": "2026-10-01",
+ "sections": [
+  {
+   "id": "partida",
+   "title": "01 · Punto de partida",
+   "time": "09:00–09:30",
+   "goal": "Ver el error de hoy y acordar qué construimos",
+   "work_reserve": [
+    [
+     "Dolores del equipo y preguntas",
+     10
+    ]
+   ]
+  },
+  {
+   "id": "diseno",
+   "title": "02 · Diseñar el agente",
+   "time": "09:30–11:15",
+   "goal": "Tomar las decisiones que definen la V1",
+   "work_reserve": [
+    [
+     "Pizarra: tipos de aplicación y dónde corre",
+     15
+    ],
+    [
+     "Pausa 11:00",
+     15
+    ]
+   ]
+  },
+  {
+   "id": "v1",
+   "title": "03 · V1 · el agente responde",
+   "time": "11:15–12:30",
+   "goal": "Construir, correr y leer la primera versión",
+   "work_reserve": [
+    [
+     "Corridas sobre otros casos",
+     25
+    ]
+   ]
+  },
+  {
+   "id": "v2",
+   "title": "04 · V2 · herramientas",
+   "time": "13:15–14:45",
+   "goal": "Decidir qué resuelve la tabla y conectarla",
+   "work_reserve": [
+    [
+     "Corrida del lote y lectura",
+     25
+    ]
+   ]
+  },
+  {
+   "id": "v3",
+   "title": "05 · V3 · control",
+   "time": "15:00–16:15",
+   "goal": "Decidir qué pasa cuando el agente no sabe",
+   "work_reserve": [
+    [
+     "Corrida del lote con V3",
+     20
+    ]
+   ]
+  },
+  {
+   "id": "prueba",
+   "title": "06 · La prueba y el camino",
+   "time": "16:15–17:00",
+   "goal": "Medir contra el criterio y repartir lo que sigue",
+   "work_reserve": [
+    [
+     "Documentar decisiones y responsables",
+     15
+    ]
+   ]
+  }
+ ],
+ "slides": [
+  {
+   "id": "s01",
+   "section": "partida",
+   "title": "Un agente que mapea el catálogo a Shopee, decidido paso a paso.",
+   "kind": "divider",
+   "lead": "War Room · Alephee × Craftech × AWS · 1/10/2026",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Qué tenemos a las 17:00: agente en local, método repetible, 13 decisiones documentadas",
+    "say": "A las 17:00 queremos tres cosas: el agente corriendo en local con el código en el repositorio, un método que se pueda repetir para el próximo caso de uso y trece decisiones escritas con su razonamiento. Hoy no se enseña teoría: se diseña y se construye en el orden en que se diseña. Gastón conduce; el grupo decide en cada punto.",
+    "ask": "",
+    "close": "",
+    "transition": "Primero, cómo funciona hoy."
+   },
+   "minutes": 1
+  },
+  {
+   "id": "s02",
+   "section": "partida",
+   "title": "Hoy: dos llamadas, un merge y un presupuesto que se agota.",
+   "kind": "cards",
+   "lead": "",
+   "label": "",
+   "items": [
+    "Categoría: la tabla reference_category y, si no alcanza, el modelo elige",
+    "Atributos: dos llamadas en paralelo (con y sin referencia) y un merge por código",
+    "USD 350 por mes: cuando se agota, se publica sin atributos"
+   ],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Entender el proceso actual sin juzgarlo",
+    "say": "Describir el flujo actual tal como lo explicó Maximiliano: la categoría se resuelve por tabla y el modelo entra cuando la tabla no la tiene; los atributos van en dos llamadas en paralelo porque un solo prompt era demasiado largo, y un merge por código prioriza la que usó la referencia. Latencia de 13 segundos en batch: no es una restricción. El punto que duele es el presupuesto: cuando se agota, la publicación sale sin atributos. El modelo exacto y sus parámetros siguen sin confirmar.",
+    "ask": "¿Qué parte de este flujo les da más trabajo hoy?",
+    "close": "Anotar las respuestas en la pizarra: se retoman en la prueba final.",
+    "transition": "Veamos cómo se le pide hoy la categoría al modelo."
+   },
+   "minutes": 3
+  },
+  {
+   "id": "s03",
+   "section": "partida",
+   "title": "Así se pide hoy la categoría.",
+   "kind": "code",
+   "lead": "",
+   "label": "Prompt actual de Alephee · inputs/prompts-actuales/index.ts",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Leer juntos el prompt actual y separar lo que se conserva de lo que se cambia",
+    "say": "Leer las reglas resaltadas: son buenas y se conservan. Señalar tres cosas que vamos a decidir distinto a lo largo del día: la salida es JSON pedido por favor en el texto (decisión 4), la lista completa de categorías viaja en cada llamada y después del producto (decisión sobre caché, bloque V2), y solo usa el nombre de la categoría y del producto, no la descripción. No es una crítica al equipo: es el punto de partida.",
+    "ask": "",
+    "close": "",
+    "transition": "Qué pasó con esas publicaciones en Shopee."
+   },
+   "minutes": 4,
+   "code": {
+    "file": "inputs/prompts-actuales/index.ts",
+    "lines": "4-21",
+    "symbol": "categoryPrompt",
+    "highlight": [
+     20,
+     21
+    ],
+    "caption": "Reglas correctas (no inventar, copiar el URN exacto). Lo que se va a revisar: el JSON se pide en el texto y la lista completa de categorías viaja en cada llamada."
+   }
+  },
+  {
+   "id": "s04",
+   "section": "partida",
+   "title": "Lo que Shopee rechazó y lo que aceptó mal.",
+   "kind": "table",
+   "lead": "",
+   "label": "Datos reales · WarRoom.zip del 24/09 · 30 productos",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": {
+    "headers": [
+     "Caso",
+     "Qué salió",
+     "Qué pasó"
+    ],
+    "rows": [
+     [
+      "88904447",
+      "Código OEM = ABS Plastic",
+      "Rechazado: el valor no pertenece al atributo"
+     ],
+     [
+      "24581199",
+      "Quantity publicado 10 veces",
+      "Rechazado: solo admite un valor"
+     ],
+     [
+      "9 de 30",
+      "Valor -1 publicado como valor",
+      "Aceptado por Shopee"
+     ],
+     [
+      "98550368",
+      "14 de 15 URN sin sufijo del canal",
+      "Aceptado por Shopee"
+     ]
+    ]
+   },
+   "notes": {
+    "objective": "Ver errores reales: los que rechaza el canal y los que acepta igual",
+    "say": "Los 30 productos del zip: 20 publicados y 10 rechazados. El caso 88904447 es el hilo del día: un material (ABS Plastic) copiado al campo Código OEM. Lo peor no es lo que Shopee rechaza, que al menos avisa, sino lo que acepta mal: un -1 publicado como valor en 9 de 30 y URN sin el sufijo del canal. Nadie se entera hasta que un comprador lo ve.",
+    "ask": "¿Cuál de estos errores les parece más grave para el negocio?",
+    "close": "",
+    "transition": "Cómo vamos a trabajar hoy."
+   },
+   "minutes": 3
+  },
+  {
+   "id": "s05",
+   "section": "partida",
+   "title": "Seis bloques: cada decisión se compila en una versión.",
+   "kind": "flow",
+   "lead": "Decidimos → construimos → medimos. Nunca se pasa al bloque siguiente con algo roto.",
+   "label": "",
+   "items": [
+    "Punto de partida",
+    "Diseñar el agente",
+    "V1 · responde",
+    "V2 · herramientas",
+    "V3 · control",
+    "La prueba"
+   ],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Ubicar al grupo en la agenda",
+    "say": "Las decisiones de la mañana producen la V1; las de herramientas, la V2; las de control, la V3; y la prueba mide todo contra el criterio que acordamos antes de escribir código. Pausa a las 11:00, almuerzo 12:30 a 13:15, pausa 14:45. Cierre técnico a las 17:00 y margen de preguntas hasta las 17:30.",
+    "ask": "",
+    "close": "",
+    "transition": "Primera decisión: qué hace y qué no hace."
+   },
+   "minutes": 3
+  },
+  {
+   "id": "s06",
+   "section": "partida",
+   "title": "¿Qué hace y qué no hace?",
+   "kind": "decision",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Cerrar la decisión 1 antes de hablar de contrato",
+    "say": "Presentar las tres opciones con su consecuencia: B multiplica las tablas y los esquemas de canal sin cambiar el método; C mezcla dos problemas distintos, mapear y redactar. Abrir la propuesta solo después de escuchar al grupo. La decisión queda en decisiones/01-alcance.md con su razonamiento.",
+    "ask": "¿Hay alguna familia de productos que convenga más que otra para empezar?",
+    "close": "Registrar la decisión y la familia elegida.",
+    "transition": "Si el alcance es ese, ¿qué entra y qué sale?"
+   },
+   "minutes": 4,
+   "decision": {
+    "number": 1,
+    "question": "¿Qué alcance tiene el agente del war room?",
+    "options": [
+     "A · Un canal (Shopee) y una familia de productos: categoría + atributos",
+     "B · Todos los canales conectados (Shopee, Magalu, Tienda Nube…)",
+     "C · También título, descripción y marca"
+    ],
+    "proposal": "A. Un canal y una familia alcanzan para decidir el método y medirlo. Los prompts de marca, título y descripción son generación libre, no mapeo: quedan fuera. Los otros canales replican el mismo diseño con sus propias tablas.",
+    "file": "decisiones/01-alcance.md"
+   }
+  },
+  {
+   "id": "s07",
+   "section": "partida",
+   "title": "Entra un producto. Sale una propuesta de publicación.",
+   "kind": "cards",
+   "lead": "",
+   "label": "",
+   "items": [
+    "Entrada: el producto de Alephee (SKU, nombre, descripción, categoría legacy, atributos)",
+    "Salida: la categoría de Shopee más los atributos con URN, valueId y valor",
+    "Y dos listas más: missing (obligatorios sin dato) y rejected (atributos descartados, con motivo)"
+   ],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Decir el contrato en palabras antes de verlo en código",
+    "say": "La salida no es la publicación final: es una propuesta de mapeo. Lo que hoy no existe son las dos listas: qué obligatorio quedó sin dato y por qué, y qué atributo del producto se descartó y por qué. Eso es lo que reemplaza al publicar sin atributos.",
+    "ask": "",
+    "close": "",
+    "transition": "El mismo contrato, en código."
+   },
+   "minutes": 3
+  },
+  {
+   "id": "s08",
+   "section": "partida",
+   "title": "El contrato, en código.",
+   "kind": "code",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Mostrar que el contrato es código que se valida, no un acuerdo verbal",
+    "say": "Recorrer las cuatro partes: category puede ser null si no se resuelve; attributes lleva URN, valueId y value; missing y rejected llevan el motivo. extra=forbid significa que si el modelo agrega un campo que no existe, la salida se rechaza. Este archivo es lo primero que se escribió y lo último que debería cambiar.",
+    "ask": "",
+    "close": "",
+    "transition": "Decisión 2: cómo se informa lo que no se pudo mapear."
+   },
+   "minutes": 4,
+   "code": {
+    "file": "core/src/catalogo/modelos.py",
+    "lines": "21-37",
+    "symbol": "class Publicacion",
+    "highlight": [
+     31,
+     34,
+     36,
+     37
+    ],
+    "caption": "Pydantic con extra=\"forbid\": ningún campo fuera del contrato pasa. Los nombres (valueId, legacyId) son los del formato de publicación de Alephee para no traducir."
+   }
+  },
+  {
+   "id": "s09",
+   "section": "partida",
+   "title": "¿Qué recibe y qué entrega?",
+   "kind": "decision",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Cerrar la decisión 2",
+    "say": "La opción A es el estado actual y su costo ya lo vimos en la tabla de rechazos. La B obliga a que alguien reciba esas listas: quién y cómo es la integración con la plataforma de Alephee, que se trata en el camino a producción. Registrar en decisiones/02-contrato.md.",
+    "ask": "",
+    "close": "",
+    "transition": "Con alcance y contrato cerrados, diseñamos el agente."
+   },
+   "minutes": 4,
+   "decision": {
+    "number": 2,
+    "question": "¿Cómo se informa lo que no se pudo mapear?",
+    "options": [
+     "A · No se informa: se publica lo que hay (hoy)",
+     "B · missing y rejected con motivo, en la misma salida",
+     "C · Un archivo de log aparte que alguien revisa"
+    ],
+    "proposal": "B. El faltante viaja con la publicación: quien revisa ve el producto, el atributo y el motivo juntos. Un log aparte se separa del dato y nadie lo mira.",
+    "file": "decisiones/02-contrato.md"
+   }
+  }
+ ]
+}

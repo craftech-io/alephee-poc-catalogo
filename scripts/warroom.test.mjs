@@ -91,7 +91,7 @@ test('un enlace con índice no entero vuelve al inicio sin dejar todo oculto', (
   assert.deepEqual(visible(page('#1.5')), ['s01']);
 });
 
-test('las láminas de código, decisión y demo existen y están escapadas', { todo: true }, () => {
+test('las láminas de código, decisión y demo existen y están escapadas', () => {
   const kinds = new Set(data.slides.map(s => s.kind));
   for (const k of ['code', 'decision', 'demo']) assert.ok(kinds.has(k), k);
   assert.ok(html.includes('class="ln" data-n="'));

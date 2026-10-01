@@ -97,3 +97,11 @@ def test_guion_decision_y_demo():
     assert "**Decisión 3:** ¿Q?" in d and "1. A" in d and "**Propuesta:** B" in d and "decisiones/03-x.md" in d
     m = "\n".join(gp.guion_slide(0, base(kind="demo", demo={"command": "cmd", "watch": ["w"], "fallback": "f"}), sec))
     assert "```bash\ncmd\n```" in m and "- w" in m and "**Respaldo:** f" in m
+
+
+def test_render_html_omite_secciones_sin_laminas():
+    data = {"title": "T", "sections": [{"id": "x", "title": "X", "time": "", "goal": "g", "work_reserve": []},
+                                       {"id": "vacia", "title": "Vacía", "time": "", "goal": "g", "work_reserve": []}],
+            "slides": [base(kind="cards", items=["a"])]}
+    out = gp.render_html(data)
+    assert "<option" in out and "Vacía" not in out
