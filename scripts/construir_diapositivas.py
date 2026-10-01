@@ -50,16 +50,14 @@ L("partida", "divider", "Un agente que mapea el catálogo a Shopee, decidido pas
   transition="Primero, cómo funciona hoy.")
 
 L("partida", "table", "De un producto de Alephee a una publicación de Shopee.",
-  label="Caso real · SKU 88904447 · Correia dentada (ACDelco) · la columna Sale es la meta: las filas 1 a 4 coinciden con lo que Alephee publicó; las 5 y 6 son lo que hoy no pasa",
-  table={"headers": ["Entra: el producto (Mercado Libre)", "Sale: la publicación (Shopee)", "Quién lo resuelve"],
-         "rows": [["Categoría: Correias Dentadas (738058)", "Distribuição e Correias (102278:vendor:shopee)", "La tabla reference_category"],
-                  ["Condición del ítem = Novo", "Condition = New (valueId 2497)", "La tabla de atributos y la lista del canal"],
-                  ["Tiempo de garantía = 6 meses", "Duração da Garantia = 6 Months (valueId 810)", "El agente: el valor equivalente de la lista"],
-                  ["Peso = 0.18 Kilogramos", "Weight = 0.18 Kilograms", "El agente, con la unidad del canal"],
-                  ["Código universal de producto = -1", "No se publica: -1 significa sin dato", "El guardrail"],
-                  ["Código OEM: no viene en el producto", "missing: Código OEM, sin dato en el origen (hoy salió ABS Plastic y Shopee lo rechazó)", "El guardrail; después decide una persona"]]},
+  label="Caso real · SKU 88904447 · Correia dentada · catálogo GM Brasil (Mercado Libre Brasil) → Shopee Brasil",
+  table={"headers": ["Entra (Alephee)", "Sale (Shopee)", "Quién lo resuelve"],
+         "rows": [["Categoría: Correias Dentadas", "Distribuição e Correias", "La tabla"],
+                  ["Condición del ítem: Novo", "Condition: New", "La tabla y la lista del canal"],
+                  ["Tiempo de garantía: 6 meses", "Duração da Garantia: 6 Months", "El agente"],
+                  ["Código OEM: no viene", "Faltante, con motivo (hoy: ABS Plastic, rechazado por Shopee)", "El guardrail"]]},
   objective="Que todos vean, con un producto real, qué entra y qué queremos que salga",
-  say="Esto es lo que queremos lograr. Leer la tabla de arriba abajo. Entra el producto como está en Alephee: 30 atributos con nombres y valores de Mercado Libre, con -1 y N/A donde no hay dato. Queremos que salga la publicación para Shopee: su categoría, sus atributos con el URN y el valueId del canal, y dos listas más con lo que no se pudo (missing) y lo que se descartó (rejected). La tercera columna anticipa todo el día: algunas filas las resuelve una tabla, otras necesitan interpretar (6 meses → 6 Months), y las últimas necesitan una comprobación en código. Ser exacto con el origen: producto y publicación son reales (WarRoom.zip); las filas de categoría, condición, garantía y peso coinciden con lo que Alephee publicó; las dos últimas son la conducta que queremos y hoy no ocurre (hoy publicó ABS Plastic en Código OEM). El esquema de atributos de Shopee que usamos para validar es MOCK derivado de esas publicaciones.",
+  say="Esto es lo que queremos lograr. Entra el producto como está en Alephee: los nombres de los atributos están en español porque así los define la plataforma; los valores y la categoría están en portugués porque el catálogo es de GM Brasil sobre la taxonomía de Mercado Libre Brasil. Sale la publicación para Shopee Brasil, que mezcla portugués e inglés según cómo expone cada atributo su API. Cruzar idiomas es parte del problema. Las tres primeras filas coinciden con lo que Alephee publicó hoy para este SKU (categoría 102278, Condition = New valueId 2497, 6 Months valueId 810); la cuarta es la conducta que queremos: hoy en Código OEM salió ABS Plastic y Shopee lo rechazó. La columna de la derecha anticipa el día: tabla, agente, guardrail. El esquema de atributos de Shopee con el que validamos es MOCK derivado de estas publicaciones.",
   ask="¿Qué fila les parece la más difícil de automatizar?",
   transition="Cómo lo hace hoy el proceso actual.")
 
