@@ -624,7 +624,7 @@
    "table": null,
    "notes": {
     "objective": "Mostrar todas las piezas de AWS y separar lo que hay de lo que falta",
-    "say": "Arriba está el camino del chat. El widget llama al BFF, que valida el token, aplica el guardrail de entrada y los topes, y encola el mensaje. El worker invoca el Runtime, que llama a Bedrock y a las herramientas por el Gateway. El Runtime también tiene dos herramientas propias, map_product_v1 y map_product_v2, que corren la V1 y la V2. La V2 lee las correcciones y la caché de dos tablas de DynamoDB, corrections y mapping_cache. Abajo a la derecha, punteado, está el batch de catálogo. Hoy corre en local como experimento de Langfuse, y su lugar en producción es la decisión 5. La franja de abajo es el monitoreo: logs y métricas en CloudWatch, y trazas, prompts y experimentos en Langfuse.",
+    "say": "Arriba está el camino del chat. El widget llama al BFF, que valida el token, aplica el guardrail de entrada y los topes, y encola el mensaje. El worker invoca el Runtime, que llama a Bedrock y a las herramientas por el Gateway. El Runtime también tiene dos herramientas propias, map_product_v1 y map_product_v2, que corren la V1 y la V2. La V2 lee las correcciones y la caché de dos tablas de DynamoDB, corrections y mapping_cache. En el stack, los recursos se llaman CatalogCorrections y CatalogMappingCache. Abajo a la derecha, punteado, está el batch de catálogo. Hoy corre en local como experimento de Langfuse, y su lugar en producción es la decisión 5. La franja de abajo es el monitoreo: logs y métricas en CloudWatch, y trazas, prompts y experimentos en Langfuse.",
     "ask": "¿Qué piezas ya tiene Alephee y cuáles reemplazaríamos?",
     "close": "",
     "transition": "Decisión 5."
@@ -963,6 +963,32 @@
       ],
       "label": "Converse",
       "dashed": false
+     },
+     {
+      "points": [
+       [
+        866,
+        155
+       ],
+       [
+        621,
+        155
+       ],
+       [
+        621,
+        250
+       ],
+       [
+        406,
+        250
+       ]
+      ],
+      "label": "corrections · caché",
+      "dashed": false,
+      "at": [
+       513,
+       242
+      ]
      }
     ],
     "caption": "Es la infraestructura del template en infra/sst. El chat se despliega en la cuenta sandbox con el stage warroom, y las trazas del agente van a Langfuse. AgentCore Memory se sacó del stack."
@@ -1795,7 +1821,7 @@
     "headers": [
      "Qué medimos",
      "V1 · 30 reales",
-     "Qué lo resuelve en la V2"
+     "Qué capa lo ataca en la V2"
     ],
     "rows": [
      [
@@ -1821,13 +1847,13 @@
      [
       "Recall de atributos",
       "0,57: faltan 4 de cada 10 atributos esperados",
-      "Los campos de reference_attribute, resueltos en código"
+      "Los campos de reference_attribute en código. Medido el 1/10: 0,60 en la V2"
      ]
     ]
    },
    "notes": {
     "objective": "Convertir cada fallo de la V1 en la justificación de una capa",
-    "say": "Esto medimos el 1/10 con la V1 sobre los 30 productos reales, contra una salida esperada mock. Hay menos inválidos que hoy, 3 contra 47, y ningún duplicado. Pero el recall es 0,57: faltan 4 de cada 10 atributos esperados, porque la V1 no usa las tablas de referencia. La categoría sale bien en 28 de 30, pero el número es optimista, porque la V1 elige entre 23 categorías que siempre incluyen la correcta. Los 3 inválidos muestran que una regla en el prompt no alcanza y hay que comprobarla en código. La V2 suma las dos cosas: las tablas en código y la validación en código.",
+    "say": "Esto medimos el 1/10 con la V1 sobre los 30 productos reales, contra una salida esperada mock. Hay menos inválidos que hoy, 3 contra 47, y ningún duplicado. Pero el recall es 0,57: faltan 4 de cada 10 atributos esperados. La categoría sale bien en 28 de 30, pero el número es optimista, porque la V1 elige entre 23 categorías que siempre incluyen la correcta. Los 3 inválidos muestran que una regla en el prompt no alcanza y hay que comprobarla en código. La V2 suma las dos cosas: las tablas en código y la validación en código.",
     "ask": "¿Alguno de estos números les sorprende?",
     "close": "",
     "transition": "Almuerzo. A las 13:15, la V2."
@@ -2094,7 +2120,7 @@
       "dashed": false,
       "at": [
        401,
-       212
+       204
       ]
      },
      {
@@ -2304,7 +2330,7 @@
    "table": null,
    "notes": {
     "objective": "Comparar V1 y V2 sobre el mismo caso",
-    "say": "Es el mismo caso de la V1, para comparar. Antes de correr, pedir una predicción: ¿cuántos atributos resuelve el código sin preguntar? En este caso son cinco: Condição do Item, Origem, Número da Peça, Type of shell y Cor. Al agente le quedan tres valores por decidir, Weight, Is it insurable y Aro, y Material, que no está en la tabla. source no viaja en la salida del experimento: se ve en la traza, por los steps que corrieron. Ojo: si el SKU ya se corrió con las mismas tablas y el mismo prompt, sale de la caché y no se ve al agente. En ese caso, mostrar la traza de la corrida del 1/10 y dejar la caché para la demo de corregir y repetir. Si Bedrock no responde, mostrar el experimento guardado y decirlo.",
+    "say": "Es el mismo caso de la V1, para comparar. Antes de correr, pedir una predicción: ¿cuántos atributos resuelve el código sin preguntar? En este caso son cinco: Condição do Item, Origem, Número da Peça, Type of shell y Cor (MOCK). Al agente le quedan tres valores por decidir, Weight, Is it insurable y Aro (MOCK), y Material, que no está en la tabla. source no viaja en la salida del experimento: se ve en la traza, por los steps que corrieron. Ojo: si el SKU ya se corrió con las mismas tablas y el mismo prompt, sale de la caché y no se ve al agente. En ese caso, mostrar la traza de la corrida del 1/10 y dejar la caché para la demo de corregir y repetir. Si Bedrock no responde, mostrar el experimento guardado y decirlo.",
     "ask": "",
     "close": "",
     "transition": "Cuánto cuesta por producto."
@@ -2564,7 +2590,7 @@
    "table": null,
    "notes": {
     "objective": "Ver el cierre del Workflow y qué entra en la caché",
-    "say": "finalize junta la última entrega con lo que resolvió el código, y gana lo resuelto. Después pasa clean, la red final. Solo guarda en la caché si la última entrega del agente pasó la validación. Si el agente agotó las cinco entregas, el resultado sale limpio y con un error que lo dice. Así un loop agotado no pasa por un éxito.",
+    "say": "finalize junta la última entrega con lo que resolvió el código, y gana lo resuelto. Después pasa clean, la red final. Solo guarda en la caché si la última entrega del agente pasó la validación. Si el agente agotó las cinco entregas, el resultado sale limpio y con un error que lo dice.",
     "ask": "",
     "close": "",
     "transition": "Decisión 13."
@@ -2580,7 +2606,7 @@
      157,
      163
     ],
-    "caption": "Sin ninguna entrega, el resultado es un error y no una publicación vacía."
+    "caption": "Sin ninguna entrega, el resultado lleva un error."
    }
   },
   {
@@ -2690,7 +2716,7 @@
    "items": [
     "Tests unitarios: uv run pytest core/tests -q. Son 181, con dobles del modelo, sin AWS ni Langfuse",
     "Experimentos en Langfuse: scripts/experiment.sh --version v2 --data mock. Cada producto queda con su traza y sus scores",
-    "Tests e2e: scripts/e2e.sh, contra Bedrock, DynamoDB y el chat desplegado. Los 14 pasaron el 1/10"
+    "Tests e2e: API_URL=<Function URL del BFF> scripts/e2e.sh, contra Bedrock, DynamoDB y el chat desplegado. Sin API_URL se omite el test del chat. Los 14 pasaron el 1/10"
    ],
    "question": "",
    "options": [],
@@ -2736,7 +2762,7 @@
      51,
      55
     ],
-    "caption": "Corre con scripts/e2e.sh. Sin credenciales de AWS, se omite."
+    "caption": "Corre con scripts/e2e.sh, que pone RUN_E2E=1. Sin eso, se omite."
    }
   },
   {
@@ -2827,7 +2853,7 @@
    },
    "notes": {
     "objective": "Leer los resultados contra el criterio, sin maquillar",
-    "say": "La columna Hoy sale de la misma métrica aplicada a las publicaciones actuales. La V2 es la única columna con cero valores inválidos y cero duplicados. Su único obligatorio sin informar es el caso error-26301167. La V2 completó Manufacturer (MOCK) con GM, tomado del atributo Marca del producto, y la salida esperada mock lo marca como faltante porque solo completa obligatorios a través de reference_attribute. Es un límite de la salida esperada y no un valor inventado. Las 27 categorías de la V2 salen de esa corrida. Al volver a correr los tres casos que dieron problemas, los tres salieron con la categoría correcta y una publicación válida, así que no se repitió. La categoría de la V1 es optimista, porque elige entre 23 opciones que incluyen la correcta. El recall de Hoy sale inflado, porque la salida esperada hereda lo que hoy se mapea.",
+    "say": "La columna Hoy sale de la misma métrica aplicada a las publicaciones actuales. La V2 es la única columna con cero valores inválidos y cero duplicados. Su único obligatorio sin informar es el caso error-26301167. La V2 completó Manufacturer (MOCK) con GM, tomado del atributo Marca del producto, y la salida esperada mock lo marca como faltante porque solo completa obligatorios a través de reference_attribute. Es un límite de la salida esperada: el valor sale del producto. Las 27 categorías de la V2 salen de esa corrida. Al volver a correr los tres casos que dieron problemas, los tres salieron con la categoría correcta y una publicación válida, así que no se repitió. La categoría de la V1 es optimista, porque elige entre 23 opciones que incluyen la correcta. El recall de Hoy sale inflado, porque la salida esperada hereda lo que hoy se mapea. El recall de la V2, 0,60, es casi igual al de la V1: la salida esperada mock hereda lo que hoy no se mapea y castiga los atributos extra bien mapeados (precisión 0,69).",
     "ask": "",
     "close": "",
     "transition": "Cómo leer la tabla."
@@ -2844,7 +2870,7 @@
    "items": [
     "Exactos bajos en todas las columnas: la salida esperada hereda las omisiones del proceso actual y castiga aciertos que hoy nadie mapea",
     "Inválidos y duplicados sí son errores seguros. La V2 es la única columna con cero en los dos",
-    "El obligatorio sin informar de la V2 (error-26301167) es Manufacturer = GM, tomado de Marca: la salida esperada mock no lo prevé",
+    "El obligatorio sin informar de la V2 (error-26301167) es Manufacturer (MOCK) = GM, tomado de Marca: la salida esperada mock no lo prevé",
     "Categoría: la V1 elige entre 23 opciones con la correcta adentro, así que su número es optimista"
    ],
    "question": "",
@@ -2989,7 +3015,7 @@
      ],
      [
       "11",
-      "Costo: tope acordado con Alephee sobre la medición del 1/10 (V2: ~9.970 tokens de entrada por producto)",
+      "Costo: tope acordado con Alephee sobre la medición del 1/10 (V2: ~9.970 tokens nuevos (sin caché) de entrada por producto)",
       "decisiones/11-costo.md"
      ],
      [

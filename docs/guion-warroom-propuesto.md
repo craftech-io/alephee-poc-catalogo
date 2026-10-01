@@ -378,15 +378,15 @@ Listing es lo que entrega la V1. Si el modelo devuelve algo que no cumple este e
 **Código:** `core/src/catalog/v1.py` líneas 69 a 77
 
 ```py
-    @step
-    async def map(self, ev: ContextReady) -> MappingCompleted:
-        try:
-            response = await self.llm.as_structured_llm(Listing).achat(ev.messages)
-        except Exception as exc:  # noqa: BLE001, any failure becomes a reported error, except credentials
-            if is_auth_error(exc):
-                raise
-            return MappingCompleted(listing=None, error=f"{type(exc).__name__}: {exc}")
-        return MappingCompleted(listing=response.raw)
+@step
+async def map(self, ev: ContextReady) -> MappingCompleted:
+    try:
+        response = await self.llm.as_structured_llm(Listing).achat(ev.messages)
+    except Exception as exc:  # noqa: BLE001, any failure becomes a reported error, except credentials
+        if is_auth_error(exc):
+            raise
+        return MappingCompleted(listing=None, error=f"{type(exc).__name__}: {exc}")
+    return MappingCompleted(listing=response.raw)
 ```
 
 Una sola llamada. response.raw ya es un Listing validado.
@@ -419,7 +419,7 @@ Una sola llamada. response.raw ya es un Listing validado.
 **En pantalla:**
 
 
-**Temas para hablar:** Arriba está el camino del chat. El widget llama al BFF, que valida el token, aplica el guardrail de entrada y los topes, y encola el mensaje. El worker invoca el Runtime, que llama a Bedrock y a las herramientas por el Gateway. El Runtime también tiene dos herramientas propias, map_product_v1 y map_product_v2, que corren la V1 y la V2. La V2 lee las correcciones y la caché de dos tablas de DynamoDB, corrections y mapping_cache. Abajo a la derecha, punteado, está el batch de catálogo. Hoy corre en local como experimento de Langfuse, y su lugar en producción es la decisión 5. La franja de abajo es el monitoreo: logs y métricas en CloudWatch, y trazas, prompts y experimentos en Langfuse.
+**Temas para hablar:** Arriba está el camino del chat. El widget llama al BFF, que valida el token, aplica el guardrail de entrada y los topes, y encola el mensaje. El worker invoca el Runtime, que llama a Bedrock y a las herramientas por el Gateway. El Runtime también tiene dos herramientas propias, map_product_v1 y map_product_v2, que corren la V1 y la V2. La V2 lee las correcciones y la caché de dos tablas de DynamoDB, corrections y mapping_cache. En el stack, los recursos se llaman CatalogCorrections y CatalogMappingCache. Abajo a la derecha, punteado, está el batch de catálogo. Hoy corre en local como experimento de Langfuse, y su lugar en producción es la decisión 5. La franja de abajo es el monitoreo: logs y métricas en CloudWatch, y trazas, prompts y experimentos en Langfuse.
 
 **Pregunta / participación:** ¿Qué piezas ya tiene Alephee y cuáles reemplazaríamos?
 
@@ -901,14 +901,14 @@ scripts/experiment.sh --version v1 --data mock --case 01-real-calota-aro14
 **En pantalla:**
 
 - Medido el 1/10 en Langfuse · V1 sobre los 30 reales · salida esperada MOCK
-- Qué medimos / V1 · 30 reales / Qué lo resuelve en la V2
+- Qué medimos / V1 · 30 reales / Qué capa lo ataca en la V2
 - Casos exactos / 3 de 30 (hoy: 7) / Se compara en la prueba
 - Categoría correcta / 28 de 30, optimista: elige entre 23 que incluyen la correcta / La categoría sale de reference_category, en código
 - Valores inválidos / 3 (hoy: 47) / validate en cada entrega y clean al final
 - Duplicados / 0 (hoy: 5) / validate y clean
-- Recall de atributos / 0,57: faltan 4 de cada 10 atributos esperados / Los campos de reference_attribute, resueltos en código
+- Recall de atributos / 0,57: faltan 4 de cada 10 atributos esperados / Los campos de reference_attribute en código. Medido el 1/10: 0,60 en la V2
 
-**Temas para hablar:** Esto medimos el 1/10 con la V1 sobre los 30 productos reales, contra una salida esperada mock. Hay menos inválidos que hoy, 3 contra 47, y ningún duplicado. Pero el recall es 0,57: faltan 4 de cada 10 atributos esperados, porque la V1 no usa las tablas de referencia. La categoría sale bien en 28 de 30, pero el número es optimista, porque la V1 elige entre 23 categorías que siempre incluyen la correcta. Los 3 inválidos muestran que una regla en el prompt no alcanza y hay que comprobarla en código. La V2 suma las dos cosas: las tablas en código y la validación en código.
+**Temas para hablar:** Esto medimos el 1/10 con la V1 sobre los 30 productos reales, contra una salida esperada mock. Hay menos inválidos que hoy, 3 contra 47, y ningún duplicado. Pero el recall es 0,57: faltan 4 de cada 10 atributos esperados. La categoría sale bien en 28 de 30, pero el número es optimista, porque la V1 elige entre 23 categorías que siempre incluyen la correcta. Los 3 inválidos muestran que una regla en el prompt no alcanza y hay que comprobarla en código. La V2 suma las dos cosas: las tablas en código y la validación en código.
 
 **Pregunta / participación:** ¿Alguno de estos números les sorprende?
 
@@ -1015,24 +1015,24 @@ Verde es código y violeta es el modelo. El código resuelve lo que saben las ta
 **Código:** `core/src/catalog/worklist.py` líneas 42 a 59
 
 ```py
-        target = reference.target_for(attribute["urn"], schema)
-        if target is None:
-            unmapped.append({"legacy_id": attribute["urn"], "name": attribute.get("name"), "value": value,
-                             "unit": attribute.get("unit")})
-            continue
-        if target in covered:
-            continue
-        covered.add(target)
-        definition = definitions[target]
-        values = _values(definition)
-        unit = str(attribute.get("unit") or "").strip()
-        if not values and unit in NO_DATA:
-            resolved.append(MappedAttribute(urn=target, valueId="0", value=value, unit=None))
-            continue
-        match = next((v for v in values if normalize(v["name"]) == normalize(value)), None)
-        if match is not None:
-            resolved.append(MappedAttribute(urn=target, valueId=match["id"], value=match["name"], unit=None))
-            continue
+target = reference.target_for(attribute["urn"], schema)
+if target is None:
+    unmapped.append({"legacy_id": attribute["urn"], "name": attribute.get("name"), "value": value,
+                     "unit": attribute.get("unit")})
+    continue
+if target in covered:
+    continue
+covered.add(target)
+definition = definitions[target]
+values = _values(definition)
+unit = str(attribute.get("unit") or "").strip()
+if not values and unit in NO_DATA:
+    resolved.append(MappedAttribute(urn=target, valueId="0", value=value, unit=None))
+    continue
+match = next((v for v in values if normalize(v["name"]) == normalize(value)), None)
+if match is not None:
+    resolved.append(MappedAttribute(urn=target, valueId=match["id"], value=match["name"], unit=None))
+    continue
 ```
 
 Texto libre y coincidencia exacta salen sin modelo. Lo que no coincide va a to_decide.
@@ -1053,19 +1053,19 @@ Texto libre y coincidencia exacta salen sin modelo. Lo que no coincide va a to_d
 **Código:** `core/src/catalog/v2.py` líneas 109 a 121
 
 ```py
-        def submit_listing(**listing) -> dict:
-            """Deliver the listing. It is validated in code; if there are problems you get them back."""
-            candidate = merge_resolved(Listing.model_validate(listing), ev.worklist.resolved)
-            submissions.append(candidate)
-            problems = validate(candidate, schema, ev.category_urn)
-            if problems:
-                raise ValueError("The listing did not pass validation. Fix these and submit again:\n- " + "\n- ".join(problems))
-            return candidate.model_dump()
+def submit_listing(**listing) -> dict:
+    """Deliver the listing. It is validated in code; if there are problems you get them back."""
+    candidate = merge_resolved(Listing.model_validate(listing), ev.worklist.resolved)
+    submissions.append(candidate)
+    problems = validate(candidate, schema, ev.category_urn)
+    if problems:
+        raise ValueError("The listing did not pass validation. Fix these and submit again:\n- " + "\n- ".join(problems))
+    return candidate.model_dump()
 
-        tools = [
-            FunctionTool.from_defaults(fn=lookup_corrections, name="lookup_corrections"),
-            FunctionTool.from_defaults(fn=submit_listing, name="submit_listing", fn_schema=Listing, return_direct=True,
-                                       description="Deliver the final listing. It is validated in code."),
+tools = [
+    FunctionTool.from_defaults(fn=lookup_corrections, name="lookup_corrections"),
+    FunctionTool.from_defaults(fn=submit_listing, name="submit_listing", fn_schema=Listing, return_direct=True,
+                               description="Deliver the final listing. It is validated in code."),
 ```
 
 Cada entrega queda en submissions. Si se agotan las cinco, finalize limpia la última.
@@ -1079,7 +1079,7 @@ Cada entrega queda en submissions. Si se agotan las cinco, finalize limpia la ú
 **En pantalla:**
 
 
-**Temas para hablar:** Es el mismo caso de la V1, para comparar. Antes de correr, pedir una predicción: ¿cuántos atributos resuelve el código sin preguntar? En este caso son cinco: Condição do Item, Origem, Número da Peça, Type of shell y Cor. Al agente le quedan tres valores por decidir, Weight, Is it insurable y Aro, y Material, que no está en la tabla. source no viaja en la salida del experimento: se ve en la traza, por los steps que corrieron. Ojo: si el SKU ya se corrió con las mismas tablas y el mismo prompt, sale de la caché y no se ve al agente. En ese caso, mostrar la traza de la corrida del 1/10 y dejar la caché para la demo de corregir y repetir. Si Bedrock no responde, mostrar el experimento guardado y decirlo.
+**Temas para hablar:** Es el mismo caso de la V1, para comparar. Antes de correr, pedir una predicción: ¿cuántos atributos resuelve el código sin preguntar? En este caso son cinco: Condição do Item, Origem, Número da Peça, Type of shell y Cor (MOCK). Al agente le quedan tres valores por decidir, Weight, Is it insurable y Aro (MOCK), y Material, que no está en la tabla. source no viaja en la salida del experimento: se ve en la traza, por los steps que corrieron. Ojo: si el SKU ya se corrió con las mismas tablas y el mismo prompt, sale de la caché y no se ve al agente. En ese caso, mostrar la traza de la corrida del 1/10 y dejar la caché para la demo de corregir y repetir. Si Bedrock no responde, mostrar el experimento guardado y decirlo.
 
 **Transición:** Cuánto cuesta por producto.
 
@@ -1241,23 +1241,23 @@ Devuelve texto para el modelo. Una lista vacía quiere decir que la entrega pasa
 **Código:** `core/src/catalog/v2.py` líneas 69 a 85
 
 ```py
-    def _cache_key(self, product: dict) -> tuple[str, str] | None:
-        sku = str(product.get("sku") or "").strip()
-        categories = product.get("categories") or []
-        if not sku or not categories:
-            return None
-        return (sku, legacy_id(categories[0]["urn"]))
+def _cache_key(self, product: dict) -> tuple[str, str] | None:
+    sku = str(product.get("sku") or "").strip()
+    categories = product.get("categories") or []
+    if not sku or not categories:
+        return None
+    return (sku, legacy_id(categories[0]["urn"]))
 
-    @step
-    async def check_cache(self, ev: MappingRequested) -> MappingCompleted | CacheMissed:
-        key = self._cache_key(ev.product)
-        category = self.reference.category_for(ev.product)
-        schema = self.schemas.get(category["urn"]) if category else None
-        if key and schema:
-            hit = _safe(lambda: self.cache.get(*key, self.reference.version, self.prompt_version), None, "cache get")
-            if hit is not None and not validate(hit, schema, category["urn"]):
-                return MappingCompleted(listing=hit, source="cache")
-        return CacheMissed(product=ev.product)
+@step
+async def check_cache(self, ev: MappingRequested) -> MappingCompleted | CacheMissed:
+    key = self._cache_key(ev.product)
+    category = self.reference.category_for(ev.product)
+    schema = self.schemas.get(category["urn"]) if category else None
+    if key and schema:
+        hit = _safe(lambda: self.cache.get(*key, self.reference.version, self.prompt_version), None, "cache get")
+        if hit is not None and not validate(hit, schema, category["urn"]):
+            return MappingCompleted(listing=hit, source="cache")
+    return CacheMissed(product=ev.product)
 ```
 
 Un error de DynamoDB no frena el mapeo: _safe sigue sin caché.
@@ -1271,32 +1271,32 @@ Un error de DynamoDB no frena el mapeo: _safe sigue sin caché.
 **En pantalla:**
 
 
-**Temas para hablar:** finalize junta la última entrega con lo que resolvió el código, y gana lo resuelto. Después pasa clean, la red final. Solo guarda en la caché si la última entrega del agente pasó la validación. Si el agente agotó las cinco entregas, el resultado sale limpio y con un error que lo dice. Así un loop agotado no pasa por un éxito.
+**Temas para hablar:** finalize junta la última entrega con lo que resolvió el código, y gana lo resuelto. Después pasa clean, la red final. Solo guarda en la caché si la última entrega del agente pasó la validación. Si el agente agotó las cinco entregas, el resultado sale limpio y con un error que lo dice.
 
 **Transición:** Decisión 13.
 
 **Código:** `core/src/catalog/v2.py` líneas 149 a 164
 
 ```py
-    @step
-    async def finalize(self, ev: AgentDone) -> MappingCompleted:
-        if ev.last is None:
-            return MappingCompleted(listing=None, error=ev.error or "the agent never submitted a listing", source="agent")
-        schema = self.schemas[ev.category_urn]
-        final = clean(merge_resolved(ev.last, ev.worklist.resolved), schema, ev.category_urn)
-        key = self._cache_key(ev.product)
-        if ev.valid and key:
-            _safe(lambda: self.cache.put(*key, self.reference.version, self.prompt_version, ev.category_urn, final),
-                  None, "cache put")
-        # Never hide an agent error behind a cleaned listing; an exhausted loop with no other
-        # error gets a specific reason instead of silently looking like a clean success.
-        error = ev.error
-        if error is None and ev.exhausted and not ev.valid:
-            error = "max iterations reached; last submission cleaned"
-        return MappingCompleted(listing=final, source="agent", error=error)
+@step
+async def finalize(self, ev: AgentDone) -> MappingCompleted:
+    if ev.last is None:
+        return MappingCompleted(listing=None, error=ev.error or "the agent never submitted a listing", source="agent")
+    schema = self.schemas[ev.category_urn]
+    final = clean(merge_resolved(ev.last, ev.worklist.resolved), schema, ev.category_urn)
+    key = self._cache_key(ev.product)
+    if ev.valid and key:
+        _safe(lambda: self.cache.put(*key, self.reference.version, self.prompt_version, ev.category_urn, final),
+              None, "cache put")
+    # Never hide an agent error behind a cleaned listing; an exhausted loop with no other
+    # error gets a specific reason instead of silently looking like a clean success.
+    error = ev.error
+    if error is None and ev.exhausted and not ev.valid:
+        error = "max iterations reached; last submission cleaned"
+    return MappingCompleted(listing=final, source="agent", error=error)
 ```
 
-Sin ninguna entrega, el resultado es un error y no una publicación vacía.
+Sin ninguna entrega, el resultado lleva un error.
 
 ### 53 · ¿Cómo garantizamos determinismo?
 
@@ -1384,7 +1384,7 @@ API_URL=<Function URL del BFF> CHAT_HMAC_SECRET=<secreto HMAC> npm start -w apps
 
 - Tests unitarios: uv run pytest core/tests -q. Son 181, con dobles del modelo, sin AWS ni Langfuse
 - Experimentos en Langfuse: scripts/experiment.sh --version v2 --data mock. Cada producto queda con su traza y sus scores
-- Tests e2e: scripts/e2e.sh, contra Bedrock, DynamoDB y el chat desplegado. Los 14 pasaron el 1/10
+- Tests e2e: API_URL=<Function URL del BFF> scripts/e2e.sh, contra Bedrock, DynamoDB y el chat desplegado. Sin API_URL se omite el test del chat. Los 14 pasaron el 1/10
 
 **Temas para hablar:** Son tres niveles. Los tests unitarios prueban cada step con dobles y corren en segundos. Los experimentos miden la calidad sobre el dataset con la métrica de la decisión 8. Los tests e2e comprueban que las piezas reales funcionan juntas: Bedrock, las tablas de DynamoDB y el chat desplegado. Los e2e usan solo el dataset mock.
 
@@ -1417,7 +1417,7 @@ async def test_v2_never_delivers_invalid_listings(case_id, stores):
         assert validate(done.listing, SCHEMAS[done.listing.category], done.listing.category) == []
 ```
 
-Corre con scripts/e2e.sh. Sin credenciales de AWS, se omite.
+Corre con scripts/e2e.sh, que pone RUN_E2E=1. Sin eso, se omite.
 
 ### 58 · La prueba.
 
@@ -1451,7 +1451,7 @@ Corre con scripts/e2e.sh. Sin credenciales de AWS, se omite.
 - Precisión / 0,70 / 0,70 / 0,69
 - Recall / 0,97 / 0,57 / 0,60
 
-**Temas para hablar:** La columna Hoy sale de la misma métrica aplicada a las publicaciones actuales. La V2 es la única columna con cero valores inválidos y cero duplicados. Su único obligatorio sin informar es el caso error-26301167. La V2 completó Manufacturer (MOCK) con GM, tomado del atributo Marca del producto, y la salida esperada mock lo marca como faltante porque solo completa obligatorios a través de reference_attribute. Es un límite de la salida esperada y no un valor inventado. Las 27 categorías de la V2 salen de esa corrida. Al volver a correr los tres casos que dieron problemas, los tres salieron con la categoría correcta y una publicación válida, así que no se repitió. La categoría de la V1 es optimista, porque elige entre 23 opciones que incluyen la correcta. El recall de Hoy sale inflado, porque la salida esperada hereda lo que hoy se mapea.
+**Temas para hablar:** La columna Hoy sale de la misma métrica aplicada a las publicaciones actuales. La V2 es la única columna con cero valores inválidos y cero duplicados. Su único obligatorio sin informar es el caso error-26301167. La V2 completó Manufacturer (MOCK) con GM, tomado del atributo Marca del producto, y la salida esperada mock lo marca como faltante porque solo completa obligatorios a través de reference_attribute. Es un límite de la salida esperada: el valor sale del producto. Las 27 categorías de la V2 salen de esa corrida. Al volver a correr los tres casos que dieron problemas, los tres salieron con la categoría correcta y una publicación válida, así que no se repitió. La categoría de la V1 es optimista, porque elige entre 23 opciones que incluyen la correcta. El recall de Hoy sale inflado, porque la salida esperada hereda lo que hoy se mapea. El recall de la V2, 0,60, es casi igual al de la V1: la salida esperada mock hereda lo que hoy no se mapea y castiga los atributos extra bien mapeados (precisión 0,69).
 
 **Transición:** Cómo leer la tabla.
 
@@ -1465,7 +1465,7 @@ Corre con scripts/e2e.sh. Sin credenciales de AWS, se omite.
 
 - Exactos bajos en todas las columnas: la salida esperada hereda las omisiones del proceso actual y castiga aciertos que hoy nadie mapea
 - Inválidos y duplicados sí son errores seguros. La V2 es la única columna con cero en los dos
-- El obligatorio sin informar de la V2 (error-26301167) es Manufacturer = GM, tomado de Marca: la salida esperada mock no lo prevé
+- El obligatorio sin informar de la V2 (error-26301167) es Manufacturer (MOCK) = GM, tomado de Marca: la salida esperada mock no lo prevé
 - Categoría: la V1 elige entre 23 opciones con la correcta adentro, así que su número es optimista
 
 **Temas para hablar:** Lo que se puede afirmar: estos controles detectan errores concretos, y cada versión los baja o no. Lo que todavía no se puede afirmar es una mejor exactitud general, porque la salida esperada es mock. Un control también puede bajar errores quitando información, así que hay que mirar control y cobertura juntos.
@@ -1524,7 +1524,7 @@ Corre con scripts/e2e.sh. Sin credenciales de AWS, se omite.
 - 8 / Criterio de éxito: el número de la pizarra / decisiones/08-criterio-de-exito.md
 - 9 / Dataset: 30 reales con mock rotulado / decisiones/09-dataset.md
 - 10 / La tabla manda: categoría y campos en código; el agente decide valores y lo no cubierto / decisiones/10-tabla-vs-agente.md
-- 11 / Costo: tope acordado con Alephee sobre la medición del 1/10 (V2: ~9.970 tokens de entrada por producto) / decisiones/11-costo.md
+- 11 / Costo: tope acordado con Alephee sobre la medición del 1/10 (V2: ~9.970 tokens nuevos (sin caché) de entrada por producto) / decisiones/11-costo.md
 - 12 / Cuando no sabe: faltante explícito con motivo; clean es la red final / decisiones/12-cuando-no-sabe.md
 - 13 / Determinismo: caché por SKU + tablas + prompt en DynamoDB; se invalida al cargar una corrección / decisiones/13-determinismo-y-cache.md
 
