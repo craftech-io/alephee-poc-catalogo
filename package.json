@@ -6,7 +6,7 @@
     "apps/*"
   ],
   "scripts": {
-    "dev": "npm start -w @alephee-catalogo/demo-client",
+    "dev": "npm start -w @alephee-catalogo/web",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "typecheck:infra": "bash scripts/typecheck-infra.sh",
     "test": "npm run test --workspaces --if-present"

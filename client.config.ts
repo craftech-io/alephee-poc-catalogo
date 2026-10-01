@@ -279,7 +279,7 @@ export interface ConfigCliente {
 
 export const cliente: ConfigCliente = {
   slug: "alephee-catalogo",
-  modelo: "us.anthropic.claude-sonnet-4-6",
+  modelo: "us.anthropic.claude-sonnet-5",
   region: "us-east-1",
   topes: {
     diario: 50,

@@ -22,7 +22,7 @@ npm run dev     # http://localhost:3000
 
 No hace falta cuenta de AWS, credenciales ni deploy. El server responde
 `POST/GET /mensajes` por su cuenta con respuestas escritas a mano
-(`examples/demo-client/mock.mjs`), y la UI muestra chips con las palabras que disparan cada
+(`apps/web/mock.mjs`), y la UI muestra chips con las palabras que disparan cada
 escenario —búsqueda en documentos, escalamiento, error— para recorrer el
 comportamiento del bot sin gastar un centavo de Bedrock.
 
@@ -38,12 +38,12 @@ configurado el emisor de tokens:
 # Con HMAC
 API_URL="<Function URL del BFF>" \
 CHAT_HMAC_SECRET="<el mismo secreto del stack>" \
-  npm start -w @alephee-catalogo/demo-client
+  npm start -w @alephee-catalogo/web
 
 # Con Cognito u otro IdP por JWKS
 API_URL="<Function URL del BFF>" \
 COGNITO_CLIENT_ID="<client id del pool>" \
-  npm start -w @alephee-catalogo/demo-client
+  npm start -w @alephee-catalogo/web
 ```
 
 **El modo se elige por las variables**, no por un flag: sin `API_URL` es mock;
@@ -51,7 +51,7 @@ con `API_URL` y sin `COGNITO_CLIENT_ID` es HMAC; con `COGNITO_CLIENT_ID` es logi
 real. La Function URL sale del output `Chat` del deploy.
 
 El detalle de los tres modos, con el mini-login y cómo integrar el widget en una
-app propia, está en [`examples/demo-client/README.md`](examples/demo-client/README.md).
+app propia, está en [`apps/web/README.md`](apps/web/README.md).
 
 ## Mapa del monorepo
 
@@ -63,7 +63,7 @@ app propia, está en [`examples/demo-client/README.md`](examples/demo-client/REA
 | `packages/worker/` | El worker (TypeScript) que consume MensajesCola en background: agrega mensajes pendientes, invoca el AgentCore Runtime (con streaming SSE interno), parsea la respuesta y la escribe en MessagesTable |
 | `packages/widget/` | El widget que el cliente monta en su página, sin framework; hace polling a `/mensajes` GET para ver las respuestas |
 | `infra/` | El IaC. `infra/CONTRACT.md` es el contrato entre el producto y CUALQUIER sabor de IaC (SST, Terraform, Pulumi); `infra/sst/` es el primer sabor implementado |
-| `examples/demo-client/` | Una app mínima que integra el widget, para probar el flujo completo sin un cliente real |
+| `apps/web/` | Una app mínima que integra el widget, para probar el flujo completo sin un cliente real |
 
 ## Adoptar el template
 
@@ -147,4 +147,4 @@ npm run typecheck                 # typecheck de los workspaces de npm
   los knobs que mueven todo eso.
 - `infra/CONTRACT.md` — el contrato multi-IaC: qué recursos y variables debe
   proveer cualquier sabor de infraestructura.
-- `examples/demo-client/README.md` — cómo integra el chat una app cliente.
+- `apps/web/README.md` — cómo integra el chat una app cliente.

@@ -95,7 +95,7 @@ los hace visibles sin AWS con tres escenarios más:
 
 El agente real puede usar herramientas; el mock lo hace visible con dos
 escenarios más, que responden con los mismos datos fijos que sirve la demo
-API (`examples/api-cliente`):
+API (`apps/api`):
 
 - `pedido` → responde como si el agente hubiera usado la tool `mis_pedidos`
   (tus pedidos A-1001 y A-0997). Es un turno normal: pasa por el debounce.
@@ -110,7 +110,7 @@ la API del cliente por HTTP con el token del usuario.
 
 El agente también responde desde los documentos del cliente y, cuando no
 encuentra la respuesta, ofrece derivar a una persona. Los dos escenarios citan
-el corpus ficticio de `examples/documentos` (la empresa inventada Ciclos
+el corpus ficticio de `documentos` (la empresa inventada Ciclos
 Aurora):
 
 - `documento` → responde como si hubiera usado la tool `consultar_documentos`,
@@ -166,7 +166,7 @@ Y recién ahí correr el demo:
 npm run build -w @alephee-catalogo/widget
 CHAT_HMAC_SECRET="$(cat ../../.secreto-demo.local)" \
 API_URL="<la Function URL del Messages Backend>" \
-  npm start -w @alephee-catalogo/demo-client
+  npm start -w @alephee-catalogo/web
 ```
 
 (El server también acepta `CHAT_URL` como alias de `API_URL`, si esta última
@@ -190,7 +190,7 @@ Desde el root:
 ```bash
 set -a; source .cognito-demo.local; set +a
 API_URL="<la Function URL del Messages Backend>" \
-  npm start -w @alephee-catalogo/demo-client
+  npm start -w @alephee-catalogo/web
 ```
 
 Con `COGNITO_CLIENT_ID` seteado el server entra en modo cognito y
