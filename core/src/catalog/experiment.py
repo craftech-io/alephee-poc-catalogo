@@ -1,6 +1,7 @@
 """Run a version of the catalog agent as a Langfuse experiment.
 
     scripts/experiment.sh --version v1 --data mock
+    scripts/experiment.sh --version v2 --data mock
     scripts/experiment.sh --version current --data mock      # today's process, no model
     scripts/experiment.sh --version v1 --data mock --case error-88904447
 
@@ -17,9 +18,12 @@ import boto3
 from .data import data_dir, load_cases, load_schemas
 from .evaluation import make_item_evaluator, make_run_evaluator
 from .llm import auth_error_message, create_llm, is_auth_error
-from .prompts import PROMPT_NAME, get_system_prompt, sync_seed
+from .prompts import PROMPT_NAME, PROMPT_NAME_V2, get_system_prompt, sync_seed
+from .reference import load_reference
+from .store import stores_from_env
 from .tracing import setup_tracing
 from .v1 import MappingV1
+from .v2 import MappingV2
 
 DATASETS = {"real": "alephee-shopee-real", "mock": "alephee-shopee-mock"}
 MAX_CONCURRENCY = 4
@@ -60,19 +64,40 @@ def current_task(*, item, **kwargs) -> dict:
             "attributes": [{k: a.get(k) for k in ("urn", "valueId", "value", "unit")} for a in actual["attributes"]]}
 
 
+async def _run(workflow, product) -> dict:
+    try:
+        done = await workflow.run(product=product)
+    except Exception as exc:  # noqa: BLE001 — only an auth error is special-cased, see below
+        cause = exc.__cause__
+        if is_auth_error(exc) or (cause is not None and is_auth_error(cause)):
+            # An SSO token that expires mid-run would otherwise fail every remaining
+            # item one by one; stopping the whole experiment here is cheaper to notice.
+            raise SystemExit(auth_error_message(exc, os.environ.get("AWS_PROFILE") or None)) from exc
+        raise
+    if done.listing is None:
+        return {"error": done.error}
+    result = done.listing.model_dump()
+    if done.error:
+        # V2 can return a listing *and* an agent error (an exception after a submission,
+        # or iterations exhausted). Never key this as "error": `evaluation._evaluate_output`
+        # treats any "error" key as a failed task and would discard the listing with it.
+        result["agent_error"] = done.error
+    return result
+
+
 def make_v1_task(llm, system_prompt: str, schemas: dict[str, dict], workflow_cls=MappingV1):
     async def task(*, item, **kwargs) -> dict:
-        try:
-            done = await workflow_cls(llm=llm, system_prompt=system_prompt, schemas=schemas, timeout=180).run(
-                product=item.input)
-        except Exception as exc:  # noqa: BLE001 — only an auth error is special-cased, see below
-            cause = exc.__cause__
-            if is_auth_error(exc) or (cause is not None and is_auth_error(cause)):
-                # An SSO token that expires mid-run would otherwise fail every remaining
-                # item one by one; stopping the whole experiment here is cheaper to notice.
-                raise SystemExit(auth_error_message(exc, os.environ.get("AWS_PROFILE") or None)) from exc
-            raise
-        return done.listing.model_dump() if done.listing is not None else {"error": done.error}
+        return await _run(workflow_cls(llm=llm, system_prompt=system_prompt, schemas=schemas, timeout=180), item.input)
+
+    return task
+
+
+def make_v2_task(llm, system_prompt: str, prompt_version: str, schemas: dict[str, dict], reference, corrections,
+                cache, workflow_cls=MappingV2):
+    async def task(*, item, **kwargs) -> dict:
+        return await _run(workflow_cls(llm=llm, system_prompt=system_prompt, prompt_version=prompt_version,
+                                       schemas=schemas, reference=reference, corrections=corrections,
+                                       cache=cache, timeout=300), item.input)
 
     return task
 
@@ -97,7 +122,7 @@ def _commit() -> str:
 
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--version", choices=["v1", "current"], default="v1")
+    parser.add_argument("--version", choices=["v1", "v2", "current"], default="v1")
     parser.add_argument("--data", choices=list(DATASETS), default="mock")
     parser.add_argument("--case", help="run a single case by id")
     parser.add_argument("--allow-real-upload", action="store_true",
@@ -116,17 +141,25 @@ def main(argv: list[str] | None = None) -> None:
     schemas = load_schemas(directory)
 
     metadata = {"version": args.version, "commit": _commit()}
-    if args.version == "v1":
+    if args.version in ("v1", "v2"):
         # Before uploading anything: an expired SSO session should stop the run here,
         # not after the dataset is already up and the first model call fails.
         check_aws()
     upload_dataset(client, args.data, cases)
-    if args.version == "v1":
-        sync_seed(PROMPT_NAME, client)
-        prompt = get_system_prompt(PROMPT_NAME, client)
+    if args.version in ("v1", "v2"):
+        name = PROMPT_NAME if args.version == "v1" else PROMPT_NAME_V2
+        sync_seed(name, client)
+        prompt = get_system_prompt(name, client)
         llm = create_llm()
-        task = make_v1_task(llm, prompt.text, schemas)
         metadata |= {"model": llm.model, "prompt": prompt_label(prompt)}
+        if args.version == "v1":
+            task = make_v1_task(llm, prompt.text, schemas)
+        else:
+            corrections, cache, stores = stores_from_env()
+            print(f"V2 stores: {stores}")
+            metadata |= {"stores": stores}
+            task = make_v2_task(llm, prompt.text, str(prompt.version or "seed"), schemas,
+                                load_reference(directory), corrections, cache)
     else:
         task = current_task
 

@@ -33,10 +33,11 @@ const TEXTO_MIS_PEDIDOS =
 const TEXTO_LISTAR_CATALOGO =
   "Tenemos 3 productos: Casco MTB ($45.000), Luz trasera USB ($12.000) y Kit de parches ($3.500).";
 
-// Local mode for the catalog agent: it does NOT run V1. A sample listing
-// (MOCK) shaped like map_product's output, to rehearse the UI without Bedrock.
+// Local mode for the catalog agent: it does NOT run V2 (the chat's default tool,
+// map_product_v2). A sample listing (MOCK) shaped like its output, to rehearse the
+// UI without Bedrock.
 const TEXTO_MAP_PRODUCT =
-  "Resultado de ejemplo del modo mock (no corre el agente): SKU 94701411 → categoría " +
+  "Resultado de ejemplo del modo mock (no corre map_product_v2): SKU 94701411 → categoría " +
   "Calotas. Condição do Item: Novo · Aro: 14 · Material: Plástico ABS. Faltantes: ninguno.";
 
 // Modo local del conocimiento (RAG) y del escalamiento: los mismos textos que

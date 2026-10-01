@@ -193,3 +193,50 @@ def test_check_aws_runs_before_upload_dataset_for_v1(monkeypatch):
 def test_prompt_label_uses_seed_when_there_is_no_version():
     assert prompt_label(SimpleNamespace(name="catalog-v1-system", version=None)) == "catalog-v1-system:seed"
     assert prompt_label(SimpleNamespace(name="catalog-v1-system", version=3)) == "catalog-v1-system:v3"
+
+
+async def test_v2_task_returns_the_listing_and_its_source():
+    from catalog.experiment import make_v2_task
+
+    listing = Listing(category="urn:x", attributes=[], missing=[], rejected=[])
+
+    class FakeV2:
+        def __init__(self, **kwargs):
+            self.kwargs = kwargs
+
+        async def run(self, product):
+            return MappingCompleted(listing=listing, source="cache")
+
+    task = make_v2_task(llm=None, system_prompt="S", prompt_version="seed", schemas={}, reference=None,
+                        corrections=None, cache=None, workflow_cls=FakeV2)
+    assert (await task(item=SimpleNamespace(input={}))) == listing.model_dump()
+
+
+async def test_v2_task_reports_the_listing_and_the_agent_error_separately():
+    """After Task 4: a listing can come back together with an agent error (an exception
+    after a submission, or iterations exhausted). The experiment must not hide the listing
+    behind an `"error"` key, or `evaluation._evaluate_output` would discard it as a failed
+    task; the error goes under a separate `agent_error` key instead."""
+    from catalog.experiment import make_v2_task
+
+    listing = Listing(category="urn:x", attributes=[], missing=[], rejected=[])
+
+    class FakeV2:
+        def __init__(self, **kwargs):
+            pass
+
+        async def run(self, product):
+            return MappingCompleted(listing=listing, source="agent", error="max iterations reached")
+
+    task = make_v2_task(llm=None, system_prompt="S", prompt_version="seed", schemas={}, reference=None,
+                        corrections=None, cache=None, workflow_cls=FakeV2)
+    out = await task(item=SimpleNamespace(input={}))
+    assert out["agent_error"] == "max iterations reached"
+    assert "error" not in out
+    assert out["category"] == "urn:x"
+
+
+def test_main_accepts_v2_and_still_refuses_real_data_without_the_flag():
+    with pytest.raises(SystemExit) as info:
+        main(["--version", "v2", "--data", "real"])
+    assert "allow-real-upload" in str(info.value)

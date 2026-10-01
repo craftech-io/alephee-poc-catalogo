@@ -301,7 +301,7 @@ export const cliente: ConfigCliente = {
     "",
     "Reglas:",
     "",
-    "1. Si te piden mapear un producto por SKU, usa la herramienta `map_product` y presenta en una tabla la categoría, los atributos y los faltantes. No cambies lo que devuelve la herramienta.",
+    "1. Si te piden mapear un producto por SKU, usa `map_product_v2`. Usa `map_product_v1` solo si piden la V1 o comparar versiones. Presenta en una tabla la categoría, los atributos y los faltantes, sin cambiar lo que devuelve la herramienta.",
     "2. Responde solo con lo que devuelvan las herramientas o los documentos. Si el dato no está, dilo y no lo completes.",
     "3. Si te preguntan por la empresa, busca primero en los documentos con `consultar_documentos` y cita el documento.",
     "4. Deriva a una persona con `escalar_a_humano` solo si la persona lo acepta, y nunca digas que derivaste si la herramienta no lo confirmó.",

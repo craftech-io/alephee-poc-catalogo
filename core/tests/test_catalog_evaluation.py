@@ -105,3 +105,12 @@ def test_run_evaluator_aggregates():
              SimpleNamespace(item=SimpleNamespace(expected_output=expected), output={"error": "x"})]
     scores = {e.name: e.value for e in run_evaluator(item_results=items)}
     assert scores["exact_count"] == 1 and scores["recall"] == 0.5
+
+
+def test_run_evaluator_reports_missing_not_detected_total():
+    run_evaluator = make_run_evaluator(SCHEMAS)
+    expected = CASES["06-falta-obligatorio"]["expected"]
+    no_missing = {**expected, "missing": []}
+    items = [SimpleNamespace(item=SimpleNamespace(expected_output=expected), output=no_missing)]
+    scores = {e.name: e.value for e in run_evaluator(item_results=items)}
+    assert scores["missing_not_detected_total"] == 1

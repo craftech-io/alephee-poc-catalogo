@@ -1,4 +1,5 @@
-"""The `map_product` tool: lets the template's chat run V1 on a product of the dataset."""
+"""The `map_product_v1` and `map_product_v2` tools: let the template's chat run the catalog
+agent on a product of the dataset."""
 
 import json
 import logging
@@ -9,27 +10,37 @@ from llama_index.core.tools import FunctionTool
 from .data import channel_attributes, data_dir, find_product, load_schemas
 from .llm import create_llm
 from .models import Listing
-from .prompts import PROMPT_NAME, get_system_prompt
+from .prompts import PROMPT_NAME, PROMPT_NAME_V2, get_system_prompt
+from .reference import load_reference
+from .store import stores_from_env
 from .tracing import langfuse_client
 from .v1 import MappingV1
+from .v2 import MappingV2
 
 logger = logging.getLogger(__name__)
 
 
-def _describe(sku: str, listing: Listing, schemas: dict[str, dict]) -> str:
+def _describe(sku: str, listing: Listing, schemas: dict[str, dict], source: str, warning: str | None = None) -> str:
     attributes = channel_attributes(schemas, listing.category)
-    return json.dumps({
+    out = {
         "sku": sku,
         "category": {"urn": listing.category, "name": schemas.get(listing.category or "", {}).get("name")},
         "attributes": [{"name": attributes.get(a.urn, {}).get("name", a.urn), "value": a.value, "unit": a.unit}
                        for a in listing.attributes],
         "missing": [m.model_dump() for m in listing.missing],
         "rejected": [r.model_dump() for r in listing.rejected],
-    }, ensure_ascii=False)
+        "source": source,
+    }
+    if warning:
+        # The V2 agent can deliver a listing *and* an error (an exception after a
+        # submission, or iterations exhausted): surface it as a warning instead of
+        # hiding it behind a clean-looking listing.
+        out["warning"] = warning
+    return json.dumps(out, ensure_ascii=False)
 
 
-def create_catalog_tools(llm_factory=create_llm, workflow_cls=MappingV1, directories=None,
-                         env=None) -> list[FunctionTool]:
+def create_catalog_tools(llm_factory=create_llm, workflow_cls=MappingV1, workflow_v2_cls=MappingV2, directories=None,
+                         env=None, stores_factory=stores_from_env) -> list[FunctionTool]:
     env = os.environ if env is None else env
     if directories is None:
         # Default to the mock dataset only: the deployed chat sends prompts and answers to
@@ -39,27 +50,41 @@ def create_catalog_tools(llm_factory=create_llm, workflow_cls=MappingV1, directo
         directories = [data_dir("real"), data_dir("mock")] if env.get("CATALOG_ALLOW_REAL_DATA") == "1" \
             else [data_dir("mock")]
 
-    async def map_product(sku: str) -> str:
-        """Map a product of the Alephee catalog to a Shopee listing (category and attributes) by its SKU."""
+    async def _map(sku: str, build) -> str:
         found = find_product(sku, directories)
         if found is None:
             return f"SKU {sku} is not in the war room dataset."
         product, directory = found
         schemas = load_schemas(directory)
-        prompt = get_system_prompt(PROMPT_NAME, langfuse_client())
         try:
-            done = await workflow_cls(llm=llm_factory(), system_prompt=prompt.text, schemas=schemas,
-                                      timeout=180).run(product=product)
-        except Exception as exc:  # noqa: BLE001 — covers only the workflow run above; the
-            # template's tool wrapper (`_ejecutar_tool` in agent/workflow.py) is the outer
-            # net that catches whatever escapes here.
+            done = await build(product, directory, schemas).run(product=product)
+        except Exception as exc:  # noqa: BLE001 — covers only the workflow run; the template's tool
+            # wrapper (`_ejecutar_tool` in agent/workflow.py) is the outer net.
             logger.error("map_product failed for a SKU: %s", type(exc).__name__)
             return f"Could not map SKU {sku}: {type(exc).__name__}."
         if done.listing is None:
             return f"Could not map SKU {sku}: {done.error}"
-        return _describe(str(sku).strip(), done.listing, schemas)
+        return _describe(str(sku).strip(), done.listing, schemas, done.source, done.error)
 
-    return [FunctionTool.from_defaults(
-        async_fn=map_product, name="map_product",
-        description="Map a product of the Alephee catalog to a Shopee listing (category and attributes) by its SKU.",
-    )]
+    async def map_product_v1(sku: str) -> str:
+        """Map a product of the Alephee catalog to a Shopee listing with V1 (a single structured call)."""
+        prompt = get_system_prompt(PROMPT_NAME, langfuse_client())
+        return await _map(sku, lambda product, directory, schemas: workflow_cls(
+            llm=llm_factory(), system_prompt=prompt.text, schemas=schemas, timeout=180))
+
+    async def map_product_v2(sku: str) -> str:
+        """Map a product of the Alephee catalog to a Shopee listing with V2 (reference tables, validation,
+        corrections and cache)."""
+        prompt = get_system_prompt(PROMPT_NAME_V2, langfuse_client())
+        corrections, cache, _ = stores_factory(env)
+        return await _map(sku, lambda product, directory, schemas: workflow_v2_cls(
+            llm=llm_factory(), system_prompt=prompt.text, prompt_version=str(prompt.version or "seed"),
+            schemas=schemas, reference=load_reference(directory), corrections=corrections, cache=cache,
+            timeout=300))
+
+    return [
+        FunctionTool.from_defaults(async_fn=map_product_v1, name="map_product_v1",
+                                   description="Map an Alephee product to a Shopee listing by SKU with V1."),
+        FunctionTool.from_defaults(async_fn=map_product_v2, name="map_product_v2",
+                                   description="Map an Alephee product to a Shopee listing by SKU with V2 (default)."),
+    ]

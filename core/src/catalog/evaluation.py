@@ -120,6 +120,7 @@ def make_run_evaluator(schemas: dict[str, dict]):
             Evaluation(name="category_ok_count", value=summary["category_ok"]),
             Evaluation(name="invalid_values_total", value=summary["invalid_values"]),
             Evaluation(name="duplicates_total", value=summary["duplicates"]),
+            Evaluation(name="missing_not_detected_total", value=summary["missing_not_detected"]),
             Evaluation(name="precision", value=summary["precision"]),
             Evaluation(name="recall", value=summary["recall"]),
         ]

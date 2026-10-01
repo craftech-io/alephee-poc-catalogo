@@ -16,9 +16,9 @@ def _tool(outcome):
         async def run(self, product):
             return outcome
 
-    (tool,) = create_catalog_tools(llm_factory=lambda: None, workflow_cls=FakeWorkflow,
-                                   directories=[data_dir("mock")])
-    return tool
+    tools = {t.metadata.name: t for t in create_catalog_tools(
+        llm_factory=lambda: None, workflow_cls=FakeWorkflow, directories=[data_dir("mock")])}
+    return tools["map_product_v1"]
 
 
 async def test_unknown_sku_is_explained():
@@ -53,11 +53,65 @@ class _NoopWorkflow:
 
 
 async def test_default_directories_are_mock_only_without_the_allow_flag():
-    (tool,) = create_catalog_tools(llm_factory=lambda: None, workflow_cls=_NoopWorkflow, env={})
-    assert "not in the war room dataset" in str(await tool.acall(sku=REAL_ONLY_SKU))
+    tools = {t.metadata.name: t for t in create_catalog_tools(
+        llm_factory=lambda: None, workflow_cls=_NoopWorkflow, env={})}
+    assert "not in the war room dataset" in str(await tools["map_product_v1"].acall(sku=REAL_ONLY_SKU))
 
 
 async def test_real_directory_is_included_when_the_allow_flag_is_set():
-    (tool,) = create_catalog_tools(llm_factory=lambda: None, workflow_cls=_NoopWorkflow,
-                                   env={"CATALOG_ALLOW_REAL_DATA": "1"})
-    assert "not reached" in str(await tool.acall(sku=REAL_ONLY_SKU))
+    tools = {t.metadata.name: t for t in create_catalog_tools(
+        llm_factory=lambda: None, workflow_cls=_NoopWorkflow, env={"CATALOG_ALLOW_REAL_DATA": "1"})}
+    assert "not reached" in str(await tools["map_product_v1"].acall(sku=REAL_ONLY_SKU))
+
+
+def test_two_tools_v1_and_v2():
+    tools = create_catalog_tools(llm_factory=lambda: None, directories=[data_dir("mock")],
+                                 stores_factory=lambda env: (None, None, "in-memory"))
+    assert sorted(t.metadata.name for t in tools) == ["map_product_v1", "map_product_v2"]
+
+
+async def test_v2_tool_runs_the_v2_workflow():
+    expected = CASE["expected"]
+    listing = Listing.model_validate({k: expected[k] for k in ("category", "attributes", "missing", "rejected")})
+
+    class FakeV2:
+        def __init__(self, **kwargs):
+            pass
+
+        async def run(self, product):
+            return MappingCompleted(listing=listing, source="agent")
+
+    tools = {t.metadata.name: t for t in create_catalog_tools(
+        llm_factory=lambda: None, workflow_v2_cls=FakeV2, directories=[data_dir("mock")],
+        stores_factory=lambda env: (None, None, "in-memory"))}
+    out = json.loads(str(await tools["map_product_v2"].acall(sku=CASE["product"]["sku"])))
+    assert out["category"]["name"] == "Calotas" and out["source"] == "agent"
+
+
+async def test_v2_tool_reports_a_warning_when_the_agent_erred_after_submitting():
+    """Controller ruling (Task 4 review): the V2 workflow can return a listing together with
+    an error (an exception after a submission, or iterations exhausted). The chat tool must
+    surface it as a `warning`, not hide it."""
+    expected = CASE["expected"]
+    listing = Listing.model_validate({k: expected[k] for k in ("category", "attributes", "missing", "rejected")})
+
+    class FakeV2:
+        def __init__(self, **kwargs):
+            pass
+
+        async def run(self, product):
+            return MappingCompleted(listing=listing, source="agent",
+                                    error="max iterations reached; last submission cleaned")
+
+    tools = {t.metadata.name: t for t in create_catalog_tools(
+        llm_factory=lambda: None, workflow_v2_cls=FakeV2, directories=[data_dir("mock")],
+        stores_factory=lambda env: (None, None, "in-memory"))}
+    out = json.loads(str(await tools["map_product_v2"].acall(sku=CASE["product"]["sku"])))
+    assert out["warning"] == "max iterations reached; last submission cleaned"
+
+
+async def test_v1_tool_never_reports_a_warning_key():
+    out = json.loads(str(await _tool(MappingCompleted(
+        listing=Listing.model_validate({k: CASE["expected"][k] for k in ("category", "attributes", "missing", "rejected")}))
+    ).acall(sku=CASE["product"]["sku"])))
+    assert "warning" not in out
