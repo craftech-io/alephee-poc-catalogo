@@ -125,6 +125,19 @@ def guion_slide(i, s, secciones):
     if s['exercise']:
         ex=s['exercise'];lines += [f'**Consigna ({ex["duration"]} min):** {ex["prompt"]}','']+[f'{j+1}. {v}' for j,v in enumerate(ex['steps'])]+['',f'**Entrega:** {ex["deliverable"]}', '',f'**Puesta en común:** {ex["debrief"]}','']
     if s['answer']: lines += [f'**Respuesta al revelar:** {s["answer"]}','']
+    if s['kind'] == 'code':
+        f = fragmento(s['code'], RAIZ)
+        ext = Path(f['file']).suffix.lstrip('.') or 'text'
+        fin = f['inicio'] + len(f['lineas']) - 1
+        lines += [f'**Código:** `{f["file"]}` líneas {f["inicio"]}–{fin}', '', f'```{ext}', *f['lineas'], '```', '']
+        if f['caption']: lines += [f['caption'], '']
+    if s['kind'] == 'decision':
+        d = s['decision']
+        lines += [f'**Decisión {d["number"]}:** {d["question"]}', ''] + [f'{j+1}. {o}' for j, o in enumerate(d['options'])] + ['', f'**Propuesta:** {d["proposal"]}', '', f'**Archivo:** `{d["file"]}`', '']
+    if s['kind'] == 'demo' and s.get('demo'):
+        d = s['demo']
+        lines += ['```bash', d['command'], '```', '', '**Mirar:**', ''] + [f'- {w}' for w in d['watch']] + ['']
+        if d.get('fallback'): lines += [f'**Respaldo:** {d["fallback"]}', '']
     return lines
 
 

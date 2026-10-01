@@ -82,3 +82,18 @@ def test_eyebrow_por_tipo():
     assert gp.eyebrow(base(kind="code")) == "Leer el código"
     assert gp.eyebrow(base(kind="decision")) == "Decisión · se cierra antes de seguir"
     assert gp.eyebrow(base(kind="demo")) == "Demo conducida por Gastón"
+
+
+def test_guion_code_incluye_fragmento(repo, monkeypatch):
+    monkeypatch.setattr(gp, "RAIZ", repo)
+    lineas = gp.guion_slide(0, base(kind="code", code={"file": "mod.py", "lines": "3-4", "symbol": "revisar", "caption": "c"}), {"x": {"title": "S"}})
+    texto = "\n".join(lineas)
+    assert "`mod.py` líneas 3–4" in texto and "```py" in texto and "def revisar(x):" in texto and "c" in texto
+
+
+def test_guion_decision_y_demo():
+    sec = {"x": {"title": "S"}}
+    d = "\n".join(gp.guion_slide(0, base(kind="decision", decision={"number": 3, "question": "¿Q?", "options": ["A", "B"], "proposal": "B", "file": "decisiones/03-x.md"}), sec))
+    assert "**Decisión 3:** ¿Q?" in d and "1. A" in d and "**Propuesta:** B" in d and "decisiones/03-x.md" in d
+    m = "\n".join(gp.guion_slide(0, base(kind="demo", demo={"command": "cmd", "watch": ["w"], "fallback": "f"}), sec))
+    assert "```bash\ncmd\n```" in m and "- w" in m and "**Respaldo:** f" in m
