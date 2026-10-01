@@ -16,6 +16,7 @@ from catalog.experiment import (
     upload_dataset,
 )
 from catalog.models import Listing
+from catalog.store import InMemoryCache, InMemoryCorrections
 
 REAL = load_cases(data_dir("real"))
 MOCK = load_cases(data_dir("mock"))
@@ -209,7 +210,10 @@ async def test_v2_task_returns_the_listing_and_its_source():
 
     task = make_v2_task(llm=None, system_prompt="S", prompt_version="seed", schemas={}, reference=None,
                         corrections=None, cache=None, workflow_cls=FakeV2)
-    assert (await task(item=SimpleNamespace(input={}))) == listing.model_dump()
+    out = await task(item=SimpleNamespace(input={}))
+    # Task 1 (final fix wave): Langfuse must see where the listing came from
+    # (cache | tables | agent), not just the mapped attributes.
+    assert out == {**listing.model_dump(), "source": "cache"}
 
 
 async def test_v2_task_reports_the_listing_and_the_agent_error_separately():
@@ -240,3 +244,35 @@ def test_main_accepts_v2_and_still_refuses_real_data_without_the_flag():
     with pytest.raises(SystemExit) as info:
         main(["--version", "v2", "--data", "real"])
     assert "allow-real-upload" in str(info.value)
+
+
+def test_fresh_flag_selects_in_memory_stores_for_v2_instead_of_stores_from_env(monkeypatch):
+    """Task 1: `--fresh` lets a re-measurement skip the DynamoDB cache (a case already cached
+    would otherwise come back as `source=cache` instead of exercising the agent again)."""
+    calls = []
+    captured = {}
+    monkeypatch.setattr(experiment, "setup_tracing", lambda: _FakeExperimentClient())
+    monkeypatch.setattr(experiment, "check_aws", lambda: None)
+    monkeypatch.setattr(experiment, "upload_dataset", lambda *a, **kw: None)
+    monkeypatch.setattr(experiment, "sync_seed", lambda *a, **kw: None)
+    monkeypatch.setattr(
+        experiment, "get_system_prompt",
+        lambda *a, **kw: SimpleNamespace(text="S", name="catalog-v2-system", version=None),
+    )
+    monkeypatch.setattr(experiment, "create_llm", lambda: SimpleNamespace(model="fake-model"))
+    monkeypatch.setattr(experiment, "load_reference", lambda directory: None)
+    monkeypatch.setattr(experiment, "stores_from_env", lambda: calls.append("stores_from_env"))
+
+    def fake_make_v2_task(llm, system_prompt, prompt_version, schemas, reference, corrections, cache,
+                          workflow_cls=None):
+        captured["corrections"] = corrections
+        captured["cache"] = cache
+        return lambda **kw: None
+
+    monkeypatch.setattr(experiment, "make_v2_task", fake_make_v2_task)
+
+    main(["--version", "v2", "--data", "mock", "--fresh"])
+
+    assert calls == []
+    assert isinstance(captured["corrections"], InMemoryCorrections)
+    assert isinstance(captured["cache"], InMemoryCache)

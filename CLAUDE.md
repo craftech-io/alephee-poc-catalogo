@@ -182,13 +182,14 @@ old/                           código anterior al reinicio del 1/10, fuera de g
   npm test
   scripts/experiment.sh --version v1 --data mock
   scripts/experiment.sh --version v2 --data mock
+  scripts/experiment.sh --version v2 --data mock --fresh   # stores en memoria, no lee la caché de DynamoDB
   scripts/correct.sh --category <urn> --attribute <urn> --product-value <valor> --value-id <id> --value <nombre>
   scripts/e2e.sh    # contra Bedrock, DynamoDB y el chat desplegado (RUN_E2E=1; API_URL del BFF como env var)
   ```
 
 ## Resultados del 1/10 en Langfuse (30 reales, salida esperada MOCK)
 
-Corridas del 1/10 con `scripts/experiment.sh --data real --allow-real-upload` sobre el dataset `alephee-shopee-real` (30 productos de GM en Shopee). La V2 corrió una sola vez (sin entradas en caché de DynamoDB todavía); una segunda corrida leería varios casos de `source=cache` y no sería comparable con esta tabla sin aclararlo.
+Corridas del 1/10 con `scripts/experiment.sh --data real --allow-real-upload` sobre el dataset `alephee-shopee-real` (30 productos de GM en Shopee). La V2 corrió una sola vez (sin entradas en caché de DynamoDB todavía); una segunda corrida leería varios casos de `source=cache` y no sería comparable con esta tabla sin aclararlo (para remedir sin ese efecto, usar `--fresh`, que corre la V2 con stores en memoria).
 
 | Métrica | Proceso de hoy | V1 | V2 |
 |---|---|---|---|

@@ -2,6 +2,7 @@
 
     scripts/experiment.sh --version v1 --data mock
     scripts/experiment.sh --version v2 --data mock
+    scripts/experiment.sh --version v2 --data mock --fresh    # in-memory stores, no DynamoDB cache hit
     scripts/experiment.sh --version current --data mock      # today's process, no model
     scripts/experiment.sh --version v1 --data mock --case error-88904447
 
@@ -20,7 +21,7 @@ from .evaluation import make_item_evaluator, make_run_evaluator
 from .llm import auth_error_message, create_llm, is_auth_error
 from .prompts import PROMPT_NAME, PROMPT_NAME_V2, get_system_prompt, sync_seed
 from .reference import load_reference
-from .store import stores_from_env
+from .store import InMemoryCache, InMemoryCorrections, stores_from_env
 from .tracing import setup_tracing
 from .v1 import MappingV1
 from .v2 import MappingV2
@@ -64,7 +65,7 @@ def current_task(*, item, **kwargs) -> dict:
             "attributes": [{k: a.get(k) for k in ("urn", "valueId", "value", "unit")} for a in actual["attributes"]]}
 
 
-async def _run(workflow, product) -> dict:
+async def _run(workflow, product, *, with_source: bool = False) -> dict:
     try:
         done = await workflow.run(product=product)
     except Exception as exc:  # noqa: BLE001 — only an auth error is special-cased, see below
@@ -77,6 +78,10 @@ async def _run(workflow, product) -> dict:
     if done.listing is None:
         return {"error": done.error}
     result = done.listing.model_dump()
+    if with_source:
+        # V2 only: Langfuse shows where the listing came from (cache | tables | agent),
+        # not just the mapped attributes. V1's output keeps its original shape.
+        result["source"] = done.source
     if done.error:
         # V2 can return a listing *and* an agent error (an exception after a submission,
         # or iterations exhausted). Never key this as "error": `evaluation._evaluate_output`
@@ -97,7 +102,7 @@ def make_v2_task(llm, system_prompt: str, prompt_version: str, schemas: dict[str
     async def task(*, item, **kwargs) -> dict:
         return await _run(workflow_cls(llm=llm, system_prompt=system_prompt, prompt_version=prompt_version,
                                        schemas=schemas, reference=reference, corrections=corrections,
-                                       cache=cache, timeout=300), item.input)
+                                       cache=cache, timeout=300), item.input, with_source=True)
 
     return task
 
@@ -127,6 +132,9 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--case", help="run a single case by id")
     parser.add_argument("--allow-real-upload", action="store_true",
                         help="confirm uploading the 30 real Alephee/GM products to Langfuse Cloud")
+    parser.add_argument("--fresh", action="store_true",
+                        help="v2 only: use in-memory corrections and cache instead of stores_from_env, "
+                             "so a re-measurement does not read the DynamoDB cache")
     args = parser.parse_args(argv)
 
     if args.data == "real" and not args.allow_real_upload:
@@ -155,7 +163,10 @@ def main(argv: list[str] | None = None) -> None:
         if args.version == "v1":
             task = make_v1_task(llm, prompt.text, schemas)
         else:
-            corrections, cache, stores = stores_from_env()
+            if args.fresh:
+                corrections, cache, stores = InMemoryCorrections(), InMemoryCache(), "in-memory (--fresh)"
+            else:
+                corrections, cache, stores = stores_from_env()
             print(f"V2 stores: {stores}")
             metadata |= {"stores": stores}
             task = make_v2_task(llm, prompt.text, str(prompt.version or "seed"), schemas,
