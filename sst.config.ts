@@ -73,6 +73,17 @@ export default $config({
     // (sst lo escribe en `.sst/outputs.json` en cada deploy exitoso) para que el
     // CI lo consuma de la MISMA fuente que lo define, sin rearmar el nombre ni
     // hardcodear cuenta y repo.
-    return { runtimeArn: runtime.agentRuntimeArn, repoCore: repo.name };
+    //
+    // `correctionsTable`/`mappingCacheTable`: nombres de las tablas del agente de
+    // catálogo (war room). `./runtime` ya las importó de `./catalogo` (Node
+    // cachea el módulo, no se duplican recursos); se reimportan acá para
+    // publicar sus nombres como output, igual que `repoCore`.
+    const { correctionsTable, mappingCacheTable } = await import("./infra/sst/catalogo");
+    return {
+      runtimeArn: runtime.agentRuntimeArn,
+      repoCore: repo.name,
+      correctionsTable: correctionsTable.name,
+      mappingCacheTable: mappingCacheTable.name,
+    };
   },
 });

@@ -15,6 +15,7 @@ import { guardrail } from "./guardrail";
 import { createHash } from "node:crypto";
 import { gateway } from "./gateway";
 import { apiClienteDemoUrl } from "./api-cliente";
+import { correctionsTable, mappingCacheTable } from "./catalogo";
 
 // `.name` en GetRegionResult está deprecado a favor de `.region` (mismo valor).
 const region = aws.getRegionOutput().region;
@@ -365,6 +366,12 @@ new aws.iam.RolePolicy("RuntimeRolePolicy", {
         Action: ["bedrock-agentcore:InvokeGateway"],
         Resource: [gateway.gatewayArn, $interpolate`${gateway.gatewayArn}/*`],
       },
+      {
+        // Catalog agent (war room): corrections and per-SKU cache.
+        Effect: "Allow",
+        Action: ["dynamodb:GetItem", "dynamodb:PutItem", "dynamodb:Query"],
+        Resource: [correctionsTable.arn, mappingCacheTable.arn],
+      },
     ],
   }),
 });
@@ -430,6 +437,8 @@ export const runtime = new awsnative.bedrockagentcore.Runtime("AgentRuntime", {
       : {}),
     // War room: enables the map_product tool (core/src/catalog/chat_tool.py).
     CATALOG_ENABLED: "1",
+    CATALOG_CORRECTIONS_TABLE: correctionsTable.name,
+    CATALOG_CACHE_TABLE: mappingCacheTable.name,
     // Observabilidad del contenedor: todas las env están armadas y comentadas
     // arriba, derivadas de `cliente.observabilidad`.
     ...envObservabilidad,
