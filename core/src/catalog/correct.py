@@ -16,6 +16,7 @@ def _check(category: str, attribute: str, value_id: str, value: str) -> None:
     if definition is None:
         raise SystemExit(f"{attribute} is not an attribute of {category}")
     domain = {str(v["id"]): v["name"] for v in definition.get("values") or []}
+    # Free-text attributes have no `values` list: accepted without a domain check on purpose.
     if domain and domain.get(value_id) != value:
         raise SystemExit(f"{value} (id {value_id}) is not in the channel list of {attribute}")
 

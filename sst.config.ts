@@ -74,10 +74,10 @@ export default $config({
     // CI lo consuma de la MISMA fuente que lo define, sin rearmar el nombre ni
     // hardcodear cuenta y repo.
     //
-    // `correctionsTable`/`mappingCacheTable`: nombres de las tablas del agente de
-    // catálogo (war room). `./runtime` ya las importó de `./catalogo` (Node
-    // cachea el módulo, no se duplican recursos); se reimportan acá para
-    // publicar sus nombres como output, igual que `repoCore`.
+    // `correctionsTable`/`mappingCacheTable`: names of the catalog agent's tables
+    // (war room). `./runtime` already imported them from `./catalogo` (Node
+    // caches the module, no resources are duplicated); re-imported here to
+    // publish their names as outputs, same as `repoCore`.
     const { correctionsTable, mappingCacheTable } = await import("./infra/sst/catalogo");
     return {
       runtimeArn: runtime.agentRuntimeArn,
