@@ -278,7 +278,7 @@ export interface ConfigCliente {
 }
 
 export const cliente: ConfigCliente = {
-  slug: "craftech-ai-chat",
+  slug: "alephee-catalogo",
   modelo: "us.anthropic.claude-sonnet-4-6",
   region: "us-east-1",
   topes: {

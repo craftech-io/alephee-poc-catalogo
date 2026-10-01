@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { MENSAJES_WORKER } from "@craftech-ai-chat/shared/mensajes";
+import { MENSAJES_WORKER } from "@alephee-catalogo/shared/mensajes";
 import { historialParaElTurno, MAX_MENSAJES_HISTORIAL, procesarMensaje, type Deps } from "./turno";
 import type { Mensaje } from "../../bff/src/mensajes/store";
 

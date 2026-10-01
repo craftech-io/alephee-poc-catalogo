@@ -38,12 +38,12 @@ configurado el emisor de tokens:
 # Con HMAC
 API_URL="<Function URL del BFF>" \
 CHAT_HMAC_SECRET="<el mismo secreto del stack>" \
-  npm start -w @craftech-ai-chat/demo-client
+  npm start -w @alephee-catalogo/demo-client
 
 # Con Cognito u otro IdP por JWKS
 API_URL="<Function URL del BFF>" \
 COGNITO_CLIENT_ID="<client id del pool>" \
-  npm start -w @craftech-ai-chat/demo-client
+  npm start -w @alephee-catalogo/demo-client
 ```
 
 **El modo se elige por las variables**, no por un flag: sin `API_URL` es mock;
@@ -116,7 +116,7 @@ RECREA los recursos. Se elige una vez, al clonar.
   template y su showcase es un solo ambiente; un clon elige los stages que
   quiera.
 - **La identidad del repo**: el `name` de `package.json` y `pyproject.toml` y el
-  scope `@craftech-ai-chat/*` de los workspaces npm. No forman parte de ningún
+  scope `@alephee-catalogo/*` de los workspaces npm. No forman parte de ningún
   nombre desplegado — renombrarlos es opcional y cosmético.
 
 ## Correr los tests

@@ -1,12 +1,12 @@
 {
-  "name": "craftech-ai-chat",
+  "name": "alephee-catalogo",
   "private": true,
   "workspaces": [
     "packages/*",
-    "examples/*"
+    "apps/*"
   ],
   "scripts": {
-    "dev": "npm start -w @craftech-ai-chat/demo-client",
+    "dev": "npm start -w @alephee-catalogo/demo-client",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "typecheck:infra": "bash scripts/typecheck-infra.sh",
     "test": "npm run test --workspaces --if-present"

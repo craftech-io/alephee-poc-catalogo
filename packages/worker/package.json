@@ -1,5 +1,5 @@
 {
-  "name": "@craftech-ai-chat/worker",
+  "name": "@alephee-catalogo/worker",
   "version": "1.0.0",
   "type": "module",
   "main": "index.js",
@@ -12,7 +12,7 @@
   "dependencies": {
     "@aws-sdk/client-bedrock-agentcore": "3.1116.0",
     "@aws-sdk/client-dynamodb": "3.1116.0",
-    "@craftech-ai-chat/shared": "*"
+    "@alephee-catalogo/shared": "*"
   },
   "devDependencies": {
     "@types/node": "26.2.0",

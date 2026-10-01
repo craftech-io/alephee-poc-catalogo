@@ -163,10 +163,10 @@ npx sst secret set ClientHmacSecret "$(cat ../../.secreto-demo.local)" --stage <
 Y recién ahí correr el demo:
 
 ```bash
-npm run build -w @craftech-ai-chat/widget
+npm run build -w @alephee-catalogo/widget
 CHAT_HMAC_SECRET="$(cat ../../.secreto-demo.local)" \
 API_URL="<la Function URL del Messages Backend>" \
-  npm start -w @craftech-ai-chat/demo-client
+  npm start -w @alephee-catalogo/demo-client
 ```
 
 (El server también acepta `CHAT_URL` como alias de `API_URL`, si esta última
@@ -190,7 +190,7 @@ Desde el root:
 ```bash
 set -a; source .cognito-demo.local; set +a
 API_URL="<la Function URL del Messages Backend>" \
-  npm start -w @craftech-ai-chat/demo-client
+  npm start -w @alephee-catalogo/demo-client
 ```
 
 Con `COGNITO_CLIENT_ID` seteado el server entra en modo cognito y
