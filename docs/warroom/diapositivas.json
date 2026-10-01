@@ -364,6 +364,746 @@
     "proposal": "B. El faltante viaja con la publicación: quien revisa ve el producto, el atributo y el motivo juntos. Un log aparte se separa del dato y nadie lo mira.",
     "file": "decisiones/02-contrato.md"
    }
+  },
+  {
+   "id": "s10",
+   "section": "diseno",
+   "title": "Diseñar antes de escribir.",
+   "kind": "divider",
+   "lead": "Siete decisiones que definen la V1",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Abrir el bloque de diseño",
+    "say": "En este bloque no se corre nada. Se toman las decisiones que la V1 va a implementar a las 11:15: qué tipo de aplicación, cómo se escribe el prompt, dónde corre, qué modelo, con qué stack y cómo se mide. Cada decisión tiene opciones con consecuencias y se cierra antes de pasar a la siguiente.",
+    "ask": "",
+    "close": "",
+    "transition": "Primero, qué tipos de aplicación existen."
+   },
+   "minutes": 1
+  },
+  {
+   "id": "s11",
+   "section": "diseno",
+   "title": "Cuatro formas de usar un modelo.",
+   "kind": "compare",
+   "lead": "",
+   "label": "",
+   "items": [
+    "SINGLE PROMPT | Una llamada, una respuesta. Barato y fácil de evaluar; no consulta nada",
+    "WORKFLOW | Pasos fijos en código; el modelo participa en uno o dos. Predecible",
+    "AGENTE | El modelo decide qué herramienta pedir y cuándo entregar, dentro de un límite de rondas",
+    "MULTIAGENTE | Varios agentes con roles distintos. Solo cuando uno no alcanza"
+   ],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Distinguir single prompt, workflow, agente y multiagente",
+    "say": "El proceso actual de Alephee es un workflow: dos llamadas fijas y un merge en código. Un agente se diferencia en que el modelo elige qué consultar y cuándo terminar; el programa le pone el límite. Multiagente es la última opción, no la primera: cada agente extra suma latencia, costo y puntos de fallo.",
+    "ask": "¿El flujo de hoy es single prompt, workflow o agente?",
+    "close": "Workflow: las llamadas y el merge están fijos en código.",
+    "transition": "Las tres versiones del día conviven en el mismo runner."
+   },
+   "minutes": 3
+  },
+  {
+   "id": "s12",
+   "section": "diseno",
+   "title": "Las tres versiones conviven en el mismo runner.",
+   "kind": "code",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Mostrar que V1, V2 y V3 son intercambiables y comparables",
+    "say": "Lo único que cambia entre versiones es la clase. El runner, el dataset y el evaluador son los mismos: así la comparación de la tarde es justa. Sumar una V4 es registrar una clase más.",
+    "ask": "",
+    "close": "",
+    "transition": "Decisión 3."
+   },
+   "minutes": 4,
+   "code": {
+    "file": "core/src/catalogo/correr.py",
+    "lines": "24-27",
+    "symbol": "_versiones",
+    "caption": "Cada versión es un Workflow que recibe MapeoStart y devuelve MapeoDone. Se comparan sobre el mismo dataset con el mismo evaluador."
+   }
+  },
+  {
+   "id": "s13",
+   "section": "diseno",
+   "title": "¿Single prompt o agente?",
+   "kind": "decision",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Cerrar la decisión 3",
+    "say": "B es tentador porque ya sabemos que vamos a necesitar herramientas, pero nos quita la evidencia de por qué. C es la pregunta que siempre hay que hacerse: ¿hace falta un modelo? Para la categoría y los campos mapeados por tabla, no; para elegir el valor equivalente de una lista, sí.",
+    "ask": "",
+    "close": "",
+    "transition": "Si empezamos por un prompt, veamos de qué está hecho."
+   },
+   "minutes": 4,
+   "decision": {
+    "number": 3,
+    "question": "¿Con qué tipo de aplicación empezamos?",
+    "options": [
+     "A · Single prompt (V1) y agregar herramientas solo cuando un fallo lo justifique",
+     "B · Agente con herramientas desde el inicio",
+     "C · Workflow determinista sin modelo"
+    ],
+    "proposal": "A. La V1 muestra qué resuelve el modelo solo y qué no; cada fallo justifica la capa siguiente y queda documentado. C no alcanza: elegir el valor de lista equivalente (por ejemplo, '1' → Sim) necesita interpretación.",
+    "file": "decisiones/03-tipo-de-aplicacion.md"
+   }
+  },
+  {
+   "id": "s14",
+   "section": "diseno",
+   "title": "Un prompt tiene cinco partes.",
+   "kind": "flow",
+   "lead": "",
+   "label": "",
+   "items": [
+    "Rol: quién es",
+    "Tarea: qué hace y con qué entrada",
+    "Reglas: qué nunca hace",
+    "Formato: cómo entrega",
+    "Cuando falta dato: qué hace"
+   ],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Dar un esqueleto para leer cualquier prompt",
+    "say": "Las cinco partes sirven para leer el prompt actual y el nuevo. La quinta es la que casi siempre falta: qué hacer cuando no hay dato. Si el prompt no lo dice, el modelo elige por su cuenta, y lo que elige es completar.",
+    "ask": "",
+    "close": "",
+    "transition": "El prompt de la V1, parte por parte."
+   },
+   "minutes": 3
+  },
+  {
+   "id": "s15",
+   "section": "diseno",
+   "title": "El prompt de la V1.",
+   "kind": "code",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Leer el prompt nuevo con el esqueleto de cinco partes",
+    "say": "Rol en la primera línea; tarea en la segunda; reglas en la lista; el formato no está en el texto porque lo impone la herramienta de entrega (siguiente decisión); y la quinta parte está en las dos reglas de missing y rejected. Las reglas resaltadas son las que el proceso actual no tiene escritas.",
+    "ask": "¿Qué regla agregarían con lo que saben del catálogo?",
+    "close": "",
+    "transition": "Tres prácticas que cambian el resultado."
+   },
+   "minutes": 4,
+   "code": {
+    "file": "core/src/catalogo/v1.py",
+    "lines": "22-39",
+    "symbol": "INSTRUCCIONES",
+    "highlight": [
+     28,
+     32,
+     34
+    ],
+    "caption": "Rol, tarea, reglas negativas explícitas (nunca inventes) y qué hacer cuando falta (missing con motivo). Comparar con el prompt actual de la lámina 3."
+   }
+  },
+  {
+   "id": "s16",
+   "section": "diseno",
+   "title": "Buenas prácticas que cambian el resultado.",
+   "kind": "cards",
+   "lead": "",
+   "label": "",
+   "items": [
+    "Lo estático primero y lo variable al final: habilita la caché de prompt (F4, F7)",
+    "Salida estructurada por esquema, no JSON pedido en el texto",
+    "Decir qué hacer cuando no sabe, no solo qué hacer"
+   ],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Tres prácticas con efecto medible",
+    "say": "La primera tiene efecto directo en costo: Bedrock cachea el prefijo estable del prompt con cachePoint (F4, mínimo 1.024 tokens para Claude Sonnet 5) y OpenAI hace lo mismo de forma automática sobre el prefijo (F7). El prompt actual pone el producto antes de la lista de categorías: el prefijo cambia en cada llamada y no se cachea nada. Reordenarlo ya bajaría el costo sin cambiar de proveedor; hay que medirlo, no darlo por hecho. Fuentes en docs/warroom/fuentes.md.",
+    "ask": "",
+    "close": "",
+    "transition": "La segunda práctica, en código."
+   },
+   "minutes": 3
+  },
+  {
+   "id": "s17",
+   "section": "diseno",
+   "title": "La salida es una herramienta con esquema.",
+   "kind": "code",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Mostrar cómo el formato pasa de regla del prompt a contrato",
+    "say": "En vez de pedir JSON válido en el texto, se le da al modelo una herramienta cuyo esquema es la clase Publicacion. El modelo entrega llamando a la herramienta; si lo que entrega no cumple el esquema, falla la validación y se informa el error en vez de publicar algo a medias.",
+    "ask": "",
+    "close": "",
+    "transition": "Decisión 4."
+   },
+   "minutes": 4,
+   "code": {
+    "file": "core/src/catalogo/v1.py",
+    "lines": "41-51",
+    "symbol": "HERRAMIENTA_SALIDA",
+    "highlight": [
+     50
+    ],
+    "caption": "fn_schema=Publicacion: el modelo solo puede entregar algo que cumpla el contrato. La función nunca se ejecuta; el resultado se lee de la llamada."
+   }
+  },
+  {
+   "id": "s18",
+   "section": "diseno",
+   "title": "¿Cómo garantizamos el formato?",
+   "kind": "decision",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Cerrar la decisión 4",
+    "say": "Preguntar al grupo cuántas veces tuvieron que arreglar un JSON mal formado. La opción B existe en todos los proveedores grandes (tool calling o salida estructurada); no depende de Bedrock.",
+    "ask": "",
+    "close": "",
+    "transition": "Ahora, dónde va a correr."
+   },
+   "minutes": 4,
+   "decision": {
+    "number": 4,
+    "question": "¿Cómo se garantiza que la salida cumpla el contrato?",
+    "options": [
+     "A · Pedir JSON en el texto y parsear (hoy)",
+     "B · Herramienta con esquema Pydantic: la entrega es una llamada tipada",
+     "C · Post-procesar la respuesta con expresiones regulares"
+    ],
+    "proposal": "B. El formato deja de ser una regla del prompt y pasa a ser un contrato que el modelo no puede violar. C arregla síntomas: si el modelo omite un campo, la regex no lo inventa.",
+    "file": "decisiones/04-salida-estructurada.md"
+   }
+  },
+  {
+   "id": "s19",
+   "section": "diseno",
+   "title": "Dónde corre: AgentCore o contenedor propio.",
+   "kind": "compare",
+   "lead": "",
+   "label": "Fuentes F1–F3b en docs/warroom/fuentes.md",
+   "items": [
+    "AGENTCORE RESUELVE | Runtime sin servidores, identidad, memoria, gateway de herramientas y observabilidad, como servicios separados que se usan juntos o no (F2)",
+    "DUDAS | Arranque en frío sin cifra publicada, sesiones que terminan a los 15 min de inactividad y 8 h máximo (F3b), costo por CPU y memoria de la sesión (F3), región disponible",
+    "ALTERNATIVA | Contenedor o Lambda propios: más control y más trabajo de operación; el agente es el mismo"
+   ],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Presentar AgentCore con sus beneficios y sus dudas, con fuente",
+    "say": "AgentCore Runtime corre el contenedor del agente en una microVM por sesión y cobra por el CPU y la memoria que consume la sesión; el CPU baja a cero mientras espera al modelo (F3). Para un chat eso es ideal. Para un batch de miles de productos la pregunta es otra: ¿conviene una sesión larga en el Runtime o un proceso propio de Alephee que llame a Bedrock? No hay cifra pública de arranque en frío; se mide. Las dudas que no se resuelvan hoy van a Juan David.",
+    "ask": "¿El batch de Alephee tiene horario fijo o corre continuo?",
+    "close": "",
+    "transition": "El contrato con AgentCore son dos rutas HTTP."
+   },
+   "minutes": 3
+  },
+  {
+   "id": "s20",
+   "section": "diseno",
+   "title": "El contrato con AgentCore son dos rutas.",
+   "kind": "code",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Mostrar que el contrato de despliegue es mínimo y está separado del agente",
+    "say": "Esto es todo lo que AgentCore exige del contenedor (F1). El servidor arma el workflow y responde; la lógica del agente está en otro módulo y se prueba sin servidor. En local se corre con un comando; en el Runtime, igual.",
+    "ask": "",
+    "close": "",
+    "transition": "Y la infraestructura que lo declara."
+   },
+   "minutes": 4,
+   "code": {
+    "file": "core/server.py",
+    "lines": "194-199",
+    "symbol": "invocations",
+    "caption": "GET /ping y POST /invocations en el puerto 8080, imagen ARM64 (F1). El agente no sabe dónde corre: el mismo código sirve en local y en el Runtime."
+   }
+  },
+  {
+   "id": "s21",
+   "section": "diseno",
+   "title": "La infraestructura declara el Runtime.",
+   "kind": "code",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Ver que el despliegue es código y se repite",
+    "say": "Infraestructura como código: el Runtime, su imagen y su rol se declaran acá y se despliegan con un comando. El comentario sobre el digest es una lección aprendida: la validación acepta una referencia que la microVM después no puede resolver. Esto ya está probado en el template de Craftech; para Alephee cambia el slug y la cuenta.",
+    "ask": "",
+    "close": "",
+    "transition": "Decisión 5."
+   },
+   "minutes": 4,
+   "code": {
+    "file": "infra/sst/runtime.ts",
+    "lines": "389-406",
+    "symbol": "bedrockagentcore.Runtime",
+    "highlight": [
+     402,
+     405,
+     406
+    ],
+    "caption": "Imagen ARM64 referenciada por digest, red pública y un rol propio. Se despliega con SST; el modelo llega por variable de entorno."
+   }
+  },
+  {
+   "id": "s22",
+   "section": "diseno",
+   "title": "¿Dónde corre?",
+   "kind": "decision",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Cerrar la decisión 5 dejando el batch como pregunta abierta con dueño",
+    "say": "No forzar la decisión del batch sin datos: anotar qué medir (duración de una corrida de 30 y de 1.000 productos, costo de sesión, arranque) y quién lo mide.",
+    "ask": "",
+    "close": "",
+    "transition": "Siguiente: cómo elegir el modelo."
+   },
+   "minutes": 4,
+   "decision": {
+    "number": 5,
+    "question": "¿Dónde corre el agente?",
+    "options": [
+     "A · Hoy en local; el chat de demo en AgentCore; el batch como proceso de Alephee, a decidir con el camino a producción",
+     "B · Todo en AgentCore desde el inicio",
+     "C · Todo en la infraestructura actual de Alephee"
+    ],
+    "proposal": "A. Hoy se construye y se mide en local. El chat va a AgentCore porque es su caso natural. Para el batch hace falta medir sesiones, costo y arranque antes de decidir; se retoma a las 16:15.",
+    "file": "decisiones/05-donde-corre.md"
+   }
+  },
+  {
+   "id": "s23",
+   "section": "diseno",
+   "title": "Elegir el modelo: qué pesa en este caso.",
+   "kind": "cards",
+   "lead": "",
+   "label": "",
+   "items": [
+    "Seguir reglas y usar herramientas sin inventar: es lo que más falla hoy",
+    "Costo por token con caché de prompt: el presupuesto actual es de USD 350 por mes",
+    "Latencia: no es restricción (hoy el batch tarda 13 s por producto)",
+    "Disponible en la región y habilitado en la cuenta"
+   ],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Criterios de elección antes de nombrar modelos",
+    "say": "El orden importa: primero calidad en lo que falla hoy (alucinar valores, ignorar reglas), después costo con caché, y la latencia al final porque es batch. Un modelo más chico puede ganar en costo y perder en reglas: se decide midiendo sobre el dataset, no por intuición.",
+    "ask": "",
+    "close": "",
+    "transition": "Qué hay disponible en Bedrock."
+   },
+   "minutes": 3
+  },
+  {
+   "id": "s24",
+   "section": "diseno",
+   "title": "Qué hay en Bedrock.",
+   "kind": "table",
+   "lead": "",
+   "label": "Fuente F6 · Models at a glance · verificado el 30/09/2026",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": {
+    "headers": [
+     "Proveedor",
+     "Familias",
+     "Para este caso"
+    ],
+    "rows": [
+     [
+      "Anthropic",
+      "Claude 5.x (Sonnet 5, Opus 5.5, Fable 5.1…), 4.x (Haiku 4.5…), 3.x",
+      "Candidato principal: reglas y tool calling"
+     ],
+     [
+      "Amazon",
+      "Nova 2, Nova Premier/Pro/Lite/Micro",
+      "Alternativa de costo a medir"
+     ],
+     [
+      "OpenAI",
+      "GPT-5.x, GPT-6, GPT OSS",
+      "Continuidad con el proveedor actual, dentro de AWS"
+     ],
+     [
+      "Meta · Mistral · DeepSeek · Qwen · otros",
+      "Llama 3.x/4, Mistral Large 3, DeepSeek V3.2, Qwen3…",
+      "Abiertos; evaluar si el costo lo justifica"
+     ]
+    ]
+   },
+   "notes": {
+    "objective": "Mostrar el catálogo real de Bedrock sin inventar modelos",
+    "say": "La tabla sale de la página oficial Models at a glance del 30/09 (F6). No es una recomendación de cada uno: es el menú. Lo que importa para elegir es la columna de la derecha y el criterio de la lámina anterior. La disponibilidad por región y la habilitación en la cuenta se verifican en la cuenta que usemos.",
+    "ask": "",
+    "close": "",
+    "transition": "El módulo que habla con Bedrock."
+   },
+   "minutes": 3
+  },
+  {
+   "id": "s25",
+   "section": "diseno",
+   "title": "El único módulo que sabe de Bedrock.",
+   "kind": "code",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Mostrar dónde se elige el modelo y por qué el ID lleva prefijo",
+    "say": "El modelo se elige en un solo lugar y llega por variable de entorno. El prefijo us. es un inference profile: Bedrock enruta entre regiones de Estados Unidos y es obligatorio para algunos modelos (F5). Las dos banderas de caché activan los cachePoint en system y tools (F4). Cambiar de modelo es cambiar una variable y volver a correr el dataset.",
+    "ask": "",
+    "close": "",
+    "transition": "Decisión 6."
+   },
+   "minutes": 4,
+   "code": {
+    "file": "core/src/catalogo/llm.py",
+    "lines": "7-21",
+    "symbol": "crear_llm",
+    "highlight": [
+     9,
+     19,
+     20
+    ],
+    "caption": "Inference profile us.: sin prefijo, Bedrock responde ValidationException por falta de throughput on-demand (F5). Caché de system y tools activada en el cliente."
+   }
+  },
+  {
+   "id": "s26",
+   "section": "diseno",
+   "title": "¿Qué modelo?",
+   "kind": "decision",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Cerrar la decisión 6 con la prueba de Haiku como pendiente",
+    "say": "Anotar la prueba de B como tarea con dueño: es la misma corrida con otra variable de entorno. Si Alephee quiere continuidad con OpenAI, los modelos GPT también están en Bedrock (F6): la arquitectura no cambia.",
+    "ask": "",
+    "close": "",
+    "transition": "Con qué lo construimos."
+   },
+   "minutes": 4,
+   "decision": {
+    "number": 6,
+    "question": "¿Con qué modelo construimos y medimos?",
+    "options": [
+     "A · Claude Sonnet 5 en Bedrock, vía Converse",
+     "B · Un modelo más chico y barato (Claude Haiku 4.5) y medir",
+     "C · Seguir con OpenAI y solo reordenar el prompt para la caché"
+    ],
+    "proposal": "A para construir hoy; B queda como prueba pendiente sobre el mismo dataset: si cumple el criterio, gana por costo. C mejora el costo pero no resuelve herramientas, contrato ni control.",
+    "file": "decisiones/06-modelo.md"
+   }
+  },
+  {
+   "id": "s27",
+   "section": "diseno",
+   "title": "Stack y harness.",
+   "kind": "cards",
+   "lead": "",
+   "label": "",
+   "items": [
+    "Python + LlamaIndex Workflows: pasos, eventos y herramientas ya resueltos",
+    "BedrockConverse: tool calling y caché de prompt sin código propio",
+    "Harness de desarrollo: propone cambios en el código; Gastón los revisa y corre los tests"
+   ],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Separar el stack del agente de la herramienta con la que lo construimos",
+    "say": "Dos cosas distintas: el stack con el que corre el agente (Python, LlamaIndex, Bedrock) y el harness con el que lo construimos hoy, un entorno de desarrollo asistido por un modelo que propone cambios. El harness no es el agente ni decide nada: cada cambio que propone pasa por revisión y por los tests. No depende de un proveedor concreto.",
+    "ask": "¿Qué revisarían antes de aceptar un cambio propuesto por el harness?",
+    "close": "Que resuelva la regla acordada, que pase los tests y que no toque datos reales.",
+    "transition": "Un Workflow de un paso, en código."
+   },
+   "minutes": 3
+  },
+  {
+   "id": "s28",
+   "section": "diseno",
+   "title": "Un Workflow de un paso.",
+   "kind": "code",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Mostrar el patrón de inyección que hace testeable al agente",
+    "say": "La clase recibe el LLM por el constructor. Eso permite probar cada paso con un doble sin AWS y correr contra Bedrock cambiando una línea. Es el patrón que se repite en V2 y V3.",
+    "ask": "",
+    "close": "",
+    "transition": "Decisión 7."
+   },
+   "minutes": 4,
+   "code": {
+    "file": "core/src/catalogo/v1.py",
+    "lines": "76-83",
+    "symbol": "class MapeoV1",
+    "highlight": [
+     77,
+     82
+    ],
+    "caption": "El LLM se inyecta: en los tests es un doble, en producción es Bedrock. El workflow no sabe de proveedores."
+   }
+  },
+  {
+   "id": "s29",
+   "section": "diseno",
+   "title": "¿Con qué lo construimos?",
+   "kind": "decision",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Cerrar la decisión 7",
+    "say": "Dejar claro que la decisión es de continuidad, no de superioridad: AgentCore funciona con cualquier framework (F2). Lo que no se negocia es el patrón: LLM inyectado y pasos testeables.",
+    "ask": "",
+    "close": "",
+    "transition": "Última decisión antes de construir: cómo sabemos si está bien hecho."
+   },
+   "minutes": 4,
+   "decision": {
+    "number": 7,
+    "question": "¿Qué stack usamos para el agente?",
+    "options": [
+     "A · Python + LlamaIndex Workflows + BedrockConverse",
+     "B · Llamadas directas al SDK, sin framework (como hoy)",
+     "C · Otro framework de agentes (Strands, LangGraph…)"
+    ],
+    "proposal": "A. Es el stack del template que Craftech ya opera: el workflow no conoce Bedrock y cada paso se prueba con dobles. B repite el código de loop, herramientas y caché que un framework ya trae. C es válido; se elige A por continuidad con lo que ya está probado.",
+    "file": "decisiones/07-stack.md"
+   }
+  },
+  {
+   "id": "s30",
+   "section": "diseno",
+   "title": "¿Cuándo está bien hecho?",
+   "kind": "cards",
+   "lead": "",
+   "label": "Esquema de Shopee y salida esperada MOCK · validar con el equipo de catálogo",
+   "items": [
+    "Exacto: categoría correcta, ni sobra ni falta atributo, nada fuera de dominio, sin duplicados y faltantes informados",
+    "Además se reportan precisión y recall de atributos, valores inválidos, tokens y segundos",
+    "Dataset: 30 productos reales con su publicación actual; el esquema de atributos de Shopee y el expected son simulados"
+   ],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Acordar la métrica antes de escribir código",
+    "say": "La vara es estricta a propósito. Pero el expected es mock: se construyó a partir de la publicación actual limpia, así que hereda sus omisiones y castiga aciertos que hoy nadie mapea. Por eso los exactos van a ser bajos en todas las versiones y hay que leer también inválidos, duplicados y faltantes. El esquema oficial de Shopee y la validación con catálogo son pendientes.",
+    "ask": "",
+    "close": "",
+    "transition": "La métrica, en código."
+   },
+   "minutes": 3
+  },
+  {
+   "id": "s31",
+   "section": "diseno",
+   "title": "La métrica en código.",
+   "kind": "code",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Mostrar que la métrica es código que todos pueden leer y discutir",
+    "say": "Siete condiciones en un and. Si alguien discute la vara, se discute acá y se vuelve a evaluar sin llamar al modelo (scripts/reevaluar.py). La evaluación no cambia para favorecer a una versión.",
+    "ask": "",
+    "close": "",
+    "transition": "Decisiones 8 y 9."
+   },
+   "minutes": 4,
+   "code": {
+    "file": "core/src/catalogo/evaluacion.py",
+    "lines": "24-34",
+    "symbol": "exacto",
+    "highlight": [
+     27,
+     30,
+     31
+    ],
+    "caption": "Un caso es exacto solo si todo se cumple a la vez. Es determinista: no llama a ningún modelo."
+   }
+  },
+  {
+   "id": "s32",
+   "section": "diseno",
+   "title": "¿Cuál es el número que aceptamos?",
+   "kind": "decision",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Cerrar la decisión 8 con un número escrito",
+    "say": "Escribir el número en la pizarra antes de la V1. Si el grupo elige B, advertir que el expected mock hace casi imposible el 80 % para cualquier versión, incluida la actual (7 de 30).",
+    "ask": "",
+    "close": "",
+    "transition": "Y con qué datos."
+   },
+   "minutes": 4,
+   "decision": {
+    "number": 8,
+    "question": "¿Qué criterio de éxito acordamos para la prueba de las 16:15?",
+    "options": [
+     "A · Cero valores inválidos y cero duplicados en los 30; exactos iguales o mejores que el proceso actual",
+     "B · Exactos iguales o mayores al 80 %",
+     "C · Solo precisión y recall de atributos"
+    ],
+    "proposal": "A. Con expected mock, 'exacto' castiga aciertos que hoy nadie mapea; los inválidos y duplicados sí son errores seguros y hoy hay 47 y 5. El número final se fija en la sala.",
+    "file": "decisiones/08-criterio-de-exito.md"
+   }
+  },
+  {
+   "id": "s33",
+   "section": "diseno",
+   "title": "¿Con qué dataset?",
+   "kind": "decision",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Cerrar la decisión 9 y pasar a construir",
+    "say": "Pedir al grupo que elija el caso guía para las demos (propuesta: 88904447, el del Código OEM). Pausa de 11:00; a las 11:15 se construye la V1 con todo lo decidido.",
+    "ask": "",
+    "close": "",
+    "transition": "Pausa. Volvemos con la V1."
+   },
+   "minutes": 4,
+   "decision": {
+    "number": 9,
+    "question": "¿Sobre qué datos construimos y medimos?",
+    "options": [
+     "A · Los 30 reales del zip, con esquema y expected mock rotulados",
+     "B · Solo los 10 casos mock de borde",
+     "C · Esperar el esquema oficial de Shopee para empezar"
+    ],
+    "proposal": "A. Son productos reales con publicaciones reales y rechazos reales de Shopee. Lo simulado queda rotulado y se valida con catálogo después. Los 10 mock quedan como tests de borde.",
+    "file": "decisiones/09-dataset.md"
+   }
   }
  ]
 }
