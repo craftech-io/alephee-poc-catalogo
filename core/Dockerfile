@@ -10,6 +10,8 @@ COPY pyproject.toml uv.lock ./
 RUN pip install --no-cache-dir uv && uv sync --frozen --no-dev
 
 COPY core/ ./core/
+# War room data: the catalog tool looks the product up by SKU in data/real and data/mock.
+COPY data/ ./data/
 ENV PYTHONPATH=/app/core/src
 
 # Sin configuración, la imagen NO exporta telemetría: `opentelemetry-instrument`

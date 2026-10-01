@@ -142,6 +142,7 @@ def build_app(
     tools_gateway_factory=None,
     estimador_de_costo=None,
     instrumentador_factory=None,
+    catalog_tools_factory=None,
 ) -> Starlette:
     # `env` se inyecta en los tests; en el contenedor es os.environ.
     env = os.environ if env is None else env
@@ -172,10 +173,18 @@ def build_app(
     # (build_app corre una vez por proceso). Vive en el closure y no a nivel
     # módulo para que cada app de test tenga su propio cache.
     cache_gateway: list | None = None
+    # Catalog agent (war room): fixed tools, built once per process, only when the Runtime enables them.
+    catalog_tools: list = []
+    if env.get("CATALOG_ENABLED") == "1":
+        if catalog_tools_factory is None:
+            from catalog.chat_tool import create_catalog_tools
+
+            catalog_tools_factory = create_catalog_tools
+        catalog_tools = catalog_tools_factory()
 
     async def armar_tools(act_token: str | None) -> list:
         nonlocal cache_gateway
-        tools: list = []
+        tools: list = [*catalog_tools]
         if cfg.client_api_url:
             # Las de usuario se arman POR REQUEST: llevan el actToken del turno.
             tools += tools_usuario_factory(cfg.client_api_url, act_token)

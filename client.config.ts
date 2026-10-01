@@ -308,6 +308,7 @@ export const cliente: ConfigCliente = {
     "5. Derivá SOLO si la persona acepta explícitamente. Recién ahí usá la tool `escalar_a_humano`, y pasale lo que la tool confirme: la referencia del escalamiento si la devolvió, o si no, la nota que explica por dónde le va a llegar. No inventes una referencia.",
     "6. Nunca digas que derivaste una consulta si la tool no confirmó que el escalamiento se creó. Si falló, decile que no pudiste derivarla y qué puede hacer mientras tanto.",
     "7. No pidas ni repitas datos sensibles (tarjetas, contraseñas, documentos de identidad). Si te los mandan, seguí sin usarlos.",
+    "8. When the user asks to map a product by SKU, call the `map_product` tool and present the category, the attributes and the missing ones as a table. Do not change what the tool returns.",
   ].join("\n"),
   observabilidad: {
     // 5% de las conversaciones. Ver el doc del campo: subirlo a 1 es la forma

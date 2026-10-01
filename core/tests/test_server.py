@@ -342,3 +342,20 @@ def test_el_log_marca_el_escalamiento_cuando_el_agente_usa_esa_tool(caplog):
     assert log_del_cierre(caplog)["intentoEscalamiento"] is True
     # El resultado de la tool tampoco sale en el log.
     assert "ACME-42" not in caplog.text
+
+
+def test_catalog_tool_is_registered_only_when_enabled():
+    from llama_index.core.tools import FunctionTool
+
+    seen = {}
+
+    class ToolsLLM:
+        async def aresponder_con_tools(self, message, history, tools):
+            seen["tools"] = [t.metadata.name for t in tools]
+            return RespuestaLLM(texto="listo", llamadas=[])
+
+    fake_tool = FunctionTool.from_defaults(fn=lambda sku: sku, name="map_product")
+    app = build_app(llm_factory=lambda cfg: ToolsLLM(), env={"MODEL_ID": "fake", "CATALOG_ENABLED": "1"},
+                    catalog_tools_factory=lambda: [fake_tool])
+    TestClient(app).post("/invocations", json={"message": "mapea el SKU 1", "sessionId": "s", "userId": "u"})
+    assert seen["tools"] == ["map_product"]

@@ -428,6 +428,8 @@ export const runtime = new awsnative.bedrockagentcore.Runtime("AgentRuntime", {
     ...(cliente.promptSistema
       ? { PROMPT_SISTEMA_B64: promptEnBase64(cliente.promptSistema) }
       : {}),
+    // War room: enables the map_product tool (core/src/catalog/chat_tool.py).
+    CATALOG_ENABLED: "1",
     // Observabilidad del contenedor: todas las env están armadas y comentadas
     // arriba, derivadas de `cliente.observabilidad`.
     ...envObservabilidad,

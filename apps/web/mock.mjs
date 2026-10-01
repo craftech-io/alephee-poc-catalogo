@@ -33,6 +33,12 @@ const TEXTO_MIS_PEDIDOS =
 const TEXTO_LISTAR_CATALOGO =
   "Tenemos 3 productos: Casco MTB ($45.000), Luz trasera USB ($12.000) y Kit de parches ($3.500).";
 
+// Local mode for the catalog agent: it does NOT run V1. A sample listing
+// (MOCK) shaped like map_product's output, to rehearse the UI without Bedrock.
+const TEXTO_MAP_PRODUCT =
+  "Resultado de ejemplo del modo mock (no corre el agente): SKU 94701411 → categoría " +
+  "Calotas. Condição do Item: Novo · Aro: 14 · Material: Plástico ABS. Faltantes: ninguno.";
+
 // Modo local del conocimiento (RAG) y del escalamiento: los mismos textos que
 // daría el agente real usando `consultar_documentos` y `escalar_a_humano`,
 // citando el CORPUS FICTICIO de examples/documentos (la empresa inventada
@@ -200,6 +206,13 @@ export function planificarRespuesta(mensaje, sub, contexto = { turnos: 0, histor
     return {
       demoraMs,
       frames: [{ type: "done", text: TEXTO_FORMATO }],
+    };
+  }
+
+  if (minusculas.includes("sku")) {
+    return {
+      demoraMs,
+      frames: [{ type: "done", text: TEXTO_MAP_PRODUCT }],
     };
   }
 
