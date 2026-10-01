@@ -1,6 +1,6 @@
 # Guion del warroom · por diapositiva
 
-Versión del 29/09/2026 · 37 diapositivas · 7 secciones. Fuente única: `docs/warroom/diapositivas.json`. Se regenera con `python3 scripts/generar_presentacion.py`.
+Versión del 29/09/2026 · 47 diapositivas · 7 secciones. Fuente única: `docs/warroom/diapositivas.json`. Se regenera con `python3 scripts/generar_presentacion.py`.
 
 [Presentación interactiva](presentacion-warroom.html) · [PDF estático](presentacion-warroom.pdf) · [Ficha de participantes](warroom/ficha-participantes.md)
 
@@ -17,6 +17,7 @@ Las selecciones, respuestas revelables y temporizadores son ayudas locales de fa
 | 01 · Punto de partida | 09:00–09:30 | 1–9 | Ver el error de hoy y acordar qué construimos |
 | 02 · Diseñar el agente | 09:30–11:15 | 10–33 | Tomar las decisiones que definen la V1 |
 | 03 · V1 · el agente responde | 11:15–12:30 | 34–37 | Construir, correr y leer la primera versión |
+| 04 · V2 · herramientas | 13:15–14:45 | 38–47 | Decidir qué resuelve la tabla y conectarla |
 
 Pausa 11:00–11:15; almuerzo 12:30–13:15; pausa 14:45–15:00. El bloque V3 incluye preparación de comparación 16:00–16:15. Margen de preguntas 17:00–17:30 sujeto a confirmación logística.
 
@@ -29,7 +30,7 @@ Los minutos por diapositiva son una pauta para explicaciones y consignas, no un 
 | 01 · Punto de partida | 29 min | Dolores del equipo y preguntas: 10 min | 39 min |
 | 02 · Diseñar el agente | 85 min | Pizarra: tipos de aplicación y dónde corre: 15 min; Pausa 11:00: 15 min | 115 min |
 | 03 · V1 · el agente responde | 13 min | Corridas sobre otros casos: 25 min | 38 min |
-| 04 · V2 · herramientas | 0 min | Corrida del lote y lectura: 25 min | 25 min |
+| 04 · V2 · herramientas | 36 min | Corrida del lote y lectura: 25 min | 61 min |
 | 05 · V3 · control | 0 min | Corrida del lote con V3: 20 min | 20 min |
 | 06 · La prueba y el camino | 0 min | Documentar decisiones y responsables: 15 min | 15 min |
 
@@ -940,6 +941,259 @@ scripts/correr.sh --version v1 --datos real --caso error-88904447
 **Pregunta / participación:** ¿Alguno de estos fallos les sorprende? ¿Cuál esperaban?
 
 **Transición:** Almuerzo. A las 13:15, herramientas.
+
+### 38 · V2 · herramientas.
+
+**Sección:** 04 · V2 · herramientas · **Pauta:** 1 min · **Tipo:** divider
+
+**Objetivo:** Retomar después del almuerzo y abrir la V2
+
+**En pantalla:**
+
+- El agente consulta antes de decidir.
+
+**Temas para hablar:** Recapitular en una frase: la V1 responde sola y falla donde necesita datos que no tiene. La V2 le da herramientas para consultar las tablas de referencia y el esquema del canal. El prompt deja de llevar el canal entero: el agente pide solo lo que necesita para este producto.
+
+**Transición:** Qué es una herramienta.
+
+### 39 · Una herramienta es una función que el modelo pide y el código ejecuta.
+
+**Sección:** 04 · V2 · herramientas · **Pauta:** 3 min · **Tipo:** flow
+
+**Objetivo:** Definir herramienta sin jerga
+
+**En pantalla:**
+
+- El modelo pide buscar_categoria('urn:category:1106872')
+- El programa ejecuta la función: consulta la tabla
+- Devuelve {encontrada: true, urn, name} o {encontrada: false, motivo}
+- El modelo sigue con ese dato, no con su memoria
+
+**Temas para hablar:** El modelo no ejecuta nada: redacta un pedido con nombre y argumentos, el programa lo ejecuta y le devuelve el resultado como un mensaje más. Por eso la herramienta es determinista y el modelo no. Hay herramientas de lectura (consultar) y de acción (publicar); hoy todas las nuestras son de lectura. Que la herramienta exista no obliga al modelo a usarla ni a respetarla: eso se controla en la V3.
+
+**Transición:** La fuente se abstrae.
+
+### 40 · La fuente se abstrae; las herramientas no cambian.
+
+**Sección:** 04 · V2 · herramientas · **Pauta:** 4 min · **Tipo:** code
+
+**Objetivo:** Mostrar el punto de integración con Alephee
+
+**En pantalla:**
+
+
+**Temas para hablar:** Tres consultas: categoría destino por id legacy, destinos de un atributo legacy y esquema de una categoría del canal. Eso es todo lo que el agente necesita de Alephee. La API pública v2 alcanza para leer el producto (F8) pero no expone estas tablas: la integración real es una FuenteCatalogo nueva contra lo que Maximiliano exponga.
+
+**Pregunta / participación:** ¿Dónde viven hoy estas tres consultas en la plataforma de Alephee?
+
+**Transición:** Cómo se describe una herramienta.
+
+**Código:** `core/src/catalogo/herramientas.py` líneas 17–34
+
+```py
+class FuenteCatalogo(Protocol):
+    def categoria_destino(self, id_legacy: str) -> dict | None: ...
+
+    def destinos_atributo(self, id_legacy: str) -> list[dict]: ...
+
+    def esquema(self, categoria_urn: str) -> dict | None: ...
+
+
+class FuenteArchivos:
+    """Lee data/mock o data/real (según DATA_DIR). Hace de API interna de Alephee."""
+
+    def categoria_destino(self, id_legacy: str) -> dict | None:
+        return datos.cargar_referencia_categorias().get(datos.id_categoria(id_legacy))
+
+    def destinos_atributo(self, id_legacy: str) -> list[dict]:
+        return datos.cargar_referencia_atributos().get(datos.id_legacy(id_legacy), [])
+
+    def esquema(self, categoria_urn: str) -> dict | None:
+```
+
+Hoy FuenteArchivos lee data/real; mañana una clase que llame a la base o a un endpoint interno de Alephee. Las herramientas y el agente no se tocan.
+
+### 41 · Una herramienta bien descrita.
+
+**Sección:** 04 · V2 · herramientas · **Pauta:** 4 min · **Tipo:** code
+
+**Objetivo:** Buenas prácticas de diseño de herramientas
+
+**En pantalla:**
+
+
+**Temas para hablar:** Tres reglas: nombre que diga qué hace, descripción con un ejemplo del argumento y salida negativa explícita con motivo. Una herramienta que devuelve null cuando no encuentra invita al modelo a inventar; una que devuelve encontrada: false con motivo le da algo que repetir en missing.
+
+**Transición:** Decisión 10: qué decide la tabla y qué decide el agente.
+
+**Código:** `core/src/catalogo/herramientas.py` líneas 42–48
+
+```py
+def crear_herramientas(fuente: FuenteCatalogo) -> list[FunctionTool]:
+    def buscar_categoria(categoria_legacy: str) -> str:
+        """Devuelve la categoría de Shopee que la tabla reference_category asigna a la categoría
+        legacy del producto (por ejemplo 'urn:category:734701'). Si la tabla no la tiene, lo dice."""
+        fila = fuente.categoria_destino(categoria_legacy)
+        if fila is None:
+            return _json({"encontrada": False, "motivo": "la categoría legacy no está en reference_category"})
+```
+
+El docstring es lo que lee el modelo: qué devuelve, con qué formato de entrada y qué pasa si no encuentra. La respuesta negativa es explícita, nunca vacía.
+
+### 42 · ¿Qué decide la tabla y qué decide el agente?
+
+**Sección:** 04 · V2 · herramientas · **Pauta:** 4 min · **Tipo:** decision
+
+**Objetivo:** Cerrar la decisión 10
+
+**En pantalla:**
+
+
+**Temas para hablar:** B es el error más común: dejar que el modelo mejore un mapeo que el equipo de catálogo mantiene a mano. Si la tabla está mal, se corrige la tabla. C ya se descartó en la decisión 3. Con A, la V3 fija la categoría desde la tabla antes de llamar al modelo.
+
+**Transición:** El loop del agente y su límite.
+
+**Decisión 10:** ¿Qué decide la tabla y qué decide el agente?
+
+1. A · La tabla fija categoría y campos; el agente solo elige el valor equivalente de la lista y cubre lo que la tabla no tiene
+2. B · El agente puede corregir la tabla si cree que está mal
+3. C · Todo por tabla; sin modelo
+
+**Propuesta:** A. La tabla manda (acuerdo del 25/08 con Juan David). 306 ids legacy apuntan a más de un atributo de Shopee: se desambiguan por categoría, en código, no en el modelo. Lo que la tabla no cubre (valores de lista, atributos sin referencia) es lo único que decide el agente.
+
+**Archivo:** `decisiones/10-tabla-vs-agente.md`
+
+### 43 · El loop tiene un límite y una salida garantizada.
+
+**Sección:** 04 · V2 · herramientas · **Pauta:** 4 min · **Tipo:** code
+
+**Objetivo:** Mostrar el control del loop agéntico
+
+**En pantalla:**
+
+
+**Temas para hablar:** Esto es lo que convierte un modelo con herramientas en un agente controlado: un límite de rondas y una última ronda forzada a entregar. Sin esto, un agente puede consultar para siempre o terminar sin respuesta. Seis no es una garantía de calidad: es una garantía de que termina. Lo que entrega todavía puede estar mal; eso es la V3.
+
+**Transición:** Dónde se paga el costo: la caché de prompt.
+
+**Código:** `core/src/catalogo/v2.py` líneas 82–96
+
+```py
+        for ronda in range(MAX_RONDAS):
+            # En la última ronda solo queda la herramienta de entrega: nunca termina sin respuesta.
+            ultima = ronda == MAX_RONDAS - 1
+            respuesta = await self.llm.achat_with_tools(
+                tools=[HERRAMIENTA_SALIDA] if ultima else [*self.herramientas, HERRAMIENTA_SALIDA],
+                user_msg=None,
+                chat_history=historial,
+                tool_required=True,
+                allow_parallel_tool_calls=not ultima,
+            )
+            for clave, valor in uso_de(respuesta).items():
+                uso[clave] = uso.get(clave, 0) + valor
+            llamadas = self.llm.get_tool_calls_from_response(respuesta, error_on_no_tool_call=False)
+            usadas += [ll.tool_name for ll in llamadas]
+            if not llamadas:
+```
+
+Seis rondas como máximo. En la última solo queda la herramienta de entrega y se desactivan las llamadas en paralelo. Si aun así no entrega, el error es explícito.
+
+### 44 · Caché de prompt: lo estático se paga una vez.
+
+**Sección:** 04 · V2 · herramientas · **Pauta:** 4 min · **Tipo:** code
+
+**Objetivo:** Conectar la práctica 'estático primero' con el código y con el costo
+
+**En pantalla:**
+
+
+**Temas para hablar:** El orden del historial es la práctica de la mañana: system fijo, herramientas fijas, el producto y recién después el punto de caché. Bedrock procesa los checkpoints en orden tools → system → messages y cada ronda del loop lee ese prefijo de caché (F4). Mínimo 1.024 tokens para Sonnet 5, que acá se supera. Una ronda que cambia las herramientas invalida la caché: por eso la última ronda cuesta más.
+
+**Transición:** Los números de la corrida del 28/09.
+
+**Código:** `core/src/catalogo/v2.py` líneas 70–80
+
+```py
+    async def mapear(self, ev: MapeoStart) -> MapeoDone:
+        por_nombre = {t.metadata.name: t for t in self.herramientas}
+        # El punto de caché después del producto hace que cada ronda del loop reuse
+        # instrucciones + herramientas + producto en vez de volver a pagarlos.
+        historial = [
+            ChatMessage(role="system", content=self.instrucciones),
+            ChatMessage(role="user", blocks=[TextBlock(text=mensaje_producto(ev.producto)),
+                                             CachePoint(cache_control=CacheControl(type="default"))]),
+        ]
+        uso: dict = {}
+        usadas: list[str] = []
+```
+
+Instrucciones, herramientas y producto quedan antes del punto de caché: las seis rondas del loop reutilizan ese prefijo en vez de volver a pagarlo (F4).
+
+### 45 · Costo por producto, medido.
+
+**Sección:** 04 · V2 · herramientas · **Pauta:** 3 min · **Tipo:** table
+
+**Objetivo:** Mostrar el efecto de herramientas + caché en tokens y latencia
+
+**En pantalla:**
+
+- Corrida del 28/09 · 30 reales · anterior a las correcciones · tokens de entrada por producto
+- Versión / Entrada sin caché / Leída de caché / Segundos
+- V1 / ~22.000 / — / 12,3
+- V2 / ~1.600 / ~12.000 / 18,3
+
+**Temas para hablar:** La V2 paga 1.600 tokens nuevos por producto y lee 12.000 de caché; la V1 pagaba 22.000 nuevos. La latencia sube porque hay varias rondas: es batch, no importa. Lo que falta para hablar de dólares: sumar escritura de caché, salida y reintentos, y la tasa real de reutilización. No inferir ahorro solo de esta tabla.
+
+**Transición:** Decisión 11: el costo.
+
+### 46 · ¿Cuánto puede costar?
+
+**Sección:** 04 · V2 · herramientas · **Pauta:** 4 min · **Tipo:** decision
+
+**Objetivo:** Cerrar la decisión 11 con la medición como tarea
+
+**En pantalla:**
+
+
+**Temas para hablar:** Anotar como pendiente la corrida de medición completa con su dueño. Si el grupo quiere un número hoy, dar el de tokens, no el de dólares.
+
+**Transición:** El mismo caso por V2.
+
+**Decisión 11:** ¿Cómo tratamos la restricción de costo del modelo?
+
+1. A · Tope mensual acordado con Alephee y medición por producto: tokens de entrada, salida, caché leída y escrita
+2. B · Sin tope: se mide después
+3. C · El tope de hoy (USD 350) y publicar sin atributos al agotarse
+
+**Propuesta:** A. Hoy el tope corta la calidad (C). Con caché de prompt y caché por SKU (decisión 13) el costo por producto baja; el número se fija con una corrida completa medida, no con esta tabla.
+
+**Archivo:** `decisiones/11-costo.md`
+
+### 47 · Demo · el mismo caso por V2.
+
+**Sección:** 04 · V2 · herramientas · **Pauta:** 5 min · **Tipo:** demo
+
+**Objetivo:** Comparar V1 y V2 sobre el mismo caso
+
+**En pantalla:**
+
+
+**Temas para hablar:** Mismo caso que a la mañana, para comparar. Predicción antes de correr: ¿va a usar la referencia de atributos? Leer herramientas_usadas primero. Si el modelo entrega algo fuera de lista, señalarlo: la herramienta no obliga; eso lo arregla la V3. Pausa 14:45.
+
+**Transición:** Pausa. A las 15:00, control.
+
+```bash
+scripts/correr.sh --version v2 --datos real --caso error-88904447
+```
+
+**Mirar:**
+
+- Qué herramientas pidió y en qué orden (herramientas_usadas)
+- La categoría ahora sale de la tabla, no del modelo
+- Código OEM: ¿sigue siendo ABS Plastic?
+- Tokens leídos de caché frente a los nuevos
+
+**Respaldo:** resultados/v2-real-20260928-181509.json (corrida del 28/09, anterior a las correcciones)
 
 ## Fundamento editorial y revisión
 

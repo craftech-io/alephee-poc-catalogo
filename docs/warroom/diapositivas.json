@@ -1241,6 +1241,327 @@
     "transition": "Almuerzo. A las 13:15, herramientas."
    },
    "minutes": 3
+  },
+  {
+   "id": "s38",
+   "section": "v2",
+   "title": "V2 · herramientas.",
+   "kind": "divider",
+   "lead": "El agente consulta antes de decidir.",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Retomar después del almuerzo y abrir la V2",
+    "say": "Recapitular en una frase: la V1 responde sola y falla donde necesita datos que no tiene. La V2 le da herramientas para consultar las tablas de referencia y el esquema del canal. El prompt deja de llevar el canal entero: el agente pide solo lo que necesita para este producto.",
+    "ask": "",
+    "close": "",
+    "transition": "Qué es una herramienta."
+   },
+   "minutes": 1
+  },
+  {
+   "id": "s39",
+   "section": "v2",
+   "title": "Una herramienta es una función que el modelo pide y el código ejecuta.",
+   "kind": "flow",
+   "lead": "",
+   "label": "",
+   "items": [
+    "El modelo pide buscar_categoria('urn:category:1106872')",
+    "El programa ejecuta la función: consulta la tabla",
+    "Devuelve {encontrada: true, urn, name} o {encontrada: false, motivo}",
+    "El modelo sigue con ese dato, no con su memoria"
+   ],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Definir herramienta sin jerga",
+    "say": "El modelo no ejecuta nada: redacta un pedido con nombre y argumentos, el programa lo ejecuta y le devuelve el resultado como un mensaje más. Por eso la herramienta es determinista y el modelo no. Hay herramientas de lectura (consultar) y de acción (publicar); hoy todas las nuestras son de lectura. Que la herramienta exista no obliga al modelo a usarla ni a respetarla: eso se controla en la V3.",
+    "ask": "",
+    "close": "",
+    "transition": "La fuente se abstrae."
+   },
+   "minutes": 3
+  },
+  {
+   "id": "s40",
+   "section": "v2",
+   "title": "La fuente se abstrae; las herramientas no cambian.",
+   "kind": "code",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Mostrar el punto de integración con Alephee",
+    "say": "Tres consultas: categoría destino por id legacy, destinos de un atributo legacy y esquema de una categoría del canal. Eso es todo lo que el agente necesita de Alephee. La API pública v2 alcanza para leer el producto (F8) pero no expone estas tablas: la integración real es una FuenteCatalogo nueva contra lo que Maximiliano exponga.",
+    "ask": "¿Dónde viven hoy estas tres consultas en la plataforma de Alephee?",
+    "close": "",
+    "transition": "Cómo se describe una herramienta."
+   },
+   "minutes": 4,
+   "code": {
+    "file": "core/src/catalogo/herramientas.py",
+    "lines": "17-34",
+    "symbol": "FuenteCatalogo",
+    "highlight": [
+     17,
+     25,
+     26
+    ],
+    "caption": "Hoy FuenteArchivos lee data/real; mañana una clase que llame a la base o a un endpoint interno de Alephee. Las herramientas y el agente no se tocan."
+   }
+  },
+  {
+   "id": "s41",
+   "section": "v2",
+   "title": "Una herramienta bien descrita.",
+   "kind": "code",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Buenas prácticas de diseño de herramientas",
+    "say": "Tres reglas: nombre que diga qué hace, descripción con un ejemplo del argumento y salida negativa explícita con motivo. Una herramienta que devuelve null cuando no encuentra invita al modelo a inventar; una que devuelve encontrada: false con motivo le da algo que repetir en missing.",
+    "ask": "",
+    "close": "",
+    "transition": "Decisión 10: qué decide la tabla y qué decide el agente."
+   },
+   "minutes": 4,
+   "code": {
+    "file": "core/src/catalogo/herramientas.py",
+    "lines": "42-48",
+    "symbol": "buscar_categoria",
+    "highlight": [
+     44,
+     45,
+     48
+    ],
+    "caption": "El docstring es lo que lee el modelo: qué devuelve, con qué formato de entrada y qué pasa si no encuentra. La respuesta negativa es explícita, nunca vacía."
+   }
+  },
+  {
+   "id": "s42",
+   "section": "v2",
+   "title": "¿Qué decide la tabla y qué decide el agente?",
+   "kind": "decision",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Cerrar la decisión 10",
+    "say": "B es el error más común: dejar que el modelo mejore un mapeo que el equipo de catálogo mantiene a mano. Si la tabla está mal, se corrige la tabla. C ya se descartó en la decisión 3. Con A, la V3 fija la categoría desde la tabla antes de llamar al modelo.",
+    "ask": "",
+    "close": "",
+    "transition": "El loop del agente y su límite."
+   },
+   "minutes": 4,
+   "decision": {
+    "number": 10,
+    "question": "¿Qué decide la tabla y qué decide el agente?",
+    "options": [
+     "A · La tabla fija categoría y campos; el agente solo elige el valor equivalente de la lista y cubre lo que la tabla no tiene",
+     "B · El agente puede corregir la tabla si cree que está mal",
+     "C · Todo por tabla; sin modelo"
+    ],
+    "proposal": "A. La tabla manda (acuerdo del 25/08 con Juan David). 306 ids legacy apuntan a más de un atributo de Shopee: se desambiguan por categoría, en código, no en el modelo. Lo que la tabla no cubre (valores de lista, atributos sin referencia) es lo único que decide el agente.",
+    "file": "decisiones/10-tabla-vs-agente.md"
+   }
+  },
+  {
+   "id": "s43",
+   "section": "v2",
+   "title": "El loop tiene un límite y una salida garantizada.",
+   "kind": "code",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Mostrar el control del loop agéntico",
+    "say": "Esto es lo que convierte un modelo con herramientas en un agente controlado: un límite de rondas y una última ronda forzada a entregar. Sin esto, un agente puede consultar para siempre o terminar sin respuesta. Seis no es una garantía de calidad: es una garantía de que termina. Lo que entrega todavía puede estar mal; eso es la V3.",
+    "ask": "",
+    "close": "",
+    "transition": "Dónde se paga el costo: la caché de prompt."
+   },
+   "minutes": 4,
+   "code": {
+    "file": "core/src/catalogo/v2.py",
+    "lines": "82-96",
+    "symbol": "MAX_RONDAS",
+    "highlight": [
+     84,
+     86,
+     90
+    ],
+    "caption": "Seis rondas como máximo. En la última solo queda la herramienta de entrega y se desactivan las llamadas en paralelo. Si aun así no entrega, el error es explícito."
+   }
+  },
+  {
+   "id": "s44",
+   "section": "v2",
+   "title": "Caché de prompt: lo estático se paga una vez.",
+   "kind": "code",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Conectar la práctica 'estático primero' con el código y con el costo",
+    "say": "El orden del historial es la práctica de la mañana: system fijo, herramientas fijas, el producto y recién después el punto de caché. Bedrock procesa los checkpoints en orden tools → system → messages y cada ronda del loop lee ese prefijo de caché (F4). Mínimo 1.024 tokens para Sonnet 5, que acá se supera. Una ronda que cambia las herramientas invalida la caché: por eso la última ronda cuesta más.",
+    "ask": "",
+    "close": "",
+    "transition": "Los números de la corrida del 28/09."
+   },
+   "minutes": 4,
+   "code": {
+    "file": "core/src/catalogo/v2.py",
+    "lines": "70-80",
+    "symbol": "CachePoint",
+    "highlight": [
+     76,
+     77
+    ],
+    "caption": "Instrucciones, herramientas y producto quedan antes del punto de caché: las seis rondas del loop reutilizan ese prefijo en vez de volver a pagarlo (F4)."
+   }
+  },
+  {
+   "id": "s45",
+   "section": "v2",
+   "title": "Costo por producto, medido.",
+   "kind": "table",
+   "lead": "",
+   "label": "Corrida del 28/09 · 30 reales · anterior a las correcciones · tokens de entrada por producto",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": {
+    "headers": [
+     "Versión",
+     "Entrada sin caché",
+     "Leída de caché",
+     "Segundos"
+    ],
+    "rows": [
+     [
+      "V1",
+      "~22.000",
+      "—",
+      "12,3"
+     ],
+     [
+      "V2",
+      "~1.600",
+      "~12.000",
+      "18,3"
+     ]
+    ]
+   },
+   "notes": {
+    "objective": "Mostrar el efecto de herramientas + caché en tokens y latencia",
+    "say": "La V2 paga 1.600 tokens nuevos por producto y lee 12.000 de caché; la V1 pagaba 22.000 nuevos. La latencia sube porque hay varias rondas: es batch, no importa. Lo que falta para hablar de dólares: sumar escritura de caché, salida y reintentos, y la tasa real de reutilización. No inferir ahorro solo de esta tabla.",
+    "ask": "",
+    "close": "",
+    "transition": "Decisión 11: el costo."
+   },
+   "minutes": 3
+  },
+  {
+   "id": "s46",
+   "section": "v2",
+   "title": "¿Cuánto puede costar?",
+   "kind": "decision",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Cerrar la decisión 11 con la medición como tarea",
+    "say": "Anotar como pendiente la corrida de medición completa con su dueño. Si el grupo quiere un número hoy, dar el de tokens, no el de dólares.",
+    "ask": "",
+    "close": "",
+    "transition": "El mismo caso por V2."
+   },
+   "minutes": 4,
+   "decision": {
+    "number": 11,
+    "question": "¿Cómo tratamos la restricción de costo del modelo?",
+    "options": [
+     "A · Tope mensual acordado con Alephee y medición por producto: tokens de entrada, salida, caché leída y escrita",
+     "B · Sin tope: se mide después",
+     "C · El tope de hoy (USD 350) y publicar sin atributos al agotarse"
+    ],
+    "proposal": "A. Hoy el tope corta la calidad (C). Con caché de prompt y caché por SKU (decisión 13) el costo por producto baja; el número se fija con una corrida completa medida, no con esta tabla.",
+    "file": "decisiones/11-costo.md"
+   }
+  },
+  {
+   "id": "s47",
+   "section": "v2",
+   "title": "Demo · el mismo caso por V2.",
+   "kind": "demo",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Comparar V1 y V2 sobre el mismo caso",
+    "say": "Mismo caso que a la mañana, para comparar. Predicción antes de correr: ¿va a usar la referencia de atributos? Leer herramientas_usadas primero. Si el modelo entrega algo fuera de lista, señalarlo: la herramienta no obliga; eso lo arregla la V3. Pausa 14:45.",
+    "ask": "",
+    "close": "",
+    "transition": "Pausa. A las 15:00, control."
+   },
+   "minutes": 5,
+   "demo": {
+    "command": "scripts/correr.sh --version v2 --datos real --caso error-88904447",
+    "watch": [
+     "Qué herramientas pidió y en qué orden (herramientas_usadas)",
+     "La categoría ahora sale de la tabla, no del modelo",
+     "Código OEM: ¿sigue siendo ABS Plastic?",
+     "Tokens leídos de caché frente a los nuevos"
+    ],
+    "fallback": "resultados/v2-real-20260928-181509.json (corrida del 28/09, anterior a las correcciones)"
+   }
   }
  ]
 }
