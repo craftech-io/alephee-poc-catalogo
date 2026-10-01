@@ -44,31 +44,31 @@
   },
   {
    "id": "v2",
-   "title": "04 · V2 · herramientas",
-   "time": "13:15-14:45",
-   "goal": "Decidir qué resuelve la tabla y conectarla",
+   "title": "04 · V2 · tablas y control",
+   "time": "13:15-16:15",
+   "goal": "Resolver con las tablas lo que saben y controlar lo que decide el agente",
    "work_reserve": [
     [
-     "Corrida del lote y lectura",
-     25
-    ]
-   ]
-  },
-  {
-   "id": "v3",
-   "title": "05 · V3 · control",
-   "time": "15:00-16:15",
-   "goal": "Decidir qué pasa cuando el agente no sabe",
-   "work_reserve": [
+     "Corrida del lote con la V2 y lectura",
+     30
+    ],
     [
-     "Corrida del lote con V3",
-     20
+     "Pausa 14:45",
+     15
+    ],
+    [
+     "Preguntas y cambios pedidos por la sala",
+     35
+    ],
+    [
+     "Preparar la comparación",
+     15
     ]
    ]
   },
   {
    "id": "prueba",
-   "title": "06 · La prueba y el camino",
+   "title": "05 · La prueba y el camino",
    "time": "16:15-17:00",
    "goal": "Medir contra el criterio y repartir lo que sigue",
    "work_reserve": [
@@ -113,9 +113,8 @@
     "1 · PUNTO DE PARTIDA | El error de hoy, el alcance y el contrato",
     "2 · DISEÑAR EL AGENTE | Tipo de aplicación, prompt, dónde corre, modelo, stack y criterio de éxito",
     "3 · V1 · EL AGENTE RESPONDE | Una sola llamada al modelo, sin herramientas: qué resuelve solo y qué no",
-    "4 · V2 · HERRAMIENTAS | Las tablas de Alephee como herramientas que el agente consulta",
-    "5 · V3 · CONTROL | Validaciones en código, correcciones del equipo y caché por SKU",
-    "6 · LA PRUEBA | El proceso de hoy contra V1, V2 y V3, y el camino a producción"
+    "4 · V2 · TABLAS Y CONTROL | Las tablas en código, un agente que decide valores, validación, correcciones y caché",
+    "5 · LA PRUEBA | El proceso de hoy contra la V1 y la V2, y el camino a producción"
    ],
    "question": "",
    "options": [],
@@ -124,7 +123,7 @@
    "table": null,
    "notes": {
     "objective": "Ubicar al grupo en el recorrido del día, por temas",
-    "say": "Son seis bloques. Los dos primeros terminan en la V1, el de herramientas en la V2 y el de control en la V3. La prueba mide todo con el criterio que acordamos antes de escribir código. Horarios para quien conduce: 09:00 punto de partida, 09:30 diseño, 11:15 V1, 13:15 V2, 15:00 V3 y 16:15 prueba. Hay pausa a las 11:00, almuerzo de 12:30 a 13:15 y otra pausa a las 14:45. El cierre técnico es a las 17:00 y quedan preguntas hasta las 17:30.",
+    "say": "Son cinco bloques. Los dos primeros terminan en la V1. El cuarto construye la V2: las tablas en código y el control de lo que decide el agente. La prueba mide todo con el criterio que acordamos antes de escribir código. Horarios para quien conduce: 09:00 punto de partida, 09:30 diseño, 11:15 V1, 13:15 V2 y 16:15 prueba. Hay pausa a las 11:00, almuerzo de 12:30 a 13:15 y otra pausa a las 14:45. El cierre técnico es a las 17:00 y quedan preguntas hasta las 17:30.",
     "ask": "",
     "close": "",
     "transition": "Un producto real para ver qué entra y qué queremos que salga."
@@ -625,7 +624,7 @@
    "table": null,
    "notes": {
     "objective": "Mostrar todas las piezas de AWS y separar lo que hay de lo que falta",
-    "say": "Arriba está el camino del chat. El widget llama al BFF, que valida el token, aplica el guardrail de entrada y los topes, y encola el mensaje. El worker invoca el Runtime, que llama a Bedrock y a las herramientas por el Gateway. Una de esas herramientas es map_product, que corre la V1. Abajo a la derecha, punteado, está el batch de catálogo: hoy corre en local como experimento de Langfuse, y su lugar en producción es la decisión 5. La franja de abajo es el monitoreo: logs y métricas en CloudWatch, y trazas, prompts y experimentos en Langfuse.",
+    "say": "Arriba está el camino del chat. El widget llama al BFF, que valida el token, aplica el guardrail de entrada y los topes, y encola el mensaje. El worker invoca el Runtime, que llama a Bedrock y a las herramientas por el Gateway. El Runtime también tiene dos herramientas propias, map_product_v1 y map_product_v2, que corren la V1 y la V2. La V2 lee las correcciones y la caché de dos tablas de DynamoDB, corrections y mapping_cache. Abajo a la derecha, punteado, está el batch de catálogo. Hoy corre en local como experimento de Langfuse, y su lugar en producción es la decisión 5. La franja de abajo es el monitoreo: logs y métricas en CloudWatch, y trazas, prompts y experimentos en Langfuse.",
     "ask": "¿Qué piezas ya tiene Alephee y cuáles reemplazaríamos?",
     "close": "",
     "transition": "Decisión 5."
@@ -691,8 +690,8 @@
       "title": "AgentCore Runtime",
       "sub": [
        "contenedor ARM64 desde ECR",
-       "core/server.py · /invocations",
-       "ChatWorkflow + map_product (V1)"
+       "ChatWorkflow · core/server.py",
+       "map_product_v1 y map_product_v2"
       ],
       "tone": "aws"
      },
@@ -700,11 +699,12 @@
       "x": 216,
       "y": 210,
       "w": 190,
-      "h": 84,
+      "h": 96,
       "title": "DynamoDB",
       "sub": [
        "Messages · Sessions",
-       "Limits"
+       "Limits",
+       "corrections · mapping_cache"
       ],
       "tone": "aws"
      },
@@ -771,7 +771,7 @@
       "h": 96,
       "title": "Batch de catálogo · hoy local",
       "sub": [
-       "scripts/experiment.sh → V1",
+       "scripts/experiment.sh → V1 / V2",
        "experimentos y trazas en Langfuse",
        "producción: a decidir (decisión 5)"
       ],
@@ -965,7 +965,7 @@
       "dashed": false
      }
     ],
-    "caption": "Es la infraestructura del template en infra/sst. El chat de la V1 se despliega en la cuenta sandbox con el stage warroom, y las trazas del agente van a Langfuse. AgentCore Memory se sacó del stack."
+    "caption": "Es la infraestructura del template en infra/sst. El chat se despliega en la cuenta sandbox con el stage warroom, y las trazas del agente van a Langfuse. AgentCore Memory se sacó del stack."
    }
   },
   {
@@ -1311,7 +1311,7 @@
    "table": null,
    "notes": {
     "objective": "Cerrar la decisión 9 y pasar a construir",
-    "say": "Pedir al grupo que elija el caso guía de las demos. La propuesta es 88904447, el del Código OEM. A las 11:00 hay pausa, y a las 11:15 construimos la V1 con todo lo decidido.",
+    "say": "Pedir al grupo que elija el caso guía de las demos. Con los datos reales, la propuesta es 88904447, el del Código OEM. Mientras Alephee no confirme que pueden ir a Langfuse Cloud, las demos usan el caso 01-real-calota-aro14 del dataset mock. A las 11:00 hay pausa, y a las 11:15 construimos la V1 con todo lo decidido.",
     "ask": "",
     "close": "",
     "transition": "Pausa. Volvemos con la V1."
@@ -1469,7 +1469,7 @@
       "h": 84,
       "title": "Chat del template",
       "sub": [
-       "map_product(sku) corre la V1",
+       "map_product_v1(sku) corre la V1",
        "stage warroom en sandbox"
       ],
       "tone": "pendiente"
@@ -1765,7 +1765,7 @@
     "say": "El caso 01-real-calota-aro14 es el producto real del ejemplo de Alephee, la calota 94701411, y vive en el dataset mock. Antes de correr, pedir una predicción: ¿qué categoría y qué atributos va a devolver? Correr y leer la salida en el orden de la lista. Después abrir Langfuse: primero la traza, con el prompt, la respuesta y los tokens, y después los scores del caso. Los 30 productos reales se usan recién cuando Alephee confirme que pueden quedar en Langfuse Cloud: ahí se corre con --data real --allow-real-upload. Si Bedrock no responde, por sesión SSO vencida o por throttling, mostrar el experimento guardado y decirlo.",
     "ask": "",
     "close": "",
-    "transition": "Demo · la V1 desde el chat."
+    "transition": "Qué falló y qué capa lo resuelve."
    },
    "minutes": 5,
    "demo": {
@@ -1780,43 +1780,12 @@
    }
   },
   {
-   "id": "c10",
-   "section": "v1",
-   "title": "Demo · la V1 desde el chat.",
-   "kind": "demo",
-   "lead": "",
-   "label": "",
-   "items": [],
-   "question": "",
-   "options": [],
-   "answer": "",
-   "exercise": null,
-   "table": null,
-   "demo": {
-    "command": "API_URL=<Function URL del BFF> CHAT_HMAC_SECRET=<secreto HMAC> npm start -w apps/web",
-    "watch": [
-     "Escribir en el chat: Mapea el SKU 94701411",
-     "El asistente llama a map_product y muestra una tabla con la categoría, los atributos y los faltantes",
-     "En Langfuse: la traza del turno del chat, con la llamada a map_product y, adentro, la llamada de la V1"
-    ],
-    "fallback": "npm run dev en localhost:3000: modo mock del chat, con una respuesta de ejemplo que no corre la V1"
-   },
-   "notes": {
-    "objective": "Mostrar que la misma V1 sirve desde el chat del template",
-    "say": "Es el mismo Workflow que corrimos en el experimento, ahora detrás de una herramienta del chat. El chat corre en AgentCore, en el stage warroom de la cuenta sandbox. Por defecto mapea solo el dataset mock, porque las trazas del chat llevan el contenido a Langfuse Cloud. Si el deploy no está listo, mostrar el modo mock local y decir que esa respuesta es de ejemplo.",
-    "ask": "",
-    "close": "",
-    "transition": "Qué falló y qué capa lo resuelve."
-   },
-   "minutes": 4
-  },
-  {
    "id": "s40",
    "section": "v1",
-   "title": "Qué esperamos que falle en la V1 y qué capa lo resuelve.",
+   "title": "Qué falló en la V1 y qué capa lo resuelve.",
    "kind": "table",
    "lead": "",
-   "label": "Hipótesis para confirmar con la corrida del día · salida esperada MOCK",
+   "label": "Medido el 1/10 en Langfuse · V1 sobre los 30 reales · salida esperada MOCK",
    "items": [],
    "question": "",
    "options": [],
@@ -1824,53 +1793,53 @@
    "exercise": null,
    "table": {
     "headers": [
-     "Fallo esperado",
-     "Cómo se ve",
-     "Capa que lo resuelve"
+     "Qué medimos",
+     "V1 · 30 reales",
+     "Qué lo resuelve en la V2"
     ],
     "rows": [
      [
-      "Categoría inventada cuando el producto no trae una",
-      "Caso mock 09, sin categoría de origen",
-      "V2 · la tabla de categorías"
+      "Casos exactos",
+      "3 de 30 (hoy: 7)",
+      "Se compara en la prueba"
      ],
      [
-      "Valor fuera de la lista del canal",
-      "Score invalid_values en Langfuse",
-      "V3 · validación en código"
+      "Categoría correcta",
+      "28 de 30, optimista: elige entre 23 que incluyen la correcta",
+      "La categoría sale de reference_category, en código"
      ],
      [
-      "Obligatorio sin informar en missing",
-      "Score missing_ok en Langfuse",
-      "V3 · validación en código"
+      "Valores inválidos",
+      "3 (hoy: 47)",
+      "validate en cada entrega y clean al final"
      ],
      [
-      "Unos 7.500 tokens de catálogo en cada llamada",
-      "Tokens de cada traza en Langfuse",
-      "V2 · herramientas en lugar del catálogo entero"
+      "Duplicados",
+      "0 (hoy: 5)",
+      "validate y clean"
      ],
      [
-      "Categoría acertada con ayuda",
-      "Elige entre 23 categorías que incluyen la correcta",
-      "V2 · la tabla de categorías"
+      "Recall de atributos",
+      "0,57: faltan 4 de cada 10 atributos esperados",
+      "Los campos de reference_attribute, resueltos en código"
      ]
     ]
    },
    "notes": {
     "objective": "Convertir cada fallo de la V1 en la justificación de una capa",
-    "say": "Esto es lo que buscamos con la V1: evidencia. Si inventa la categoría cuando el producto no trae una, eso justifica la V2, porque sin referencia la respuesta tiene que salir de la tabla y no del modelo. Los valores fuera de lista y los obligatorios sin informar justifican la V3: una regla escrita en el prompt no garantiza que se cumpla, y hay que comprobarla en código. Los tokens son el costo de mandar el catálogo entero en cada llamada: unos 7.500 con los datos reales. Con el dataset mock el catálogo no llega al mínimo de 1.024 tokens, así que ahí no se ve caché. Un aviso: la V1 elige entre 23 categorías que siempre incluyen la correcta, así que su número de categorías sale optimista. Completar la columna con lo que muestre Langfuse.",
-    "ask": "¿Alguno de estos fallos les sorprende? ¿Cuál esperaban?",
+    "say": "Esto medimos el 1/10 con la V1 sobre los 30 productos reales, contra una salida esperada mock. Hay menos inválidos que hoy, 3 contra 47, y ningún duplicado. Pero el recall es 0,57: faltan 4 de cada 10 atributos esperados, porque la V1 no usa las tablas de referencia. La categoría sale bien en 28 de 30, pero el número es optimista, porque la V1 elige entre 23 categorías que siempre incluyen la correcta. Los 3 inválidos muestran que una regla en el prompt no alcanza y hay que comprobarla en código. La V2 suma las dos cosas: las tablas en código y la validación en código.",
+    "ask": "¿Alguno de estos números les sorprende?",
     "close": "",
-    "transition": "Almuerzo. A las 13:15, herramientas."
+    "transition": "Almuerzo. A las 13:15, la V2."
    },
    "minutes": 3
   },
   {
    "id": "s41",
    "section": "v2",
-   "title": "V2 · herramientas.",
+   "title": "V2 · tablas y control.",
    "kind": "divider",
-   "lead": "El agente consulta antes de decidir.",
+   "lead": "El código resuelve lo que saben las tablas. El agente decide el resto y entrega por una herramienta que valida.",
    "label": "",
    "items": [],
    "question": "",
@@ -1880,7 +1849,7 @@
    "table": null,
    "notes": {
     "objective": "Retomar después del almuerzo y abrir la V2",
-    "say": "En una frase: la V1 responde sola y falla donde necesita datos que no tiene. La V2 le da herramientas para consultar las tablas de referencia y el esquema del canal. Acá entra el FunctionAgent de LlamaIndex, porque ahora el modelo sí tiene que decidir qué consultar. El prompt deja de llevar el canal entero y el agente pide solo lo que necesita para este producto.",
+    "say": "La V1 responde sola y falla donde necesita datos que no tiene. La V2 hace tres cambios. El código resuelve la categoría y los campos que ya están en las tablas, sin modelo. Un FunctionAgent de LlamaIndex decide los valores de lista y los atributos que la tabla no cubre, y entrega por submit_listing, que valida en código. Las correcciones del equipo de catálogo y la caché viven en DynamoDB. El prompt ya no lleva el catálogo entero: lleva la lista de trabajo de este producto.",
     "ask": "",
     "close": "",
     "transition": "Qué es una herramienta."
@@ -1895,9 +1864,9 @@
    "lead": "",
    "label": "",
    "items": [
-    "El modelo pide buscar_categoria('urn:category:1106872')",
-    "El programa ejecuta la función: consulta la tabla",
-    "Devuelve {encontrada: true, urn, name} o {encontrada: false, motivo}",
+    "El modelo pide lookup_corrections(attribute_urn, product_value)",
+    "El programa ejecuta la función: busca en la tabla corrections de DynamoDB",
+    "Devuelve {correction: {valueId, value}} o {correction: null}",
     "El modelo sigue con ese dato, no con su memoria"
    ],
    "question": "",
@@ -1907,7 +1876,7 @@
    "table": null,
    "notes": {
     "objective": "Definir herramienta sin jerga",
-    "say": "El modelo no ejecuta nada. Escribe un pedido con nombre y argumentos, el programa lo ejecuta y le devuelve el resultado como un mensaje más. Por eso la herramienta es determinista y el modelo no. Hay herramientas de lectura, para consultar, y de acción, como publicar. Hoy todas las nuestras son de lectura. Que la herramienta exista no obliga al modelo a usarla ni a respetar lo que devuelve. Eso lo controla la V3.",
+    "say": "El modelo no ejecuta nada. Escribe un pedido con nombre y argumentos. El programa lo ejecuta y le devuelve el resultado como un mensaje más. Por eso la herramienta es determinista y el modelo no. La V2 tiene dos herramientas. lookup_corrections es de lectura y busca lo que cargó el equipo de catálogo. submit_listing es la entrega: valida en código y, si hay problemas, se los devuelve al modelo. Que una herramienta exista no obliga al modelo a usarla. Por eso la única forma de entregar es submit_listing.",
     "ask": "",
     "close": "",
     "transition": "Decisión 10: qué decide la tabla y qué decide el agente."
@@ -1920,7 +1889,7 @@
    "title": "¿Qué decide la tabla y qué decide el agente?",
    "kind": "decision",
    "lead": "",
-   "label": "Se construye en la V2 y la V3",
+   "label": "La V2 se construyó con la opción A · si gana otra, vemos qué cambia",
    "items": [],
    "question": "",
    "options": [],
@@ -1929,10 +1898,10 @@
    "table": null,
    "notes": {
     "objective": "Cerrar la decisión 10",
-    "say": "B es el error más común: dejar que el modelo mejore un mapeo que el equipo de catálogo mantiene a mano. Si la tabla está mal, se corrige la tabla. C ya lo descartamos en la decisión 3. Lo que la tabla resuelve se aplica en código, sin pasar por el modelo.",
+    "say": "B es el error más común: dejar que el modelo mejore un mapeo que el equipo de catálogo mantiene a mano. Si la tabla está mal, se corrige la tabla. C ya lo descartamos en la decisión 3. Lo que la tabla resuelve no pasa por el modelo.",
     "ask": "",
     "close": "",
-    "transition": "Los números de la corrida del 28/09."
+    "transition": "La V2 por dentro."
    },
    "minutes": 4,
    "decision": {
@@ -1943,8 +1912,413 @@
      "B · El agente puede corregir la tabla si cree que está mal",
      "C · Todo por tabla; sin modelo"
     ],
-    "proposal": "A. La tabla manda, como se acordó el 25/08 con Juan David. Lo que la tabla no cubre, como los valores de lista o los atributos sin referencia, es lo único que decide el agente.",
+    "proposal": "A. La tabla manda, como se acordó el 25/08 con Juan David. En la V2, el step resolve fija en código la categoría con reference_category y los campos con reference_attribute. Si el campo es texto libre o el valor coincide con la lista del canal, también lo resuelve el código. El agente recibe solo lo que queda: los valores de lista por decidir y los atributos que la tabla no cubre. Si cambia algo resuelto, gana lo resuelto.",
     "file": "decisiones/10-tabla-vs-agente.md"
+   }
+  },
+  {
+   "id": "s52",
+   "section": "v2",
+   "title": "La V2 por dentro.",
+   "kind": "diagram",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Ver qué hace el código y qué hace el modelo en la V2",
+    "say": "Verde es código y violeta es el modelo. Son cuatro steps. check_cache busca el SKU en DynamoDB: si ya se mapeó con las mismas tablas y el mismo prompt, sale de ahí sin llamar al modelo. resolve fija la categoría y los campos con las tablas. Si no hay categoría o esquema, termina con un faltante explícito y sin modelo. run_agent le pasa al FunctionAgent la lista de lo que falta decidir. El agente puede consultar correcciones y entrega con submit_listing, que valida en código y le devuelve los problemas. Tiene hasta cinco entregas. finalize junta lo resuelto con lo del agente, y gana lo resuelto. Después pasa clean y guarda en la caché si la entrega pasó la validación.",
+    "ask": "¿Qué caja sacarían a código si pudieran?",
+    "close": "",
+    "transition": "Lo que resuelve el código."
+   },
+   "minutes": 3,
+   "diagram": {
+    "w": 1200,
+    "h": 420,
+    "nodes": [
+     {
+      "x": 16,
+      "y": 180,
+      "w": 170,
+      "h": 84,
+      "title": "Producto",
+      "sub": [
+       "MappingRequested"
+      ],
+      "tone": "dato"
+     },
+     {
+      "x": 216,
+      "y": 166,
+      "w": 170,
+      "h": 112,
+      "title": "check_cache",
+      "sub": [
+       "mapping_cache",
+       "en DynamoDB",
+       "SKU + tablas + prompt"
+      ],
+      "tone": "codigo"
+     },
+     {
+      "x": 416,
+      "y": 166,
+      "w": 200,
+      "h": 112,
+      "title": "resolve · código",
+      "sub": [
+       "categoría por tabla",
+       "campos por tabla",
+       "texto libre y coincidencias"
+      ],
+      "tone": "codigo"
+     },
+     {
+      "x": 646,
+      "y": 166,
+      "w": 250,
+      "h": 112,
+      "title": "run_agent · FunctionAgent",
+      "sub": [
+       "Claude Sonnet 5",
+       "to_decide y lo no cubierto",
+       "hasta 5 iteraciones"
+      ],
+      "tone": "modelo"
+     },
+     {
+      "x": 926,
+      "y": 180,
+      "w": 258,
+      "h": 84,
+      "title": "finalize · código",
+      "sub": [
+       "gana lo resuelto · clean()",
+       "guarda en caché"
+      ],
+      "tone": "codigo"
+     },
+     {
+      "x": 646,
+      "y": 16,
+      "w": 250,
+      "h": 100,
+      "title": "Herramientas",
+      "sub": [
+       "lookup_corrections",
+       "submit_listing → validate()",
+       "los problemas vuelven al agente"
+      ],
+      "tone": "codigo"
+     },
+     {
+      "x": 926,
+      "y": 16,
+      "w": 258,
+      "h": 84,
+      "title": "DynamoDB · corrections",
+      "sub": [
+       "las carga catálogo",
+       "scripts/correct.sh"
+      ],
+      "tone": "dato"
+     },
+     {
+      "x": 216,
+      "y": 330,
+      "w": 170,
+      "h": 72,
+      "title": "MappingCompleted",
+      "sub": [
+       "source = cache"
+      ],
+      "tone": "dato"
+     },
+     {
+      "x": 416,
+      "y": 330,
+      "w": 200,
+      "h": 72,
+      "title": "MappingCompleted",
+      "sub": [
+       "source = tables",
+       "sin categoría o esquema"
+      ],
+      "tone": "alerta"
+     },
+     {
+      "x": 926,
+      "y": 330,
+      "w": 258,
+      "h": 72,
+      "title": "MappingCompleted",
+      "sub": [
+       "source = agent",
+       "traza en Langfuse"
+      ],
+      "tone": "dato"
+     }
+    ],
+    "edges": [
+     {
+      "points": [
+       [
+        186,
+        222
+       ],
+       [
+        216,
+        222
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        386,
+        222
+       ],
+       [
+        416,
+        222
+       ]
+      ],
+      "label": "miss",
+      "dashed": false,
+      "at": [
+       401,
+       212
+      ]
+     },
+     {
+      "points": [
+       [
+        616,
+        222
+       ],
+       [
+        646,
+        222
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        896,
+        222
+       ],
+       [
+        926,
+        222
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        301,
+        278
+       ],
+       [
+        301,
+        330
+       ]
+      ],
+      "label": "hit",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        516,
+        278
+       ],
+       [
+        516,
+        330
+       ]
+      ],
+      "label": "sin referencia",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        740,
+        166
+       ],
+       [
+        740,
+        116
+       ]
+      ],
+      "label": "pide",
+      "dashed": false,
+      "at": [
+       712,
+       144
+      ]
+     },
+     {
+      "points": [
+       [
+        802,
+        116
+       ],
+       [
+        802,
+        166
+       ]
+      ],
+      "label": "resultado",
+      "dashed": false,
+      "at": [
+       846,
+       144
+      ]
+     },
+     {
+      "points": [
+       [
+        896,
+        66
+       ],
+       [
+        926,
+        66
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        1055,
+        264
+       ],
+       [
+        1055,
+        330
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     }
+    ],
+    "caption": "Verde es código y violeta es el modelo. El código resuelve lo que saben las tablas; el agente decide valores y entrega por una herramienta que valida."
+   }
+  },
+  {
+   "id": "c11",
+   "section": "v2",
+   "title": "Lo que resuelve el código.",
+   "kind": "code",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Ver en código qué no pasa por el modelo",
+    "say": "Esto corre dentro de build_worklist, antes del agente. target_for busca el campo de Shopee en reference_attribute, entre los atributos de la categoría. Si no está, el atributo va a unmapped_product. Si el campo es texto libre y no tiene unidad, el valor se copia tal cual. Si el valor coincide con uno de la lista del canal, se toma ese. Lo demás va a to_decide, y es lo único que decide el agente.",
+    "ask": "",
+    "close": "",
+    "transition": "La entrega pasa por una herramienta que valida."
+   },
+   "minutes": 3,
+   "code": {
+    "file": "core/src/catalog/worklist.py",
+    "lines": "42-59",
+    "symbol": "reference.target_for",
+    "highlight": [
+     42,
+     53,
+     54,
+     56,
+     58
+    ],
+    "caption": "Texto libre y coincidencia exacta salen sin modelo. Lo que no coincide va a to_decide."
+   }
+  },
+  {
+   "id": "c12",
+   "section": "v2",
+   "title": "La entrega pasa por una herramienta que valida.",
+   "kind": "code",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Ver cómo vuelve al agente lo que no pasa la validación",
+    "say": "submit_listing es la única forma de entregar. Primero junta la entrega con lo que resolvió el código, y gana lo resuelto. Después la valida. Si hay problemas, lanza un error con la lista. El FunctionAgent le devuelve ese texto al modelo, que corrige y vuelve a entregar. Si pasa, return_direct corta el loop y la entrega sale tal cual, sin otra vuelta por el modelo.",
+    "ask": "",
+    "close": "",
+    "transition": "Lo corremos."
+   },
+   "minutes": 3,
+   "code": {
+    "file": "core/src/catalog/v2.py",
+    "lines": "109-121",
+    "symbol": "def submit_listing",
+    "highlight": [
+     111,
+     115,
+     120
+    ],
+    "caption": "Cada entrega queda en submissions. Si se agotan las cinco, finalize limpia la última."
+   }
+  },
+  {
+   "id": "s50",
+   "section": "v2",
+   "title": "Demo · la V2 sobre el mismo caso.",
+   "kind": "demo",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Comparar V1 y V2 sobre el mismo caso",
+    "say": "Es el mismo caso de la V1, para comparar. Antes de correr, pedir una predicción: ¿cuántos atributos resuelve el código sin preguntar? En este caso son cinco: Condição do Item, Origem, Número da Peça, Type of shell y Cor. Al agente le quedan tres valores por decidir, Weight, Is it insurable y Aro, y Material, que no está en la tabla. source no viaja en la salida del experimento: se ve en la traza, por los steps que corrieron. Ojo: si el SKU ya se corrió con las mismas tablas y el mismo prompt, sale de la caché y no se ve al agente. En ese caso, mostrar la traza de la corrida del 1/10 y dejar la caché para la demo de corregir y repetir. Si Bedrock no responde, mostrar el experimento guardado y decirlo.",
+    "ask": "",
+    "close": "",
+    "transition": "Cuánto cuesta por producto."
+   },
+   "minutes": 5,
+   "demo": {
+    "command": "scripts/experiment.sh --version v2 --data mock --case 01-real-calota-aro14",
+    "watch": [
+     "source, en la traza: con run_agent salió del agente; sin él, de la caché o de las tablas",
+     "Los atributos que resolvió el código: la lista resolved del mensaje al agente",
+     "Las entregas que rechazó submit_listing: cada llamada a la herramienta con su error",
+     "Los tokens de la traza: nuevos, leídos de caché y escritos en caché"
+    ],
+    "fallback": "el experimento v2-mock del 1/10, abierto en Langfuse"
    }
   },
   {
@@ -1953,7 +2327,7 @@
    "title": "Costo por producto, medido.",
    "kind": "table",
    "lead": "",
-   "label": "Se completa con los experimentos del día en Langfuse",
+   "label": "Medido el 1/10 en Langfuse · 30 reales · promedio por producto",
    "items": [],
    "question": "",
    "options": [],
@@ -1969,21 +2343,21 @@
     "rows": [
      [
       "V1",
-      "·",
-      "·",
-      "·"
+      "~4.560",
+      "~14.780",
+      "~3,3"
      ],
      [
       "V2",
-      "·",
-      "·",
-      "·"
+      "~9.970",
+      "0",
+      "~12,4"
      ]
     ]
    },
    "notes": {
     "objective": "Mostrar el efecto de herramientas + caché en tokens y latencia",
-    "say": "Completar con los datos de Langfuse. Cada traza trae tokens nuevos, tokens leídos de caché, tokens escritos en caché y segundos. Como referencia, en el ensayo del 28/09 con el código anterior, la versión de una llamada pagaba unos 22.000 tokens nuevos por producto. La de herramientas pagaba unos 1.600 nuevos y leía 12.000 de caché. Para hablar de dólares faltan la escritura en caché, la salida y los reintentos. No sacar el ahorro solo de esta tabla.",
+    "say": "Estos números salen de las trazas de Langfuse de las corridas del 1/10 sobre los 30 reales, en promedio por producto. La V1 manda el catálogo entero, pero casi todo se lee de caché. La V2 manda solo la lista de trabajo del producto y aun así paga más tokens nuevos: el agente hace varias llamadas por producto y en esta corrida no leyó nada de caché. Falta confirmar por qué. Puede ser que fuera la primera corrida con ese prompt y esas herramientas, o que el loop cambie el prefijo en cada ronda. Para hablar de dólares faltan la salida, la escritura en caché y el precio de la región. No sacar el ahorro solo de esta tabla. Un SKU que ya está en la caché de la V2 no paga tokens.",
     "ask": "",
     "close": "",
     "transition": "Decisión 11: el costo."
@@ -1996,7 +2370,7 @@
    "title": "¿Cuánto puede costar?",
    "kind": "decision",
    "lead": "",
-   "label": "Abierta: todavía no hay tope ni una medición completa",
+   "label": "Abierta: el tope se acuerda con Alephee sobre la medición del 1/10",
    "items": [],
    "question": "",
    "options": [],
@@ -2005,10 +2379,10 @@
    "table": null,
    "notes": {
     "objective": "Cerrar la decisión 11 con la medición como tarea",
-    "say": "Anotar como pendiente la corrida de medición completa, con su dueño. Si el grupo quiere un número hoy, dar el de tokens y no el de dólares.",
+    "say": "Anotar quién convierte los tokens en dólares con el precio de Bedrock de la región, y para cuándo. Si el grupo quiere un número hoy, dar el de tokens.",
     "ask": "",
     "close": "",
-    "transition": "El mismo caso por V2."
+    "transition": "Qué controla la V2."
    },
    "minutes": 4,
    "decision": {
@@ -2019,431 +2393,20 @@
      "B · Sin tope: se mide después",
      "C · El tope de hoy (USD 350) y publicar sin atributos al agotarse"
     ],
-    "proposal": "A. Hoy el tope corta la calidad, que es la opción C. Con la caché de prompt y la caché por SKU (decisión 13) el costo por producto baja. El número se fija con una corrida completa medida en Langfuse.",
+    "proposal": "A. Hoy el tope corta la calidad, que es la opción C. Medido el 1/10, la V2 paga unos 9.970 tokens de entrada nuevos por producto y no leyó caché, contra 4.560 nuevos y 14.780 leídos de caché de la V1. Con la caché por SKU (decisión 13), el mismo producto que venden 40 concesionarios se paga una vez. El tope en dólares se fija con Alephee sobre esa medición, después de revisar por qué la V2 no leyó caché.",
     "file": "decisiones/11-costo.md"
    }
   },
   {
-   "id": "s50",
-   "section": "v2",
-   "title": "Demo · el mismo caso por V2.",
-   "kind": "demo",
-   "lead": "",
-   "label": "",
-   "items": [],
-   "question": "",
-   "options": [],
-   "answer": "",
-   "exercise": null,
-   "table": null,
-   "notes": {
-    "objective": "Comparar V1 y V2 sobre el mismo caso",
-    "say": "Es el mismo caso de la mañana, para comparar. Antes de correr, pedir una predicción: ¿va a usar la referencia de atributos? Mirar primero qué herramientas pidió. Si entrega un valor fuera de lista, señalarlo: la herramienta no obliga, y eso lo resuelve la V3. Pausa a las 14:45.",
-    "ask": "",
-    "close": "",
-    "transition": "Pausa. A las 15:00, control."
-   },
-   "minutes": 5,
-   "demo": {
-    "command": "scripts/experiment.sh --version v2 --data real --case error-88904447",
-    "watch": [
-     "Qué herramientas pidió y en qué orden, en la traza de Langfuse",
-     "La categoría ahora sale de la tabla y no del modelo",
-     "Código OEM: ¿sigue saliendo ABS Plastic?",
-     "Tokens leídos de caché frente a los nuevos"
-    ],
-    "fallback": "la corrida del experimento v2-real, en Langfuse"
-   }
-  },
-  {
-   "id": "s51",
-   "section": "v3",
-   "title": "V3 · control.",
-   "kind": "divider",
-   "lead": "Qué pasa cuando el agente no sabe.",
-   "label": "",
-   "items": [],
-   "question": "",
-   "options": [],
-   "answer": "",
-   "exercise": null,
-   "table": null,
-   "notes": {
-    "objective": "Abrir la V3",
-    "say": "La V2 consulta, pero no está obligada a respetar lo que consulta. La V3 suma tres cosas: validaciones en código que revisan cada entrega, las correcciones que carga el equipo de catálogo y una caché por SKU para no mapear dos veces el mismo producto. Con la V3 dejamos de publicar sin atributos.",
-    "ask": "",
-    "close": "",
-    "transition": "El agente completo, en un dibujo."
-   },
-   "minutes": 1
-  },
-  {
-   "id": "s52",
-   "section": "v3",
-   "title": "El agente por dentro: código y modelo.",
-   "kind": "diagram",
-   "lead": "",
-   "label": "",
-   "items": [],
-   "question": "",
-   "options": [],
-   "answer": "",
-   "exercise": null,
-   "table": null,
-   "notes": {
-    "objective": "Ver las tres versiones como capas de un mismo flujo",
-    "say": "Verde es código determinista y violeta es el modelo. La categoría sale de la tabla antes de llamar al modelo. Si no hay referencia, el flujo termina con un faltante explícito. Si el SKU ya se mapeó, sale de la caché. El modelo pide herramientas en un loop con límite y entrega. La validación revisa la entrega y, si hay problemas, se los devuelve al modelo para una sola ronda de corrección. Lo que siga mal se descarta al final. La V1 de hoy es solo la caja violeta.",
-    "ask": "¿Qué caja sacarían a código si pudieran?",
-    "close": "",
-    "transition": "Qué es un guardrail acá."
-   },
-   "minutes": 3,
-   "diagram": {
-    "w": 1200,
-    "h": 470,
-    "nodes": [
-     {
-      "x": 500,
-      "y": 16,
-      "w": 342,
-      "h": 116,
-      "title": "Herramientas · código",
-      "sub": [
-       "buscar_categoria · atributos_del_canal",
-       "buscar_atributos_referencia",
-       "buscar_correcciones (V3)"
-      ],
-      "tone": "codigo"
-     },
-     {
-      "x": 880,
-      "y": 32,
-      "w": 304,
-      "h": 84,
-      "title": "FuenteCatalogo",
-      "sub": [
-       "hoy: archivos de data/",
-       "mañana: lo que exponga Alephee"
-      ],
-      "tone": "dato"
-     },
-     {
-      "x": 16,
-      "y": 200,
-      "w": 130,
-      "h": 84,
-      "title": "Producto",
-      "sub": [
-       "MapeoStart",
-       "SKU + categoría"
-      ],
-      "tone": "dato"
-     },
-     {
-      "x": 176,
-      "y": 200,
-      "w": 170,
-      "h": 84,
-      "title": "Categoría por tabla",
-      "sub": [
-       "reference_category",
-       "en código (V3)"
-      ],
-      "tone": "codigo"
-     },
-     {
-      "x": 376,
-      "y": 200,
-      "w": 150,
-      "h": 84,
-      "title": "Caché (V3)",
-      "sub": [
-       "SKU + categoría",
-       "legacy"
-      ],
-      "tone": "codigo"
-     },
-     {
-      "x": 556,
-      "y": 186,
-      "w": 230,
-      "h": 112,
-      "title": "Claude Sonnet 5",
-      "sub": [
-       "decide qué consultar",
-       "hasta 6 rondas",
-       "la última: solo entregar"
-      ],
-      "tone": "modelo"
-     },
-     {
-      "x": 812,
-      "y": 200,
-      "w": 180,
-      "h": 84,
-      "title": "Guardrail (V3)",
-      "sub": [
-       "revisar: dominio,",
-       "duplicados, obligatorios"
-      ],
-      "tone": "codigo"
-     },
-     {
-      "x": 1012,
-      "y": 200,
-      "w": 172,
-      "h": 84,
-      "title": "Red final (V3)",
-      "sub": [
-       "limpiar: descarta",
-       "y marca missing"
-      ],
-      "tone": "codigo"
-     },
-     {
-      "x": 176,
-      "y": 370,
-      "w": 170,
-      "h": 84,
-      "title": "Sin referencia",
-      "sub": [
-       "missing: category",
-       "fin, sin modelo"
-      ],
-      "tone": "alerta"
-     },
-     {
-      "x": 376,
-      "y": 370,
-      "w": 150,
-      "h": 84,
-      "title": "Guardada",
-      "sub": [
-       "sale sin llamar",
-       "al modelo"
-      ],
-      "tone": "dato"
-     },
-     {
-      "x": 1012,
-      "y": 370,
-      "w": 172,
-      "h": 84,
-      "title": "Publicación",
-      "sub": [
-       "MapeoDone",
-       "se guarda en caché"
-      ],
-      "tone": "dato"
-     }
-    ],
-    "edges": [
-     {
-      "points": [
-       [
-        146,
-        242
-       ],
-       [
-        176,
-        242
-       ]
-      ],
-      "label": "",
-      "dashed": false
-     },
-     {
-      "points": [
-       [
-        346,
-        242
-       ],
-       [
-        376,
-        242
-       ]
-      ],
-      "label": "",
-      "dashed": false
-     },
-     {
-      "points": [
-       [
-        526,
-        242
-       ],
-       [
-        556,
-        242
-       ]
-      ],
-      "label": "miss",
-      "dashed": false,
-      "at": [
-       541,
-       226
-      ]
-     },
-     {
-      "points": [
-       [
-        786,
-        242
-       ],
-       [
-        812,
-        242
-       ]
-      ],
-      "label": "",
-      "dashed": false
-     },
-     {
-      "points": [
-       [
-        992,
-        242
-       ],
-       [
-        1012,
-        242
-       ]
-      ],
-      "label": "",
-      "dashed": false
-     },
-     {
-      "points": [
-       [
-        640,
-        186
-       ],
-       [
-        640,
-        132
-       ]
-      ],
-      "label": "pide",
-      "dashed": false,
-      "at": [
-       612,
-       164
-      ]
-     },
-     {
-      "points": [
-       [
-        702,
-        132
-       ],
-       [
-        702,
-        186
-       ]
-      ],
-      "label": "resultado",
-      "dashed": false,
-      "at": [
-       744,
-       164
-      ]
-     },
-     {
-      "points": [
-       [
-        842,
-        74
-       ],
-       [
-        880,
-        74
-       ]
-      ],
-      "label": "",
-      "dashed": false
-     },
-     {
-      "points": [
-       [
-        261,
-        284
-       ],
-       [
-        261,
-        370
-       ]
-      ],
-      "label": "no está",
-      "dashed": false
-     },
-     {
-      "points": [
-       [
-        451,
-        284
-       ],
-       [
-        451,
-        370
-       ]
-      ],
-      "label": "hit",
-      "dashed": false
-     },
-     {
-      "points": [
-       [
-        1098,
-        284
-       ],
-       [
-        1098,
-        370
-       ]
-      ],
-      "label": "",
-      "dashed": false
-     },
-     {
-      "points": [
-       [
-        902,
-        284
-       ],
-       [
-        902,
-        336
-       ],
-       [
-        671,
-        336
-       ],
-       [
-        671,
-        298
-       ]
-      ],
-      "label": "problemas: una ronda para corregir",
-      "dashed": true,
-      "at": [
-       786,
-       356
-      ]
-     }
-    ],
-    "caption": "La V1 es solo la caja del modelo, con una llamada estructurada. La V2 suma las herramientas y el FunctionAgent. La V3 suma la categoría por tabla, la caché, las correcciones y las validaciones."
-   }
-  },
-  {
    "id": "s53",
-   "section": "v3",
+   "section": "v2",
    "title": "Guardrail: una comprobación en código.",
    "kind": "compare",
    "lead": "",
    "label": "",
    "items": [
-    "REVISAR | Lista los problemas en lenguaje claro y se los devuelve al agente, que tiene una ronda para corregir",
-    "LIMPIAR | Al final descarta lo inválido con su motivo y marca los obligatorios que faltan",
+    "VALIDATE | Lista los problemas en lenguaje claro. submit_listing se los devuelve al agente, que corrige y vuelve a entregar, hasta cinco veces",
+    "CLEAN | La red final: fija la categoría de la tabla, descarta lo inválido con su motivo y marca los obligatorios que faltan",
     "NUNCA PUBLICA | Un valor fuera de la lista del canal, un -1 ni un duplicado. No verifica que el valor sea cierto: eso depende del esquema y de catálogo"
    ],
    "question": "",
@@ -2453,20 +2416,53 @@
    "table": null,
    "notes": {
     "objective": "Diferenciar guardrail de regla del prompt",
-    "say": "Una regla en el prompt depende de que el modelo obedezca. Un guardrail la comprueba en código. Funciona en dos pasos. Primero le devuelve los problemas al agente para que corrija, una sola vez. Lo que siga mal se descarta en código. Tiene un límite: comprueba que el valor esté en el esquema y en la lista del canal, pero no que sea cierto para el producto.",
+    "say": "Una regla en el prompt depende de que el modelo obedezca. Un guardrail la comprueba en código. En la V2 son dos funciones. validate revisa cada entrega y le devuelve los problemas al agente para que corrija. clean corre siempre al final y descarta lo que siga mal, con el motivo en rejected. Tiene un límite: comprueba que el valor esté en el esquema y en la lista del canal, pero no que sea cierto para el producto.",
     "ask": "",
     "close": "",
-    "transition": "Decisión 12."
+    "transition": "La validación, en código."
    },
    "minutes": 3
   },
   {
+   "id": "c13",
+   "section": "v2",
+   "title": "La validación, en código.",
+   "kind": "code",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Ver las reglas que toda entrega tiene que cumplir",
+    "say": "Son cuatro comprobaciones. La categoría tiene que ser la de la tabla. Cada atributo tiene que existir en la categoría, y su valor tiene que estar en la lista del canal con un id y un nombre que coincidan. Ningún atributo puede repetirse. Y cada obligatorio tiene que tener valor o estar en missing con su motivo. clean usa las mismas reglas para descartar.",
+    "ask": "",
+    "close": "",
+    "transition": "Decisión 12."
+   },
+   "minutes": 3,
+   "code": {
+    "file": "core/src/catalog/guardrails.py",
+    "lines": "34-45",
+    "symbol": "def validate",
+    "highlight": [
+     38,
+     41,
+     43
+    ],
+    "caption": "Devuelve texto para el modelo. Una lista vacía quiere decir que la entrega pasa."
+   }
+  },
+  {
    "id": "s56",
-   "section": "v3",
+   "section": "v2",
    "title": "¿Qué hace cuando no sabe?",
    "kind": "decision",
    "lead": "",
-   "label": "La V3 se construye con la opción B · C se puede armar encima",
+   "label": "La V2 se construyó con la opción B · C se puede armar encima",
    "items": [],
    "question": "",
    "options": [],
@@ -2489,21 +2485,21 @@
      "B · Faltante explícito con motivo: la publicación sale con missing y alguien decide",
      "C · Bloquear la publicación hasta revisión humana"
     ],
-    "proposal": "B. Reemplaza el publicar sin atributos. Quién recibe la lista missing y si bloquea la publicación es parte de la integración con la plataforma de Alephee, y queda pendiente con dueño. C es una política válida que se puede construir sobre B.",
+    "proposal": "B. Reemplaza el publicar sin atributos. En la V2, validate rechaza una entrega con un obligatorio sin valor ni motivo, y clean lo marca en missing si el agente no lo corrige. Sin categoría en la tabla o sin esquema, el Workflow termina sin llamar al modelo, con missing: category. Quién recibe la lista missing y si bloquea la publicación es parte de la integración con la plataforma de Alephee, y queda pendiente con dueño. C es una política válida que se puede construir sobre B.",
     "file": "decisiones/12-cuando-no-sabe.md"
    }
   },
   {
    "id": "s57",
-   "section": "v3",
+   "section": "v2",
    "title": "Memoria: correcciones del equipo de catálogo.",
    "kind": "cards",
    "lead": "",
    "label": "",
    "items": [
     "Una corrección dice: en esta categoría, este valor del producto va a este atributo con este valor del canal",
-    "El agente la consulta como una herramienta más, y la corrección manda sobre su criterio",
-    "En la V3 de hoy es un archivo local. En producción, una tabla de Alephee o AgentCore Memory"
+    "El agente la consulta con lookup_corrections, y la corrección manda sobre su criterio",
+    "En la V2 vive en DynamoDB (tabla corrections) y se carga con scripts/correct.sh. En producción, una tabla de Alephee o AgentCore Memory"
    ],
    "question": "",
    "options": [],
@@ -2512,20 +2508,88 @@
    "table": null,
    "notes": {
     "objective": "Definir memoria para este agente sin prometer aprendizaje automático",
-    "say": "Acá memoria no quiere decir que el agente aprende solo. Quiere decir que reusa correcciones que alguien del equipo de catálogo cargó a mano. Se cargan con un comando y el agente las consulta por categoría. Que las respete depende de que las consulte, por eso la instrucción lo exige y la validación revisa después.",
+    "say": "Acá memoria no quiere decir que el agente aprende solo. Quiere decir que reusa correcciones que alguien del equipo de catálogo cargó a mano. Se cargan con scripts/correct.sh, que revisa que el valor esté en la lista del canal y borra la caché de esa categoría. Que el agente la respete depende de que la consulte. El prompt lo exige y un test e2e lo comprueba contra Bedrock. Un límite: la corrección solo se aplica a lo que llega al agente. Si el valor coincide con la lista del canal, lo resuelve el código y no consulta correcciones.",
     "ask": "",
     "close": "",
-    "transition": "Decisión 13."
+    "transition": "La caché: la clave y la lectura."
    },
    "minutes": 3
   },
   {
+   "id": "c14",
+   "section": "v2",
+   "title": "La caché: la clave y la lectura.",
+   "kind": "code",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Ver qué hace que el mismo SKU dé la misma salida",
+    "say": "La clave es el SKU y la categoría legacy, más la versión de las tablas y la versión del prompt. Si cambia una tabla o el prompt, la clave cambia y el producto se vuelve a mapear. Antes de devolver una entrada guardada, la valida otra vez contra el esquema. Si ya no pasa, la ignora. Un producto sin SKU o sin categoría no usa la caché.",
+    "ask": "",
+    "close": "",
+    "transition": "finalize: qué se guarda."
+   },
+   "minutes": 3,
+   "code": {
+    "file": "core/src/catalog/v2.py",
+    "lines": "69-85",
+    "symbol": "async def check_cache",
+    "highlight": [
+     74,
+     82,
+     83,
+     84
+    ],
+    "caption": "Un error de DynamoDB no frena el mapeo: _safe sigue sin caché."
+   }
+  },
+  {
+   "id": "c15",
+   "section": "v2",
+   "title": "finalize: gana lo resuelto y se guarda lo válido.",
+   "kind": "code",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Ver el cierre del Workflow y qué entra en la caché",
+    "say": "finalize junta la última entrega con lo que resolvió el código, y gana lo resuelto. Después pasa clean, la red final. Solo guarda en la caché si la última entrega del agente pasó la validación. Si el agente agotó las cinco entregas, el resultado sale limpio y con un error que lo dice. Así un loop agotado no pasa por un éxito.",
+    "ask": "",
+    "close": "",
+    "transition": "Decisión 13."
+   },
+   "minutes": 3,
+   "code": {
+    "file": "core/src/catalog/v2.py",
+    "lines": "149-164",
+    "symbol": "async def finalize",
+    "highlight": [
+     154,
+     156,
+     157,
+     163
+    ],
+    "caption": "Sin ninguna entrega, el resultado es un error y no una publicación vacía."
+   }
+  },
+  {
    "id": "s60",
-   "section": "v3",
+   "section": "v2",
    "title": "¿Cómo garantizamos determinismo?",
    "kind": "decision",
    "lead": "",
-   "label": "La V3 se construye con la opción A · falta definir cuándo se invalida",
+   "label": "La V2 se construyó con la opción A · falta separar por cuenta",
    "items": [],
    "question": "",
    "options": [],
@@ -2534,7 +2598,7 @@
    "table": null,
    "notes": {
     "objective": "Cerrar la decisión 13 con las extensiones de la clave como pendiente",
-    "say": "Preguntar qué cambios deberían invalidar la caché: el producto, las tablas o el esquema del canal. Anotar la lista, porque es la especificación de la clave de producción.",
+    "say": "Preguntar qué otros cambios deberían invalidar la caché. Hoy un cambio en el producto o en el esquema del canal no cambia la clave. Anotar la lista, porque es la especificación de la clave de producción.",
     "ask": "",
     "close": "",
     "transition": "Demo: corregir y repetir."
@@ -2544,17 +2608,17 @@
     "number": 13,
     "question": "¿Cómo garantizamos que el mismo SKU dé la misma salida?",
     "options": [
-     "A · Caché por SKU + canal; se invalida al corregir o al cambiar las tablas",
+     "A · Caché por SKU + tablas + prompt en DynamoDB; se invalida al cargar una corrección",
      "B · Seed fijo (lo que se intentó hoy; los parámetros exactos siguen sin confirmar)",
      "C · Recalcular siempre y aceptar variación"
     ],
-    "proposal": "A. Un mapeo por SKU y canal. B reduce la variación pero no la elimina, y sigue pagando cada corrida. Antes de producción, la clave tiene que sumar la versión de las tablas y separar por cuenta.",
+    "proposal": "A. Un mapeo por SKU, con la versión de las tablas y la del prompt en la clave, en la tabla mapping_cache de DynamoDB. Cambiar una tabla o el prompt cambia la clave. Cargar una corrección con scripts/correct.sh borra la caché de esa categoría. Solo se guarda una entrega que pasó la validación. B reduce la variación pero no la elimina, y sigue pagando cada corrida. Antes de producción falta separar por cuenta y sumar la versión del esquema del canal.",
     "file": "decisiones/13-determinismo-y-cache.md"
    }
   },
   {
    "id": "s61",
-   "section": "v3",
+   "section": "v2",
    "title": "Demo · corregir y repetir.",
    "kind": "demo",
    "lead": "",
@@ -2566,22 +2630,113 @@
    "exercise": null,
    "table": null,
    "notes": {
-    "objective": "Ver memoria, guardrails y caché en una sola secuencia",
-    "say": "Elegir con el grupo la corrección a cargar sobre el caso guía: un valor de lista que el modelo eligió mal. Cargarla, correr y leer. Correr de nuevo: tiene que salir de la caché. Si algo falla, mostrar la corrida guardada y decirlo.",
+    "objective": "Ver correcciones, validación y caché en una sola secuencia",
+    "say": "La corrección del ejemplo es para el caso 01: Aro (MOCK) con valor 14 va a 14\", id 99102. Llega al agente porque 14 no coincide con ninguna opción de la lista. Si el grupo prefiere otra, cambiar los argumentos. scripts/correct.sh revisa que el valor esté en la lista del canal, guarda la corrección en DynamoDB y borra la caché de la categoría. Correr una vez: el agente consulta la corrección. Correr de nuevo: tiene que salir de la caché. Si algo falla, mostrar la corrida guardada y decirlo.",
+    "ask": "",
+    "close": "",
+    "transition": "La misma V2 desde el chat."
+   },
+   "minutes": 5,
+   "demo": {
+    "command": "scripts/correct.sh --category urn:category:102529:vendor:shopee --attribute urn:attribute:990001:vendor:shopee --product-value 14 --value-id 99102 --value '14\"'",
+    "watch": [
+     "Primera corrida, scripts/experiment.sh --version v2 --data mock --case 01-real-calota-aro14: en la traza, lookup_corrections devuelve la corrección",
+     "El valor de Aro sale tal cual lo cargó catálogo",
+     "Segunda corrida, el mismo comando: sale de la caché (source = cache), sin run_agent ni llamadas al modelo",
+     "rejected explica cada descarte de clean"
+    ],
+    "fallback": "las corridas del experimento v2-mock del 1/10, en Langfuse"
+   }
+  },
+  {
+   "id": "c10",
+   "section": "v2",
+   "title": "Demo · la V2 desde el chat.",
+   "kind": "demo",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "demo": {
+    "command": "API_URL=<Function URL del BFF> CHAT_HMAC_SECRET=<secreto HMAC> npm start -w apps/web",
+    "watch": [
+     "Escribir en el chat: Mapea el SKU 94701411 con la V2",
+     "El asistente llama a map_product_v2 y muestra la categoría, los atributos, los faltantes y source",
+     "Pedirlo otra vez: source dice cache",
+     "En Langfuse: la traza del turno del chat, con map_product_v2 y, adentro, los steps de la V2"
+    ],
+    "fallback": "npm run dev en localhost:3000: modo mock del chat, con una respuesta de ejemplo que no corre la V2"
+   },
+   "notes": {
+    "objective": "Mostrar que la misma V2 sirve desde el chat del template",
+    "say": "Es el mismo Workflow del experimento, detrás de una herramienta del chat. El chat tiene dos, map_product_v1 y map_product_v2, y usa la V2 por defecto. Corre en AgentCore, en el stage warroom de la cuenta sandbox, y mapea solo el dataset mock. El chat usa la semilla del prompt del repositorio, así que su caché no se mezcla con la del experimento. Si el deploy no responde, mostrar el modo mock local y decir que esa respuesta es de ejemplo.",
+    "ask": "",
+    "close": "",
+    "transition": "Cómo lo probamos."
+   },
+   "minutes": 4
+  },
+  {
+   "id": "c16",
+   "section": "v2",
+   "title": "Cómo lo probamos.",
+   "kind": "cards",
+   "lead": "",
+   "label": "",
+   "items": [
+    "Tests unitarios: uv run pytest core/tests -q. Son 181, con dobles del modelo, sin AWS ni Langfuse",
+    "Experimentos en Langfuse: scripts/experiment.sh --version v2 --data mock. Cada producto queda con su traza y sus scores",
+    "Tests e2e: scripts/e2e.sh, contra Bedrock, DynamoDB y el chat desplegado. Los 14 pasaron el 1/10"
+   ],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Mostrar cómo sabemos que la V2 funciona antes de medirla",
+    "say": "Son tres niveles. Los tests unitarios prueban cada step con dobles y corren en segundos. Los experimentos miden la calidad sobre el dataset con la métrica de la decisión 8. Los tests e2e comprueban que las piezas reales funcionan juntas: Bedrock, las tablas de DynamoDB y el chat desplegado. Los e2e usan solo el dataset mock.",
+    "ask": "",
+    "close": "",
+    "transition": "Un test e2e, en código."
+   },
+   "minutes": 3
+  },
+  {
+   "id": "c17",
+   "section": "v2",
+   "title": "Un test e2e, en código.",
+   "kind": "code",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Ver una prueba contra el modelo real",
+    "say": "Este test corre la V2 contra Bedrock sobre cada uno de los 10 casos mock, con una caché en memoria para que siempre llame al modelo. El caso sin categoría tiene que terminar por tablas, sin modelo. En los demás, la salida tiene que pasar validate sin ningún problema. Es la regla de la decisión 8, comprobada contra el modelo real.",
     "ask": "",
     "close": "",
     "transition": "A las 16:15, la prueba."
    },
-   "minutes": 5,
-   "demo": {
-    "command": "scripts/experiment.sh --version v3 --data real --case error-88904447",
-    "watch": [
-     "La consulta de correcciones aparece en la traza",
-     "El valor corregido sale tal cual lo cargó catálogo",
-     "rejected explica cada descarte de la validación",
-     "Segunda corrida del mismo caso: sale de caché, sin tokens"
+   "minutes": 3,
+   "code": {
+    "file": "core/tests/e2e/test_e2e_mapping.py",
+    "lines": "47-55",
+    "symbol": "async def test_v2_never_delivers_invalid_listings",
+    "highlight": [
+     49,
+     51,
+     55
     ],
-    "fallback": "la corrida del experimento v3-real, en Langfuse"
+    "caption": "Corre con scripts/e2e.sh. Sin credenciales de AWS, se omite."
    }
   },
   {
@@ -2589,7 +2744,7 @@
    "section": "prueba",
    "title": "La prueba.",
    "kind": "divider",
-   "lead": "El proceso de hoy contra V1, V2 y V3, sobre los 30, con el criterio de la decisión 8.",
+   "lead": "El proceso de hoy contra la V1 y la V2, sobre los 30 reales, con el criterio de la decisión 8.",
    "label": "",
    "items": [],
    "question": "",
@@ -2599,7 +2754,7 @@
    "table": null,
    "notes": {
     "objective": "Abrir la prueba con el criterio acordado a la vista",
-    "say": "Volver a la pizarra y al número de la decisión 8. Los experimentos corrieron durante los bloques, y acá los comparamos en Langfuse. Si alguno no terminó, decirlo.",
+    "say": "Volver a la pizarra y al número de la decisión 8. Los experimentos corrieron el 1/10 en Langfuse, y acá los comparamos.",
     "ask": "",
     "close": "",
     "transition": "Los resultados."
@@ -2609,10 +2764,10 @@
   {
    "id": "s63",
    "section": "prueba",
-   "title": "Resultados (se completan en vivo).",
+   "title": "Resultados del 1/10.",
    "kind": "table",
    "lead": "",
-   "label": "Columna Hoy: publicaciones que Alephee exportó, salida esperada MOCK. Las demás salen de los experimentos de Langfuse",
+   "label": "30 reales · salida esperada MOCK · Hoy: lo que publicó Alephee · V1 y V2: experimentos de Langfuse del 1/10",
    "items": [],
    "question": "",
    "options": [],
@@ -2623,50 +2778,56 @@
      "Métrica",
      "Hoy",
      "V1",
-     "V2",
-     "V3"
+     "V2"
     ],
     "rows": [
      [
       "Casos exactos",
       "7",
-      "·",
-      "·",
-      "·"
+      "3",
+      "5"
      ],
      [
       "Categoría correcta",
       "28",
-      "·",
-      "·",
-      "·"
+      "28",
+      "27"
      ],
      [
       "Valores inválidos (-1 o fuera de lista)",
       "47",
-      "·",
-      "·",
-      "·"
+      "3",
+      "0"
      ],
      [
       "Duplicados",
       "5",
-      "·",
-      "·",
-      "·"
+      "0",
+      "0"
      ],
      [
       "Obligatorios sin informar",
       "2",
-      "·",
-      "·",
-      "·"
+      "1",
+      "1"
+     ],
+     [
+      "Precisión",
+      "0,70",
+      "0,70",
+      "0,69"
+     ],
+     [
+      "Recall",
+      "0,97",
+      "0,57",
+      "0,60"
      ]
     ]
    },
    "notes": {
     "objective": "Leer los resultados contra el criterio, sin maquillar",
-    "say": "Completar las columnas con los experimentos del día. La columna Hoy sale de la misma métrica aplicada a las publicaciones actuales. Al leer la V1, recordar que su categoría es optimista, porque elige entre 23 opciones que incluyen la correcta. Si los exactos salen bajos en todas las columnas, decirlo y explicar por qué en la lámina siguiente.",
+    "say": "La columna Hoy sale de la misma métrica aplicada a las publicaciones actuales. La V2 es la única columna con cero valores inválidos y cero duplicados. Su único obligatorio sin informar es el caso error-26301167. La V2 completó Manufacturer (MOCK) con GM, tomado del atributo Marca del producto, y la salida esperada mock lo marca como faltante porque solo completa obligatorios a través de reference_attribute. Es un límite de la salida esperada y no un valor inventado. Las 27 categorías de la V2 salen de esa corrida. Al volver a correr los tres casos que dieron problemas, los tres salieron con la categoría correcta y una publicación válida, así que no se repitió. La categoría de la V1 es optimista, porque elige entre 23 opciones que incluyen la correcta. El recall de Hoy sale inflado, porque la salida esperada hereda lo que hoy se mapea.",
     "ask": "",
     "close": "",
     "transition": "Cómo leer la tabla."
@@ -2682,7 +2843,8 @@
    "label": "",
    "items": [
     "Exactos bajos en todas las columnas: la salida esperada hereda las omisiones del proceso actual y castiga aciertos que hoy nadie mapea",
-    "Inválidos y duplicados sí son errores seguros: es lo primero que tiene que bajar",
+    "Inválidos y duplicados sí son errores seguros. La V2 es la única columna con cero en los dos",
+    "El obligatorio sin informar de la V2 (error-26301167) es Manufacturer = GM, tomado de Marca: la salida esperada mock no lo prevé",
     "Categoría: la V1 elige entre 23 opciones con la correcta adentro, así que su número es optimista"
    ],
    "question": "",
@@ -2710,7 +2872,7 @@
     "Esquema oficial de Shopee y salida esperada validada con el equipo de catálogo",
     "Integración: la API pública lee el producto (F8), pero escribir publicaciones y leer tablas necesita acceso interno",
     "Decidir dónde corre el batch (decisión 5) y qué pasa con missing (decisión 12)",
-    "Medir el costo completo y fijar el tope (decisión 11), y probar Haiku 4.5 (decisión 6)"
+    "Fijar el tope de costo con la medición del 1/10 (decisión 11) y probar Haiku 4.5 (decisión 6)"
    ],
    "question": "",
    "options": [],
@@ -2757,7 +2919,7 @@
      ],
      [
       "3",
-      "Tipo de aplicación: una llamada estructurada, y escalar",
+      "Tipo de aplicación: una llamada en la V1, Workflow con FunctionAgent en la V2",
       "decisiones/03-tipo-de-aplicacion.md"
      ],
      [
@@ -2822,22 +2984,22 @@
      ],
      [
       "10",
-      "La tabla manda; el agente elige valores y lo no cubierto",
+      "La tabla manda: categoría y campos en código; el agente decide valores y lo no cubierto",
       "decisiones/10-tabla-vs-agente.md"
      ],
      [
       "11",
-      "Costo: tope acordado y medición por producto",
+      "Costo: tope acordado con Alephee sobre la medición del 1/10 (V2: ~9.970 tokens de entrada por producto)",
       "decisiones/11-costo.md"
      ],
      [
       "12",
-      "Cuando no sabe: faltante explícito, nunca inventar",
+      "Cuando no sabe: faltante explícito con motivo; clean es la red final",
       "decisiones/12-cuando-no-sabe.md"
      ],
      [
       "13",
-      "Determinismo: caché por SKU + canal con invalidación",
+      "Determinismo: caché por SKU + tablas + prompt en DynamoDB; se invalida al cargar una corrección",
       "decisiones/13-determinismo-y-cache.md"
      ]
     ]
