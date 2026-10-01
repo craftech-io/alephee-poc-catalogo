@@ -20,6 +20,7 @@
 - Los tests no llaman a AWS ni a Langfuse.
 - Antes de subir `alephee-shopee-real` a Langfuse Cloud, Gastón confirma con Rick (spec, "Condiciones").
 - `BedrockConverse` 0.14.18 ignora el `ttl` del `CachePoint` (`utils.py` solo emite `{"type": "default"}`): la caché dura 5 minutos. El spec decía 1 hora "a verificar"; queda en 5 minutos y se actualiza el spec en la tarea 3.
+- El catálogo de la V1 tiene solo las 23 categorías con esquema: todo resultado de categoría de la V1 se rotula como optimista (decisión del 1/10).
 - Commit al final de cada tarea, con la línea `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`.
 
 ## Review Focus
@@ -1371,7 +1372,7 @@ Expected: la línea de base `current` da 7 exactos, 28 categorías y 47 inválid
 
 - [ ] **Step 5: Registrar y commitear**
 
-Agregar a `CLAUDE.md` una tabla con los resultados de `current` y `v1` (exactos, categorías, inválidos, duplicados, precisión, recall, tokens y segundos por producto desde Langfuse), aclarando que el `expected` es mock.
+Agregar a `CLAUDE.md` una tabla con los resultados de `current` y `v1` (exactos, categorías, inválidos, duplicados, precisión, recall, tokens y segundos por producto desde Langfuse), aclarando que el `expected` es mock y que la categoría de la V1 es optimista: elige entre 23 categorías que incluyen siempre la correcta.
 
 ```bash
 git add CLAUDE.md

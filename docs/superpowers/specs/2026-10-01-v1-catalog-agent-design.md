@@ -175,6 +175,7 @@ Tablas de referencia como herramientas (V2), `FunctionAgent` (V2), guardrails, m
 
 ## Riesgos y pendientes
 
+- **La categoría de la V1 es optimista.** El catálogo del prompt tiene solo las 23 categorías con esquema, armado a partir de los mismos 30 productos: la respuesta correcta siempre está entre las opciones. `reference_category` apunta a 337 categorías de Shopee y Shopee tiene más. Decisión de Gastón (1/10): se mantienen las 23 y todo resultado de categoría de la V1 se presenta rotulado así. No se compara de igual a igual con el proceso actual.
 - Confirmar con Rick la subida de datos reales a Langfuse Cloud.
 - El `expected` de los 30 reales y el esquema de Shopee siguen siendo mock: los exactos son una cota, no una verdad.
 - Verificar en la implementación el `ttl` del `CachePoint`, que `as_structured_llm` conserve el bloque y el enlace prompt-traza.
