@@ -26,7 +26,9 @@ from .tracing import setup_tracing
 from .v1 import MappingV1
 from .v2 import MappingV2
 
+# Langfuse dataset name for each local data folder.
 DATASETS = {"real": "alephee-shopee-real", "mock": "alephee-shopee-mock"}
+# Products mapped in parallel by `run_experiment`.
 MAX_CONCURRENCY = 4
 REAL_DATA_WARNING = (
     "Uploading the 30 real Alephee/GM products to Langfuse Cloud waits for Alephee's "
@@ -35,6 +37,11 @@ REAL_DATA_WARNING = (
 
 
 def dataset_items(cases: list[dict], origin: str) -> list[dict]:
+    """Langfuse dataset items for the cases: product as input, expected listing as expected output.
+
+    Today's listing (`actual`) travels in the metadata, so the "current" runner can read it
+    without a model call. Ids are stable per case, which makes re-uploads an upsert.
+    """
     name = DATASETS[origin]
     return [{
         "id": f"{name}-{case['id']}",
@@ -66,6 +73,7 @@ def current_task(*, item, **kwargs) -> dict:
 
 
 async def _run(workflow, product, *, with_source: bool = False) -> dict:
+    """Run one workflow on one product and return the experiment output (a listing or an error)."""
     try:
         done = await workflow.run(product=product)
     except Exception as exc:  # noqa: BLE001 — only an auth error is special-cased, see below
@@ -90,6 +98,8 @@ async def _run(workflow, product, *, with_source: bool = False) -> dict:
     return result
 
 
+# Task factories: a fresh workflow per item, so concurrent items never share workflow state.
+# The LLM client, prompt, schemas and stores are shared across items.
 def make_v1_task(llm, system_prompt: str, schemas: dict[str, dict], workflow_cls=MappingV1):
     async def task(*, item, **kwargs) -> dict:
         return await _run(workflow_cls(llm=llm, system_prompt=system_prompt, schemas=schemas, timeout=180), item.input)
@@ -108,6 +118,7 @@ def make_v2_task(llm, system_prompt: str, prompt_version: str, schemas: dict[str
 
 
 def check_aws(session_factory=boto3.Session) -> None:
+    """Fail fast with a login hint if the AWS session is missing or expired (an STS call)."""
     # Same source as `create_llm`: a profile set in the env, or `None` for the default chain.
     profile = os.environ.get("AWS_PROFILE") or None
     try:
@@ -122,10 +133,12 @@ def prompt_label(prompt) -> str:
 
 
 def _commit() -> str:
+    # Recorded in the run metadata so each Langfuse run can be traced back to the code version.
     return subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True).stdout.strip()
 
 
 def main(argv: list[str] | None = None) -> None:
+    """CLI entry point (`scripts/experiment.sh`): upload the dataset, pick the task, run it in Langfuse."""
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--version", choices=["v1", "v2", "current"], default="v1")
     parser.add_argument("--data", choices=list(DATASETS), default="mock")
@@ -137,6 +150,7 @@ def main(argv: list[str] | None = None) -> None:
                              "so a re-measurement does not read the DynamoDB cache")
     args = parser.parse_args(argv)
 
+    # The real catalog belongs to Alephee and GM: it only goes to Langfuse Cloud once agreed.
     if args.data == "real" and not args.allow_real_upload:
         raise SystemExit(REAL_DATA_WARNING)
 
@@ -163,6 +177,8 @@ def main(argv: list[str] | None = None) -> None:
         if args.version == "v1":
             task = make_v1_task(llm, prompt.text, schemas)
         else:
+            # The DynamoDB cache would answer products already mapped by an earlier run, which
+            # makes the run look faster and cheaper than a first pass. `--fresh` measures from zero.
             if args.fresh:
                 corrections, cache, stores = InMemoryCorrections(), InMemoryCache(), "in-memory (--fresh)"
             else:

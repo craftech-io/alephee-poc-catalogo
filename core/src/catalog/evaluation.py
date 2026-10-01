@@ -3,6 +3,11 @@
 Deterministic: it never calls a model. A case is exact when the category is right, no
 attribute is extra or missing, no value is out of the channel domain, nothing is
 duplicated and the reported missing attributes match the expected ones.
+
+The same evaluators score "current" (today's Alephee listing), V1 and V2 on the same dataset,
+so the columns of the comparison table are measured with the same rule. The `expected`
+outputs are still MOCK and inherit today's omissions: read precision and recall with that in
+mind (see CLAUDE.md, "Resultados del 1/10").
 """
 
 from collections import Counter
@@ -12,11 +17,15 @@ from langfuse import Evaluation
 
 from .data import NO_DATA, channel_attributes
 
+# What a failed task is scored as: no category, nothing mapped.
 EMPTY = {"category": None, "attributes": [], "missing": [], "rejected": []}
 
 
 @dataclass
 class CaseResult:
+    """Score of one case: attribute counts (true/false positives, false negatives) and the
+    urns behind each kind of error, so a Langfuse comment can name them."""
+
     category_ok: bool
     tp: int
     fp: int
@@ -28,6 +37,7 @@ class CaseResult:
 
     @property
     def exact(self) -> bool:
+        """All checks pass at once: the strictest metric of the table."""
         return (self.category_ok and self.fp == 0 and self.fn == 0 and not self.invalid
                 and not self.duplicates and not self.missing_not_detected and not self.extra_missing)
 
@@ -41,6 +51,8 @@ def _key(attr: dict, attributes: dict[str, dict]) -> tuple:
 
 
 def _is_invalid(attr: dict, attributes: dict[str, dict]) -> bool:
+    """Same rule as the guardrails: an attribute outside the category, a "no data" value, or a
+    list value whose id is not in the channel domain."""
     definition = attributes.get(attr["urn"])
     if definition is None or str(attr.get("value", "")).strip() in NO_DATA:
         return True
@@ -49,7 +61,10 @@ def _is_invalid(attr: dict, attributes: dict[str, dict]) -> bool:
 
 
 def evaluate_case(predicted: dict, expected: dict, attributes: dict[str, dict]) -> CaseResult:
+    """Compare one predicted listing with the expected one, using the expected category's schema."""
     pred_attrs = predicted.get("attributes") or []
+    # Counters, not sets: the same attribute and value submitted twice is one hit plus one false
+    # positive, so duplicates also cost precision.
     pred_keys = Counter(_key(a, attributes) for a in pred_attrs)
     exp_keys = Counter(_key(a, attributes) for a in expected["attributes"])
     tp = sum((pred_keys & exp_keys).values())
@@ -73,6 +88,7 @@ def _ratio(num: int, den: int) -> float:
 
 
 def summarize(results: list[CaseResult]) -> dict:
+    """Totals for a run. Precision and recall are micro-averaged: summed over all attributes."""
     tp, fp, fn = (sum(getattr(r, k) for r in results) for k in ("tp", "fp", "fn"))
     return {
         "cases": len(results),
@@ -87,12 +103,15 @@ def summarize(results: list[CaseResult]) -> dict:
 
 
 def _evaluate_output(output, expected: dict, schemas: dict[str, dict]) -> tuple[CaseResult, str | None]:
+    # A task output with an "error" key is scored as EMPTY; that is why experiment.py reports a
+    # V2 agent error next to a usable listing as "agent_error" instead.
     error = output.get("error") if isinstance(output, dict) else "the task returned no output"
     predicted = EMPTY if error else output
     return evaluate_case(predicted, expected, channel_attributes(schemas, expected["category"])), error
 
 
 def make_item_evaluator(schemas: dict[str, dict]):
+    """Langfuse item evaluator: one score per metric for each case of the experiment."""
     def evaluator(*, input, output, expected_output, metadata=None, **kwargs) -> list[Evaluation]:
         result, error = _evaluate_output(output, expected_output, schemas)
         return [
@@ -112,6 +131,7 @@ def make_item_evaluator(schemas: dict[str, dict]):
 
 
 def make_run_evaluator(schemas: dict[str, dict]):
+    """Langfuse run evaluator: the totals of the whole run, the numbers of the comparison table."""
     def run_evaluator(*, item_results, **kwargs) -> list[Evaluation]:
         results = [_evaluate_output(r.output, r.item.expected_output, schemas)[0] for r in item_results]
         summary = summarize(results)

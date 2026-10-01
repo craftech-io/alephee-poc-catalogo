@@ -1,5 +1,10 @@
 """The `map_product_v1` and `map_product_v2` tools: let the template's chat run the catalog
-agent on a product of the dataset."""
+agent on a product of the dataset.
+
+The chat's own agent (core/src/agent) calls these tools by SKU; each call runs the same V1 or
+V2 workflow that the batch experiment runs, and returns a compact JSON the chat can turn into
+a table. The tool descriptions the chat model reads are the `description=` strings at the end.
+"""
 
 import json
 import logging
@@ -21,6 +26,7 @@ logger = logging.getLogger(__name__)
 
 
 def _describe(sku: str, listing: Listing, schemas: dict[str, dict], source: str, warning: str | None = None) -> str:
+    """Listing as JSON for the chat, with attribute names instead of bare urns so it reads as a table."""
     attributes = channel_attributes(schemas, listing.category)
     out = {
         "sku": sku,
@@ -41,6 +47,7 @@ def _describe(sku: str, listing: Listing, schemas: dict[str, dict], source: str,
 
 def create_catalog_tools(llm_factory=create_llm, workflow_cls=MappingV1, workflow_v2_cls=MappingV2, directories=None,
                          env=None, stores_factory=stores_from_env) -> list[FunctionTool]:
+    """Build the two chat tools. Every argument is injectable so tests run without AWS or Langfuse."""
     env = os.environ if env is None else env
     if directories is None:
         # Default to the mock dataset only: the deployed chat sends prompts and answers to
@@ -60,6 +67,9 @@ def create_catalog_tools(llm_factory=create_llm, workflow_cls=MappingV1, workflo
             stores.append(stores_factory(env))
         return stores[0]
 
+    # Shared body of both tools; `build` creates the V1 or V2 workflow for the dataset folder where
+    # the SKU was found, so schemas and reference tables always come from that same dataset.
+    # Every failure becomes a short text answer: the chat should explain it, not crash.
     async def _map(sku: str, build) -> str:
         found = find_product(sku, directories)
         if found is None:
@@ -76,12 +86,17 @@ def create_catalog_tools(llm_factory=create_llm, workflow_cls=MappingV1, workflo
             return f"Could not map SKU {sku}: {done.error}"
         return _describe(str(sku).strip(), done.listing, schemas, done.source, done.error)
 
+    # Tool body; its docstring is part of the tool and is left as is. The prompt is fetched on
+    # every call, so a prompt edited in Langfuse applies to the next message; the deployed
+    # Runtime has no Langfuse keys and always uses the repo seed.
     async def map_product_v1(sku: str) -> str:
         """Map a product of the Alephee catalog to a Shopee listing with V1 (a single structured call)."""
         prompt = get_system_prompt(PROMPT_NAME, langfuse_client())
         return await _map(sku, lambda product, directory, schemas: workflow_cls(
             llm=llm_factory(), system_prompt=prompt.text, schemas=schemas, timeout=180))
 
+    # Tool body; its docstring is part of the tool and is left as is. Same flow as V1 plus the
+    # reference tables of the SKU's dataset and the shared corrections and cache stores.
     async def map_product_v2(sku: str) -> str:
         """Map a product of the Alephee catalog to a Shopee listing with V2 (reference tables, validation,
         corrections and cache)."""

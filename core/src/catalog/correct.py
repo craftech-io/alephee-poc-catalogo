@@ -15,6 +15,9 @@ from .store import Correction, stores_from_env
 
 
 def _check(category: str, attribute: str, value_id: str, value: str) -> None:
+    """Refuse a correction whose value is not in the channel list: a correction must not
+    smuggle in a value the guardrails would reject anyway."""
+    # Schemas from both datasets, so a category that exists only in one of them can be corrected.
     schemas = {**load_schemas(data_dir("mock")), **load_schemas(data_dir("real"))}
     definition = next((a for a in schemas.get(category, {}).get("attributes", []) if a["urn"] == attribute), None)
     if definition is None:
@@ -26,6 +29,7 @@ def _check(category: str, attribute: str, value_id: str, value: str) -> None:
 
 
 def main(argv: list[str] | None = None, stores=None) -> None:
+    """CLI entry point (`scripts/correct.sh`). `stores` lets tests pass in-memory stores."""
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     for flag in ("--category", "--attribute", "--product-value", "--value-id", "--value"):
         parser.add_argument(flag, required=True)
@@ -36,6 +40,8 @@ def main(argv: list[str] | None = None, stores=None) -> None:
     corrections.put(Correction(category_urn=args.category, attribute_urn=args.attribute, product_value=args.product_value,
                                value_id=args.value_id, value=args.value, author=args.author,
                                created_at=date.today().isoformat()))
+    # Cached listings of the category were computed without this correction; dropping them makes
+    # the next run of any SKU in it go through the agent again and pick the correction up.
     dropped = cache.invalidate_category(args.category)
     print(f"Correction stored ({label}); {dropped} cached mappings of {args.category} dropped.")
 
