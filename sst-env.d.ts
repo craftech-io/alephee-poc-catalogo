@@ -6,10 +6,123 @@
 
 declare module "sst" {
   export interface Resource {
+    "AgentRuntime": {
+      "arn": string
+      "type": "sst.sst.Linkable"
+    }
+    "ApiClienteDemo": {
+      "name": string
+      "type": "sst.aws.Function"
+      "url": string
+    }
+    "AtlassianClientId": {
+      "type": "sst.sst.Secret"
+      "value": string
+    }
+    "AtlassianClientSecret": {
+      "type": "sst.sst.Secret"
+      "value": string
+    }
+    "AtlassianCloudId": {
+      "type": "sst.sst.Secret"
+      "value": string
+    }
+    "CatalogCorrections": {
+      "name": string
+      "type": "sst.aws.Dynamo"
+    }
+    "CatalogMappingCache": {
+      "name": string
+      "type": "sst.aws.Dynamo"
+    }
+    "Chat": {
+      "name": string
+      "type": "sst.aws.Function"
+      "url": string
+    }
+    "ClientAuth": {
+      "audience": string
+      "hmacSecret": string
+      "issuer": string
+      "jwksUrl": string
+      "type": "sst.sst.Linkable"
+    }
+    "ClientHmacSecret": {
+      "type": "sst.sst.Secret"
+      "value": string
+    }
+    "ClientJwksUrl": {
+      "type": "sst.sst.Secret"
+      "value": string
+    }
+    "ClientTokenAudience": {
+      "type": "sst.sst.Secret"
+      "value": string
+    }
+    "ClientTokenIssuer": {
+      "type": "sst.sst.Secret"
+      "value": string
+    }
+    "Documentos": {
+      "name": string
+      "type": "sst.aws.Bucket"
+    }
+    "EscalamientoWebhookUrl": {
+      "type": "sst.sst.Secret"
+      "value": string
+    }
     "Guardrail": {
       "id": string
       "type": "sst.sst.Linkable"
       "version": string
+    }
+    "IngestaFallida": {
+      "type": "sst.aws.Queue"
+      "url": string
+    }
+    "IngestorConfluence": {
+      "name": string
+      "type": "sst.aws.Function"
+    }
+    "JsmRequestTypeId": {
+      "type": "sst.sst.Secret"
+      "value": string
+    }
+    "JsmServiceDeskId": {
+      "type": "sst.sst.Secret"
+      "value": string
+    }
+    "KnowledgeBase": {
+      "id": string
+      "type": "sst.sst.Linkable"
+    }
+    "LimitsTable": {
+      "name": string
+      "type": "sst.sst.Linkable"
+    }
+    "LimitsTableDb": {
+      "name": string
+      "type": "sst.aws.Dynamo"
+    }
+    "MensajesCola": {
+      "type": "sst.sst.Linkable"
+      "url": string
+    }
+    "MensajesColaQueue": {
+      "type": "sst.aws.Queue"
+      "url": string
+    }
+    "MensajesDlq": {
+      "type": "sst.aws.Queue"
+      "url": string
+    }
+    "MessagesTable": {
+      "name": string
+      "type": "sst.sst.Linkable"
+    }
+    "MessagesTableDb": {
+      "name": string
+      "type": "sst.aws.Dynamo"
     }
     "ObservabilidadOtlpEndpoint": {
       "type": "sst.sst.Secret"
@@ -18,6 +131,26 @@ declare module "sst" {
     "ObservabilidadOtlpHeaders": {
       "type": "sst.sst.Secret"
       "value": string
+    }
+    "SessionsTable": {
+      "name": string
+      "type": "sst.sst.Linkable"
+    }
+    "SessionsTableDb": {
+      "name": string
+      "type": "sst.aws.Dynamo"
+    }
+    "ToolDocumentos": {
+      "name": string
+      "type": "sst.aws.Function"
+    }
+    "ToolEscalamiento": {
+      "name": string
+      "type": "sst.aws.Function"
+    }
+    "Worker": {
+      "name": string
+      "type": "sst.aws.Function"
     }
   }
 }
