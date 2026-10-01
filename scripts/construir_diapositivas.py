@@ -46,8 +46,20 @@ def D(number, question, options, proposal, slug):
 L("partida", "divider", "Un agente que mapea el catálogo a Shopee, decidido paso a paso.",
   lead="War Room · Alephee × Craftech × AWS · 1/10/2026",
   objective="Qué tenemos a las 17:00: agente en local, método repetible, 13 decisiones documentadas",
-  say="Después de esta portada, la lámina siguiente muestra con un producto real qué entra y qué queremos que salga. A las 17:00 queremos tres cosas: el agente corriendo en local con el código en el repositorio, un método que se pueda repetir para el próximo caso de uso y trece decisiones escritas con su razonamiento. Hoy no se enseña teoría: se diseña y se construye en el orden en que se diseña. Gastón conduce; el grupo decide en cada punto.",
-  transition="Primero, cómo funciona hoy.")
+  say="Después de esta portada: la agenda por temas y, con un producto real, qué entra y qué queremos que salga. A las 17:00 queremos tres cosas: el agente corriendo en local con el código en el repositorio, un método que se pueda repetir para el próximo caso de uso y trece decisiones escritas con su razonamiento. Hoy no se enseña teoría: se diseña y se construye en el orden en que se diseña. Gastón conduce; el grupo decide en cada punto.",
+  transition="Lo que vamos a hacer hoy.")
+
+L("partida", "compare", "Lo que vamos a hacer hoy.",
+  lead="Decidimos → construimos → medimos. Cada bloque cierra con una versión que funciona.",
+  items=["1 · PUNTO DE PARTIDA | El error de hoy, alcance y contrato",
+         "2 · DISEÑAR EL AGENTE | Tipo de aplicación, prompt, dónde corre, modelo, stack y criterio de éxito",
+         "3 · V1 · EL AGENTE RESPONDE | Solo instrucciones: qué falla y por qué",
+         "4 · V2 · HERRAMIENTAS | Las tablas como herramientas, el loop y la caché de prompt",
+         "5 · V3 · CONTROL | Guardrails, memoria y caché por SKU",
+         "6 · LA PRUEBA | Hoy contra V1, V2 y V3, y el camino a producción"],
+  objective="Ubicar al grupo en el recorrido del día, por temas",
+  say="Seis bloques. Las decisiones de los dos primeros producen la V1; las de herramientas, la V2; las de control, la V3; y la prueba mide todo contra el criterio que acordamos antes de escribir código. Horarios para quien conduce: 09:00 punto de partida, 09:30 diseño, 11:15 V1, 13:15 V2, 15:00 V3, 16:15 prueba. Pausa a las 11:00, almuerzo 12:30 a 13:15, pausa 14:45. Cierre técnico 17:00 y preguntas hasta las 17:30.",
+  transition="Un producto real para ver qué entra y qué queremos que salga.")
 
 L("partida", "table", "De un producto de Alephee a una publicación de Shopee.",
   label="Caso real · SKU 88904447 · Correia dentada · catálogo GM Brasil (Mercado Libre Brasil) → Shopee Brasil",
@@ -91,13 +103,6 @@ L("partida", "table", "Lo que Shopee rechazó y lo que aceptó mal.",
   say="Los 30 productos del zip: 20 publicados y 10 rechazados. El caso 88904447 es el hilo del día: un material (ABS Plastic) copiado al campo Código OEM, que Shopee rechazó porque el valor no está vinculado a ese atributo. El 24581199 publicó Quantity diez veces y Shopee no lo mencionó: lo rechazó por otro obligatorio (Auto-Part Number). Lo peor no es lo que Shopee rechaza, que al menos avisa, sino lo que acepta mal: un -1 publicado como valor en 9 de 30 y URN sin el sufijo del canal. Nadie se entera hasta que un comprador lo ve.",
   ask="¿Cuál de estos errores les parece más grave para el negocio?",
   transition="Cómo vamos a trabajar hoy.")
-
-L("partida", "flow", "Seis bloques: cada decisión se compila en una versión.",
-  lead="Decidimos → construimos → medimos. Nunca se pasa al bloque siguiente con algo roto.",
-  items=["Punto de partida", "Diseñar el agente", "V1 · responde", "V2 · herramientas", "V3 · control", "La prueba"],
-  objective="Ubicar al grupo en la agenda",
-  say="Las decisiones de la mañana producen la V1; las de herramientas, la V2; las de control, la V3; y la prueba mide todo contra el criterio que acordamos antes de escribir código. Pausa a las 11:00, almuerzo 12:30 a 13:15, pausa 14:45. Cierre técnico a las 17:00 y margen de preguntas hasta las 17:30.",
-  transition="Primera decisión: qué hace y qué no hace.")
 
 L("partida", "decision", "¿Qué hace y qué no hace?",
   decision=D(1, "¿Qué alcance tiene el agente del war room?",
@@ -187,7 +192,7 @@ L("diseno", "flow", "Un prompt tiene cinco partes.",
 
 L("diseno", "code", "El prompt de la V1.",
   code={"file": "core/src/catalogo/v1.py", "lines": "22-39", "symbol": "INSTRUCCIONES", "highlight": [28, 32, 34],
-        "caption": "Rol, tarea, reglas negativas explícitas (nunca inventes) y qué hacer cuando falta (missing con motivo). Comparar con el prompt actual de la lámina 4."},
+        "caption": "Rol, tarea, reglas negativas explícitas (nunca inventes) y qué hacer cuando falta (missing con motivo). Comparar con el prompt actual de la lámina 5."},
   objective="Leer el prompt nuevo con el esqueleto de cinco partes",
   say="Rol en la primera línea; tarea en la segunda; reglas en la lista; el formato no está en el texto porque lo impone la herramienta de entrega (siguiente decisión); y la quinta parte está en las dos reglas de missing y rejected. Las reglas resaltadas son las que el proceso actual no tiene escritas.",
   ask="¿Qué regla agregarían con lo que saben del catálogo?",

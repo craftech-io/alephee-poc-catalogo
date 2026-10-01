@@ -59,11 +59,31 @@ Las reservas son para pizarra, corridas del lote y preguntas dentro del bloque. 
 
 - War Room · Alephee × Craftech × AWS · 1/10/2026
 
-**Temas para hablar:** Después de esta portada, la lámina siguiente muestra con un producto real qué entra y qué queremos que salga. A las 17:00 queremos tres cosas: el agente corriendo en local con el código en el repositorio, un método que se pueda repetir para el próximo caso de uso y trece decisiones escritas con su razonamiento. Hoy no se enseña teoría: se diseña y se construye en el orden en que se diseña. Gastón conduce; el grupo decide en cada punto.
+**Temas para hablar:** Después de esta portada: la agenda por temas y, con un producto real, qué entra y qué queremos que salga. A las 17:00 queremos tres cosas: el agente corriendo en local con el código en el repositorio, un método que se pueda repetir para el próximo caso de uso y trece decisiones escritas con su razonamiento. Hoy no se enseña teoría: se diseña y se construye en el orden en que se diseña. Gastón conduce; el grupo decide en cada punto.
 
-**Transición:** Primero, cómo funciona hoy.
+**Transición:** Lo que vamos a hacer hoy.
 
-### 02 · De un producto de Alephee a una publicación de Shopee.
+### 02 · Lo que vamos a hacer hoy.
+
+**Sección:** 01 · Punto de partida · **Pauta:** 3 min · **Tipo:** compare
+
+**Objetivo:** Ubicar al grupo en el recorrido del día, por temas
+
+**En pantalla:**
+
+- Decidimos → construimos → medimos. Cada bloque cierra con una versión que funciona.
+- 1 · PUNTO DE PARTIDA | El error de hoy, alcance y contrato
+- 2 · DISEÑAR EL AGENTE | Tipo de aplicación, prompt, dónde corre, modelo, stack y criterio de éxito
+- 3 · V1 · EL AGENTE RESPONDE | Solo instrucciones: qué falla y por qué
+- 4 · V2 · HERRAMIENTAS | Las tablas como herramientas, el loop y la caché de prompt
+- 5 · V3 · CONTROL | Guardrails, memoria y caché por SKU
+- 6 · LA PRUEBA | Hoy contra V1, V2 y V3, y el camino a producción
+
+**Temas para hablar:** Seis bloques. Las decisiones de los dos primeros producen la V1; las de herramientas, la V2; las de control, la V3; y la prueba mide todo contra el criterio que acordamos antes de escribir código. Horarios para quien conduce: 09:00 punto de partida, 09:30 diseño, 11:15 V1, 13:15 V2, 15:00 V3, 16:15 prueba. Pausa a las 11:00, almuerzo 12:30 a 13:15, pausa 14:45. Cierre técnico 17:00 y preguntas hasta las 17:30.
+
+**Transición:** Un producto real para ver qué entra y qué queremos que salga.
+
+### 03 · De un producto de Alephee a una publicación de Shopee.
 
 **Sección:** 01 · Punto de partida · **Pauta:** 3 min · **Tipo:** table
 
@@ -84,7 +104,7 @@ Las reservas son para pizarra, corridas del lote y preguntas dentro del bloque. 
 
 **Transición:** Cómo lo hace hoy el proceso actual.
 
-### 03 · Hoy: dos llamadas, un merge y un presupuesto que se agota.
+### 04 · Hoy: dos llamadas, un merge y un presupuesto que se agota.
 
 **Sección:** 01 · Punto de partida · **Pauta:** 3 min · **Tipo:** cards
 
@@ -104,7 +124,7 @@ Las reservas son para pizarra, corridas del lote y preguntas dentro del bloque. 
 
 **Transición:** Veamos cómo se le pide hoy la categoría al modelo.
 
-### 04 · Así se pide hoy la categoría.
+### 05 · Así se pide hoy la categoría.
 
 **Sección:** 01 · Punto de partida · **Pauta:** 3 min · **Tipo:** code
 
@@ -143,7 +163,7 @@ Follow these steps carefully:
 
 Reglas correctas (no inventar, copiar el URN exacto). Lo que se va a revisar: el JSON se pide en el texto y la lista completa de categorías viaja en cada llamada.
 
-### 05 · Lo que Shopee rechazó y lo que aceptó mal.
+### 06 · Lo que Shopee rechazó y lo que aceptó mal.
 
 **Sección:** 01 · Punto de partida · **Pauta:** 3 min · **Tipo:** table
 
@@ -163,26 +183,6 @@ Reglas correctas (no inventar, copiar el URN exacto). Lo que se va a revisar: el
 **Pregunta / participación:** ¿Cuál de estos errores les parece más grave para el negocio?
 
 **Transición:** Cómo vamos a trabajar hoy.
-
-### 06 · Seis bloques: cada decisión se compila en una versión.
-
-**Sección:** 01 · Punto de partida · **Pauta:** 3 min · **Tipo:** flow
-
-**Objetivo:** Ubicar al grupo en la agenda
-
-**En pantalla:**
-
-- Decidimos → construimos → medimos. Nunca se pasa al bloque siguiente con algo roto.
-- Punto de partida
-- Diseñar el agente
-- V1 · responde
-- V2 · herramientas
-- V3 · control
-- La prueba
-
-**Temas para hablar:** Las decisiones de la mañana producen la V1; las de herramientas, la V2; las de control, la V3; y la prueba mide todo contra el criterio que acordamos antes de escribir código. Pausa a las 11:00, almuerzo 12:30 a 13:15, pausa 14:45. Cierre técnico a las 17:00 y margen de preguntas hasta las 17:30.
-
-**Transición:** Primera decisión: qué hace y qué no hace.
 
 ### 07 · ¿Qué hace y qué no hace?
 
@@ -426,7 +426,7 @@ Entrega el resultado llamando a la herramienta entregar_publicacion."""
 
 ```
 
-Rol, tarea, reglas negativas explícitas (nunca inventes) y qué hacer cuando falta (missing con motivo). Comparar con el prompt actual de la lámina 4.
+Rol, tarea, reglas negativas explícitas (nunca inventes) y qué hacer cuando falta (missing con motivo). Comparar con el prompt actual de la lámina 5.
 
 ### 17 · Buenas prácticas que cambian el resultado.
 
