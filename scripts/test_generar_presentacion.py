@@ -122,3 +122,10 @@ def test_el_constructor_reproduce_el_json_commiteado(tmp_path):
     import construir_diapositivas as cd  # noqa: PLC0415
     data = cd.construir()
     assert data == json.loads((gp.RAIZ / "docs/warroom/diapositivas.json").read_text())
+
+
+def test_tabla_de_mas_de_cuatro_filas_lleva_clase_dense():
+    chica = base(kind="table", table={"headers": ["a", "b"], "rows": [["1", "2"]] * 4})
+    grande = base(kind="table", table={"headers": ["a", "b"], "rows": [["1", "2"]] * 5})
+    assert 'class="dense"' not in gp.content(chica)
+    assert '<table class="dense">' in gp.content(grande)

@@ -12,7 +12,7 @@ from pathlib import Path
 RAIZ = Path(__file__).resolve().parents[1]
 
 SECTIONS = [
-    {"id": "partida", "title": "01 · Punto de partida", "time": "09:00–09:30", "goal": "Ver el error de hoy y acordar qué construimos", "work_reserve": [["Dolores del equipo y preguntas", 5]]},
+    {"id": "partida", "title": "01 · Punto de partida", "time": "09:00–09:30", "goal": "Ver el error de hoy y acordar qué construimos", "work_reserve": [["Dolores del equipo y preguntas", 2]]},
     {"id": "diseno", "title": "02 · Diseñar el agente", "time": "09:30–11:15", "goal": "Tomar las decisiones que definen la V1", "work_reserve": [["Pizarra: dudas de AgentCore para Juan David", 5], ["Pausa 11:00", 15]]},
     {"id": "v1", "title": "03 · V1 · el agente responde", "time": "11:15–12:30", "goal": "Construir, correr y leer la primera versión", "work_reserve": [["Corridas sobre otros casos", 25]]},
     {"id": "v2", "title": "04 · V2 · herramientas", "time": "13:15–14:45", "goal": "Decidir qué resuelve la tabla y conectarla", "work_reserve": [["Corrida del lote y lectura", 25]]},
@@ -46,8 +46,22 @@ def D(number, question, options, proposal, slug):
 L("partida", "divider", "Un agente que mapea el catálogo a Shopee, decidido paso a paso.",
   lead="War Room · Alephee × Craftech × AWS · 1/10/2026",
   objective="Qué tenemos a las 17:00: agente en local, método repetible, 13 decisiones documentadas",
-  say="A las 17:00 queremos tres cosas: el agente corriendo en local con el código en el repositorio, un método que se pueda repetir para el próximo caso de uso y trece decisiones escritas con su razonamiento. Hoy no se enseña teoría: se diseña y se construye en el orden en que se diseña. Gastón conduce; el grupo decide en cada punto.",
+  say="Después de esta portada, la lámina siguiente muestra con un producto real qué entra y qué queremos que salga. A las 17:00 queremos tres cosas: el agente corriendo en local con el código en el repositorio, un método que se pueda repetir para el próximo caso de uso y trece decisiones escritas con su razonamiento. Hoy no se enseña teoría: se diseña y se construye en el orden en que se diseña. Gastón conduce; el grupo decide en cada punto.",
   transition="Primero, cómo funciona hoy.")
+
+L("partida", "table", "De un producto de Alephee a una publicación de Shopee.",
+  label="Caso real · SKU 88904447 · Correia dentada (ACDelco) · catálogo GM Brasil",
+  table={"headers": ["Entra: el producto (Mercado Libre)", "Sale: la publicación (Shopee)", "Quién lo resuelve"],
+         "rows": [["Categoría: Correias Dentadas (738058)", "Distribuição e Correias (102278:vendor:shopee)", "La tabla reference_category"],
+                  ["Condición del ítem = Novo", "Item condition = Novo (valueId 14703)", "La tabla de atributos y la lista del canal"],
+                  ["Tiempo de garantía = 6 meses", "Duração da Garantia = 6 Months (valueId 810)", "El agente: el valor equivalente de la lista"],
+                  ["Peso = 0.18 Kilogramos", "Weight = 0.18 Kilograms", "El agente, con la unidad del canal"],
+                  ["Código universal de producto = -1", "No se publica: -1 significa sin dato", "El guardrail"],
+                  ["Código OEM: no viene en el producto", "missing: Código OEM, sin dato en el origen (hoy salió ABS Plastic y Shopee lo rechazó)", "El guardrail; después decide una persona"]]},
+  objective="Que todos vean, con un producto real, qué entra y qué queremos que salga",
+  say="Esto es lo que queremos lograr. Leer la tabla de arriba abajo. Entra el producto como está en Alephee: 30 atributos con nombres y valores de Mercado Libre, con -1 y N/A donde no hay dato. Queremos que salga la publicación para Shopee: su categoría, sus atributos con el URN y el valueId del canal, y dos listas más con lo que no se pudo (missing) y lo que se descartó (rejected). La tercera columna anticipa todo el día: algunas filas las resuelve una tabla, otras necesitan interpretar (6 meses → 6 Months), y las últimas necesitan una comprobación en código. El esquema de Shopee que usamos es MOCK derivado de las publicaciones; los valores de la columna del medio salen de la publicación real.",
+  ask="¿Qué fila les parece la más difícil de automatizar?",
+  transition="Cómo lo hace hoy el proceso actual.")
 
 L("partida", "cards", "Hoy: dos llamadas, un merge y un presupuesto que se agota.",
   items=["Categoría: la tabla reference_category y, si no alcanza, el modelo elige",
@@ -175,7 +189,7 @@ L("diseno", "flow", "Un prompt tiene cinco partes.",
 
 L("diseno", "code", "El prompt de la V1.",
   code={"file": "core/src/catalogo/v1.py", "lines": "22-39", "symbol": "INSTRUCCIONES", "highlight": [28, 32, 34],
-        "caption": "Rol, tarea, reglas negativas explícitas (nunca inventes) y qué hacer cuando falta (missing con motivo). Comparar con el prompt actual de la lámina 3."},
+        "caption": "Rol, tarea, reglas negativas explícitas (nunca inventes) y qué hacer cuando falta (missing con motivo). Comparar con el prompt actual de la lámina 4."},
   objective="Leer el prompt nuevo con el esqueleto de cinco partes",
   say="Rol en la primera línea; tarea en la segunda; reglas en la lista; el formato no está en el texto porque lo impone la herramienta de entrega (siguiente decisión); y la quinta parte está en las dos reglas de missing y rejected. Las reglas resaltadas son las que el proceso actual no tiene escritas.",
   ask="¿Qué regla agregarían con lo que saben del catálogo?",

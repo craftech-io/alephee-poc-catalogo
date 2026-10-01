@@ -78,7 +78,7 @@ def content(s):
         return _demo(s)
     if s['kind'] == 'table':
         t = s['table']
-        return '<div class="table-wrap"><table><thead><tr>' + ''.join(f'<th scope="col">{E(x)}</th>' for x in t['headers']) + '</tr></thead><tbody>' + ''.join('<tr>' + ''.join(f'<{"th scope=\"row\"" if i == 0 else "td"}>{E(x)}</{"th" if i == 0 else "td"}>' for i, x in enumerate(row)) + '</tr>' for row in t['rows']) + '</tbody></table></div>'
+        return f'<div class="table-wrap"><table{" class=\"dense\"" if len(t["rows"]) > 4 else ""}><thead><tr>' + ''.join(f'<th scope="col">{E(x)}</th>' for x in t['headers']) + '</tr></thead><tbody>' + ''.join('<tr>' + ''.join(f'<{"th scope=\"row\"" if i == 0 else "td"}>{E(x)}</{"th" if i == 0 else "td"}>' for i, x in enumerate(row)) + '</tr>' for row in t['rows']) + '</tbody></table></div>'
     if s['exercise']:
         ex = s['exercise']
         return f'<div class="exercise"><p class="prompt">{E(ex["prompt"])}</p><ol>' + ''.join(f'<li>{E(x)}</li>' for x in ex['steps']) + f'</ol><div class="deliverable"><strong>Entreguen</strong> {E(ex["deliverable"])}</div><p class="debrief">{E(ex["debrief"])}</p><div class="timer" data-seconds="{ex["duration"] * 60}"><output aria-label="Tiempo restante">{ex["duration"]:02}:00</output><button data-action="timer">Iniciar tiempo</button><button data-action="reset-timer">Reiniciar</button></div></div>'

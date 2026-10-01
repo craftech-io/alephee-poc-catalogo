@@ -1,6 +1,6 @@
 # Guion del warroom · por diapositiva
 
-Versión del 30/09/2026 · 64 diapositivas · 6 bloques · 13 decisiones. Diseño en `warroom/diseno-presentacion.md`; fuentes externas en `warroom/fuentes.md`. Fuente única: `docs/warroom/diapositivas.json`. Se regenera con `python3 scripts/generar_presentacion.py`.
+Versión del 30/09/2026 · 65 diapositivas · 6 bloques · 13 decisiones. Diseño en `warroom/diseno-presentacion.md`; fuentes externas en `warroom/fuentes.md`. Fuente única: `docs/warroom/diapositivas.json`. Se regenera con `python3 scripts/generar_presentacion.py`.
 
 [Presentación interactiva](presentacion-warroom.html) · [PDF estático](presentacion-warroom.pdf)
 
@@ -14,12 +14,12 @@ Los fragmentos de código se leen del repositorio al generar el deck: si el cód
 
 | Sección | Horario | Diapositivas | Resultado |
 |---|---|---|---|
-| 01 · Punto de partida | 09:00–09:30 | 1–9 | Ver el error de hoy y acordar qué construimos |
-| 02 · Diseñar el agente | 09:30–11:15 | 10–33 | Tomar las decisiones que definen la V1 |
-| 03 · V1 · el agente responde | 11:15–12:30 | 34–37 | Construir, correr y leer la primera versión |
-| 04 · V2 · herramientas | 13:15–14:45 | 38–47 | Decidir qué resuelve la tabla y conectarla |
-| 05 · V3 · control | 15:00–16:15 | 48–57 | Decidir qué pasa cuando el agente no sabe |
-| 06 · La prueba y el camino | 16:15–17:00 | 58–64 | Medir contra el criterio y repartir lo que sigue |
+| 01 · Punto de partida | 09:00–09:30 | 1–10 | Ver el error de hoy y acordar qué construimos |
+| 02 · Diseñar el agente | 09:30–11:15 | 11–34 | Tomar las decisiones que definen la V1 |
+| 03 · V1 · el agente responde | 11:15–12:30 | 35–38 | Construir, correr y leer la primera versión |
+| 04 · V2 · herramientas | 13:15–14:45 | 39–48 | Decidir qué resuelve la tabla y conectarla |
+| 05 · V3 · control | 15:00–16:15 | 49–58 | Decidir qué pasa cuando el agente no sabe |
+| 06 · La prueba y el camino | 16:15–17:00 | 59–65 | Medir contra el criterio y repartir lo que sigue |
 
 Pausa 11:00–11:15; almuerzo 12:30–13:15; pausa 14:45–15:00. El bloque V3 incluye preparación de comparación 16:00–16:15. Margen de preguntas 17:00–17:30 sujeto a confirmación logística.
 
@@ -29,7 +29,7 @@ Los minutos por diapositiva son una pauta. Preservar la hora de cierre. Si el bl
 
 | Bloque | Diapositivas y demos | Trabajo reservado | Total |
 |---|---:|---|---:|
-| 01 · Punto de partida | 25 min | Dolores del equipo y preguntas: 5 min | 30 min |
+| 01 · Punto de partida | 28 min | Dolores del equipo y preguntas: 2 min | 30 min |
 | 02 · Diseñar el agente | 85 min | Pizarra: dudas de AgentCore para Juan David: 5 min; Pausa 11:00: 15 min | 105 min |
 | 03 · V1 · el agente responde | 13 min | Corridas sobre otros casos: 25 min | 38 min |
 | 04 · V2 · herramientas | 36 min | Corrida del lote y lectura: 25 min | 61 min |
@@ -59,11 +59,34 @@ Las reservas son para pizarra, corridas del lote y preguntas dentro del bloque. 
 
 - War Room · Alephee × Craftech × AWS · 1/10/2026
 
-**Temas para hablar:** A las 17:00 queremos tres cosas: el agente corriendo en local con el código en el repositorio, un método que se pueda repetir para el próximo caso de uso y trece decisiones escritas con su razonamiento. Hoy no se enseña teoría: se diseña y se construye en el orden en que se diseña. Gastón conduce; el grupo decide en cada punto.
+**Temas para hablar:** Después de esta portada, la lámina siguiente muestra con un producto real qué entra y qué queremos que salga. A las 17:00 queremos tres cosas: el agente corriendo en local con el código en el repositorio, un método que se pueda repetir para el próximo caso de uso y trece decisiones escritas con su razonamiento. Hoy no se enseña teoría: se diseña y se construye en el orden en que se diseña. Gastón conduce; el grupo decide en cada punto.
 
 **Transición:** Primero, cómo funciona hoy.
 
-### 02 · Hoy: dos llamadas, un merge y un presupuesto que se agota.
+### 02 · De un producto de Alephee a una publicación de Shopee.
+
+**Sección:** 01 · Punto de partida · **Pauta:** 3 min · **Tipo:** table
+
+**Objetivo:** Que todos vean, con un producto real, qué entra y qué queremos que salga
+
+**En pantalla:**
+
+- Caso real · SKU 88904447 · Correia dentada (ACDelco) · catálogo GM Brasil
+- Entra: el producto (Mercado Libre) / Sale: la publicación (Shopee) / Quién lo resuelve
+- Categoría: Correias Dentadas (738058) / Distribuição e Correias (102278:vendor:shopee) / La tabla reference_category
+- Condición del ítem = Novo / Item condition = Novo (valueId 14703) / La tabla de atributos y la lista del canal
+- Tiempo de garantía = 6 meses / Duração da Garantia = 6 Months (valueId 810) / El agente: el valor equivalente de la lista
+- Peso = 0.18 Kilogramos / Weight = 0.18 Kilograms / El agente, con la unidad del canal
+- Código universal de producto = -1 / No se publica: -1 significa sin dato / El guardrail
+- Código OEM: no viene en el producto / missing: Código OEM, sin dato en el origen (hoy salió ABS Plastic y Shopee lo rechazó) / El guardrail; después decide una persona
+
+**Temas para hablar:** Esto es lo que queremos lograr. Leer la tabla de arriba abajo. Entra el producto como está en Alephee: 30 atributos con nombres y valores de Mercado Libre, con -1 y N/A donde no hay dato. Queremos que salga la publicación para Shopee: su categoría, sus atributos con el URN y el valueId del canal, y dos listas más con lo que no se pudo (missing) y lo que se descartó (rejected). La tercera columna anticipa todo el día: algunas filas las resuelve una tabla, otras necesitan interpretar (6 meses → 6 Months), y las últimas necesitan una comprobación en código. El esquema de Shopee que usamos es MOCK derivado de las publicaciones; los valores de la columna del medio salen de la publicación real.
+
+**Pregunta / participación:** ¿Qué fila les parece la más difícil de automatizar?
+
+**Transición:** Cómo lo hace hoy el proceso actual.
+
+### 03 · Hoy: dos llamadas, un merge y un presupuesto que se agota.
 
 **Sección:** 01 · Punto de partida · **Pauta:** 3 min · **Tipo:** cards
 
@@ -83,7 +106,7 @@ Las reservas son para pizarra, corridas del lote y preguntas dentro del bloque. 
 
 **Transición:** Veamos cómo se le pide hoy la categoría al modelo.
 
-### 03 · Así se pide hoy la categoría.
+### 04 · Así se pide hoy la categoría.
 
 **Sección:** 01 · Punto de partida · **Pauta:** 3 min · **Tipo:** code
 
@@ -122,7 +145,7 @@ Follow these steps carefully:
 
 Reglas correctas (no inventar, copiar el URN exacto). Lo que se va a revisar: el JSON se pide en el texto y la lista completa de categorías viaja en cada llamada.
 
-### 04 · Lo que Shopee rechazó y lo que aceptó mal.
+### 05 · Lo que Shopee rechazó y lo que aceptó mal.
 
 **Sección:** 01 · Punto de partida · **Pauta:** 3 min · **Tipo:** table
 
@@ -143,7 +166,7 @@ Reglas correctas (no inventar, copiar el URN exacto). Lo que se va a revisar: el
 
 **Transición:** Cómo vamos a trabajar hoy.
 
-### 05 · Seis bloques: cada decisión se compila en una versión.
+### 06 · Seis bloques: cada decisión se compila en una versión.
 
 **Sección:** 01 · Punto de partida · **Pauta:** 3 min · **Tipo:** flow
 
@@ -163,7 +186,7 @@ Reglas correctas (no inventar, copiar el URN exacto). Lo que se va a revisar: el
 
 **Transición:** Primera decisión: qué hace y qué no hace.
 
-### 06 · ¿Qué hace y qué no hace?
+### 07 · ¿Qué hace y qué no hace?
 
 **Sección:** 01 · Punto de partida · **Pauta:** 3 min · **Tipo:** decision
 
@@ -190,7 +213,7 @@ Reglas correctas (no inventar, copiar el URN exacto). Lo que se va a revisar: el
 
 **Archivo:** `decisiones/01-alcance.md`
 
-### 07 · Entra un producto. Sale una propuesta de publicación.
+### 08 · Entra un producto. Sale una propuesta de publicación.
 
 **Sección:** 01 · Punto de partida · **Pauta:** 3 min · **Tipo:** cards
 
@@ -206,7 +229,7 @@ Reglas correctas (no inventar, copiar el URN exacto). Lo que se va a revisar: el
 
 **Transición:** El mismo contrato, en código.
 
-### 08 · El contrato, en código.
+### 09 · El contrato, en código.
 
 **Sección:** 01 · Punto de partida · **Pauta:** 3 min · **Tipo:** code
 
@@ -243,7 +266,7 @@ class Publicacion(_Estricto):
 
 Pydantic con extra="forbid": ningún campo fuera del contrato pasa. Los nombres (valueId, legacyId) son los del formato de publicación de Alephee para no traducir.
 
-### 09 · ¿Qué recibe y qué entrega?
+### 10 · ¿Qué recibe y qué entrega?
 
 **Sección:** 01 · Punto de partida · **Pauta:** 3 min · **Tipo:** decision
 
@@ -266,7 +289,7 @@ Pydantic con extra="forbid": ningún campo fuera del contrato pasa. Los nombres 
 
 **Archivo:** `decisiones/02-contrato.md`
 
-### 10 · Diseñar antes de escribir.
+### 11 · Diseñar antes de escribir.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 1 min · **Tipo:** divider
 
@@ -280,7 +303,7 @@ Pydantic con extra="forbid": ningún campo fuera del contrato pasa. Los nombres 
 
 **Transición:** Primero, qué tipos de aplicación existen.
 
-### 11 · Cuatro formas de usar un modelo.
+### 12 · Cuatro formas de usar un modelo.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 3 min · **Tipo:** compare
 
@@ -301,7 +324,7 @@ Pydantic con extra="forbid": ningún campo fuera del contrato pasa. Los nombres 
 
 **Transición:** Las tres versiones del día conviven en el mismo runner.
 
-### 12 · Las tres versiones conviven en el mismo runner.
+### 13 · Las tres versiones conviven en el mismo runner.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** code
 
@@ -325,7 +348,7 @@ def _versiones() -> dict:
 
 Cada versión es un Workflow que recibe MapeoStart y devuelve MapeoDone. Se comparan sobre el mismo dataset con el mismo evaluador.
 
-### 13 · ¿Single prompt o agente?
+### 14 · ¿Single prompt o agente?
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** decision
 
@@ -349,7 +372,7 @@ Cada versión es un Workflow que recibe MapeoStart y devuelve MapeoDone. Se comp
 
 **Archivo:** `decisiones/03-tipo-de-aplicacion.md`
 
-### 14 · Un prompt tiene cinco partes.
+### 15 · Un prompt tiene cinco partes.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 3 min · **Tipo:** flow
 
@@ -367,7 +390,7 @@ Cada versión es un Workflow que recibe MapeoStart y devuelve MapeoDone. Se comp
 
 **Transición:** El prompt de la V1, parte por parte.
 
-### 15 · El prompt de la V1.
+### 16 · El prompt de la V1.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** code
 
@@ -405,9 +428,9 @@ Entrega el resultado llamando a la herramienta entregar_publicacion."""
 
 ```
 
-Rol, tarea, reglas negativas explícitas (nunca inventes) y qué hacer cuando falta (missing con motivo). Comparar con el prompt actual de la lámina 3.
+Rol, tarea, reglas negativas explícitas (nunca inventes) y qué hacer cuando falta (missing con motivo). Comparar con el prompt actual de la lámina 4.
 
-### 16 · Buenas prácticas que cambian el resultado.
+### 17 · Buenas prácticas que cambian el resultado.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 3 min · **Tipo:** cards
 
@@ -423,7 +446,7 @@ Rol, tarea, reglas negativas explícitas (nunca inventes) y qué hacer cuando fa
 
 **Transición:** La segunda práctica, en código.
 
-### 17 · La salida es una herramienta con esquema.
+### 18 · La salida es una herramienta con esquema.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** code
 
@@ -454,7 +477,7 @@ HERRAMIENTA_SALIDA = FunctionTool.from_defaults(
 
 fn_schema=Publicacion: el modelo solo puede entregar algo que cumpla el contrato. La función nunca se ejecuta; el resultado se lee de la llamada.
 
-### 18 · ¿Cómo garantizamos el formato?
+### 19 · ¿Cómo garantizamos el formato?
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** decision
 
@@ -478,7 +501,7 @@ fn_schema=Publicacion: el modelo solo puede entregar algo que cumpla el contrato
 
 **Archivo:** `decisiones/04-salida-estructurada.md`
 
-### 19 · Dónde corre: AgentCore o contenedor propio.
+### 20 · Dónde corre: AgentCore o contenedor propio.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 3 min · **Tipo:** compare
 
@@ -497,7 +520,7 @@ fn_schema=Publicacion: el modelo solo puede entregar algo que cumpla el contrato
 
 **Transición:** El contrato con AgentCore son dos rutas HTTP.
 
-### 20 · El contrato con AgentCore son dos rutas.
+### 21 · El contrato con AgentCore son dos rutas.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** code
 
@@ -523,7 +546,7 @@ fn_schema=Publicacion: el modelo solo puede entregar algo que cumpla el contrato
 
 Las dos rutas que exige AgentCore (F1: puerto 8080, imagen ARM64). Hoy este servidor arma el chat del template; conectar el workflow de catálogo (mapear_producto) es un pendiente.
 
-### 21 · La infraestructura declara el Runtime.
+### 22 · La infraestructura declara el Runtime.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** code
 
@@ -561,7 +584,7 @@ export const runtime = new awsnative.bedrockagentcore.Runtime("AgentRuntime", {
 
 Imagen ARM64 referenciada por digest, red pública y un rol propio. Se despliega con SST; el modelo llega por variable de entorno.
 
-### 22 · ¿Dónde corre?
+### 23 · ¿Dónde corre?
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** decision
 
@@ -584,7 +607,7 @@ Imagen ARM64 referenciada por digest, red pública y un rol propio. Se despliega
 
 **Archivo:** `decisiones/05-donde-corre.md`
 
-### 23 · Elegir el modelo: qué pesa en este caso.
+### 24 · Elegir el modelo: qué pesa en este caso.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 3 min · **Tipo:** cards
 
@@ -601,7 +624,7 @@ Imagen ARM64 referenciada por digest, red pública y un rol propio. Se despliega
 
 **Transición:** Qué hay disponible en Bedrock.
 
-### 24 · Qué hay en Bedrock.
+### 25 · Qué hay en Bedrock.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 3 min · **Tipo:** table
 
@@ -620,7 +643,7 @@ Imagen ARM64 referenciada por digest, red pública y un rol propio. Se despliega
 
 **Transición:** El módulo que habla con Bedrock.
 
-### 25 · El único módulo que sabe de Bedrock.
+### 26 · El único módulo que sabe de Bedrock.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** code
 
@@ -655,7 +678,7 @@ def crear_llm(env=os.environ) -> BedrockConverse:
 
 Inference profile us.: sin prefijo, Bedrock responde ValidationException por falta de throughput on-demand (F5). Caché de system y tools activada en el cliente.
 
-### 26 · ¿Qué modelo?
+### 27 · ¿Qué modelo?
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** decision
 
@@ -679,7 +702,7 @@ Inference profile us.: sin prefijo, Bedrock responde ValidationException por fal
 
 **Archivo:** `decisiones/06-modelo.md`
 
-### 27 · Stack y harness.
+### 28 · Stack y harness.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 3 min · **Tipo:** cards
 
@@ -699,7 +722,7 @@ Inference profile us.: sin prefijo, Bedrock responde ValidationException por fal
 
 **Transición:** Un Workflow de un paso, en código.
 
-### 28 · Un Workflow de un paso.
+### 29 · Un Workflow de un paso.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** code
 
@@ -727,7 +750,7 @@ class MapeoV1(Workflow):
 
 El LLM se inyecta: en los tests es un doble, en producción es Bedrock. El workflow no sabe de proveedores.
 
-### 29 · ¿Con qué lo construimos?
+### 30 · ¿Con qué lo construimos?
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** decision
 
@@ -751,7 +774,7 @@ El LLM se inyecta: en los tests es un doble, en producción es Bedrock. El workf
 
 **Archivo:** `decisiones/07-stack.md`
 
-### 30 · ¿Cuándo está bien hecho?
+### 31 · ¿Cuándo está bien hecho?
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 3 min · **Tipo:** cards
 
@@ -768,7 +791,7 @@ El LLM se inyecta: en los tests es un doble, en producción es Bedrock. El workf
 
 **Transición:** La métrica, en código.
 
-### 31 · La métrica en código.
+### 32 · La métrica en código.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** code
 
@@ -799,7 +822,7 @@ El LLM se inyecta: en los tests es un doble, en producción es Bedrock. El workf
 
 Un caso es exacto solo si todo se cumple a la vez. Es determinista: no llama a ningún modelo.
 
-### 32 · ¿Cuál es el número que aceptamos?
+### 33 · ¿Cuál es el número que aceptamos?
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** decision
 
@@ -822,7 +845,7 @@ Un caso es exacto solo si todo se cumple a la vez. Es determinista: no llama a n
 
 **Archivo:** `decisiones/08-criterio-de-exito.md`
 
-### 33 · ¿Con qué dataset?
+### 34 · ¿Con qué dataset?
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** decision
 
@@ -845,7 +868,7 @@ Un caso es exacto solo si todo se cumple a la vez. Es determinista: no llama a n
 
 **Archivo:** `decisiones/09-dataset.md`
 
-### 34 · V1 · el agente responde.
+### 35 · V1 · el agente responde.
 
 **Sección:** 03 · V1 · el agente responde · **Pauta:** 1 min · **Tipo:** divider
 
@@ -859,7 +882,7 @@ Un caso es exacto solo si todo se cumple a la vez. Es determinista: no llama a n
 
 **Transición:** El paso único de la V1.
 
-### 35 · Una llamada, una entrega.
+### 36 · Una llamada, una entrega.
 
 **Sección:** 03 · V1 · el agente responde · **Pauta:** 4 min · **Tipo:** code
 
@@ -901,7 +924,7 @@ Un caso es exacto solo si todo se cumple a la vez. Es determinista: no llama a n
 
 tool_required=True: el modelo tiene que entregar por la herramienta. Si no la llama o la entrega no cumple el contrato, se informa el error; nunca se publica a medias.
 
-### 36 · Demo · un caso real por V1.
+### 37 · Demo · un caso real por V1.
 
 **Sección:** 03 · V1 · el agente responde · **Pauta:** 5 min · **Tipo:** demo
 
@@ -927,7 +950,7 @@ scripts/correr.sh --version v1 --datos real --caso error-88904447
 
 **Respaldo:** resultados/v1-real-20260928-173758.json (corrida del 28/09, anterior a las correcciones)
 
-### 37 · Qué falló en V1 y qué capa lo resuelve.
+### 38 · Qué falló en V1 y qué capa lo resuelve.
 
 **Sección:** 03 · V1 · el agente responde · **Pauta:** 3 min · **Tipo:** table
 
@@ -948,7 +971,7 @@ scripts/correr.sh --version v1 --datos real --caso error-88904447
 
 **Transición:** Almuerzo. A las 13:15, herramientas.
 
-### 38 · V2 · herramientas.
+### 39 · V2 · herramientas.
 
 **Sección:** 04 · V2 · herramientas · **Pauta:** 1 min · **Tipo:** divider
 
@@ -962,7 +985,7 @@ scripts/correr.sh --version v1 --datos real --caso error-88904447
 
 **Transición:** Qué es una herramienta.
 
-### 39 · Una herramienta es una función que el modelo pide y el código ejecuta.
+### 40 · Una herramienta es una función que el modelo pide y el código ejecuta.
 
 **Sección:** 04 · V2 · herramientas · **Pauta:** 3 min · **Tipo:** flow
 
@@ -979,7 +1002,7 @@ scripts/correr.sh --version v1 --datos real --caso error-88904447
 
 **Transición:** La fuente se abstrae.
 
-### 40 · La fuente se abstrae; las herramientas no cambian.
+### 41 · La fuente se abstrae; las herramientas no cambian.
 
 **Sección:** 04 · V2 · herramientas · **Pauta:** 4 min · **Tipo:** code
 
@@ -1019,7 +1042,7 @@ class FuenteArchivos:
 
 Hoy FuenteArchivos lee data/real; mañana una clase que llame a la base o a un endpoint interno de Alephee. Las herramientas y el agente no se tocan.
 
-### 41 · Una herramienta bien descrita.
+### 42 · Una herramienta bien descrita.
 
 **Sección:** 04 · V2 · herramientas · **Pauta:** 4 min · **Tipo:** code
 
@@ -1046,7 +1069,7 @@ def crear_herramientas(fuente: FuenteCatalogo) -> list[FunctionTool]:
 
 El docstring es lo que lee el modelo: qué devuelve, con qué formato de entrada y qué pasa si no encuentra. La respuesta negativa es explícita, nunca vacía.
 
-### 42 · ¿Qué decide la tabla y qué decide el agente?
+### 43 · ¿Qué decide la tabla y qué decide el agente?
 
 **Sección:** 04 · V2 · herramientas · **Pauta:** 4 min · **Tipo:** decision
 
@@ -1070,7 +1093,7 @@ El docstring es lo que lee el modelo: qué devuelve, con qué formato de entrada
 
 **Archivo:** `decisiones/10-tabla-vs-agente.md`
 
-### 43 · El loop tiene un límite y una salida garantizada.
+### 44 · El loop tiene un límite y una salida garantizada.
 
 **Sección:** 04 · V2 · herramientas · **Pauta:** 4 min · **Tipo:** code
 
@@ -1105,7 +1128,7 @@ El docstring es lo que lee el modelo: qué devuelve, con qué formato de entrada
 
 Seis rondas como máximo. En la última solo queda la herramienta de entrega y se desactivan las llamadas en paralelo. Si aun así no entrega, el error es explícito.
 
-### 44 · Caché de prompt: lo estático se paga una vez.
+### 45 · Caché de prompt: lo estático se paga una vez.
 
 **Sección:** 04 · V2 · herramientas · **Pauta:** 4 min · **Tipo:** code
 
@@ -1136,7 +1159,7 @@ Seis rondas como máximo. En la última solo queda la herramienta de entrega y s
 
 Instrucciones, herramientas y producto quedan antes del punto de caché: las seis rondas del loop reutilizan ese prefijo en vez de volver a pagarlo (F4).
 
-### 45 · Costo por producto, medido.
+### 46 · Costo por producto, medido.
 
 **Sección:** 04 · V2 · herramientas · **Pauta:** 3 min · **Tipo:** table
 
@@ -1153,7 +1176,7 @@ Instrucciones, herramientas y producto quedan antes del punto de caché: las sei
 
 **Transición:** Decisión 11: el costo.
 
-### 46 · ¿Cuánto puede costar?
+### 47 · ¿Cuánto puede costar?
 
 **Sección:** 04 · V2 · herramientas · **Pauta:** 4 min · **Tipo:** decision
 
@@ -1177,7 +1200,7 @@ Instrucciones, herramientas y producto quedan antes del punto de caché: las sei
 
 **Archivo:** `decisiones/11-costo.md`
 
-### 47 · Demo · el mismo caso por V2.
+### 48 · Demo · el mismo caso por V2.
 
 **Sección:** 04 · V2 · herramientas · **Pauta:** 5 min · **Tipo:** demo
 
@@ -1203,7 +1226,7 @@ scripts/correr.sh --version v2 --datos real --caso error-88904447
 
 **Respaldo:** resultados/v2-real-20260928-181509.json (corrida del 28/09, anterior a las correcciones)
 
-### 48 · V3 · control.
+### 49 · V3 · control.
 
 **Sección:** 05 · V3 · control · **Pauta:** 1 min · **Tipo:** divider
 
@@ -1217,7 +1240,7 @@ scripts/correr.sh --version v2 --datos real --caso error-88904447
 
 **Transición:** Qué es un guardrail acá.
 
-### 49 · Guardrail: una comprobación en código, no otra instrucción.
+### 50 · Guardrail: una comprobación en código, no otra instrucción.
 
 **Sección:** 05 · V3 · control · **Pauta:** 3 min · **Tipo:** compare
 
@@ -1233,7 +1256,7 @@ scripts/correr.sh --version v2 --datos real --caso error-88904447
 
 **Transición:** Qué mira el validador.
 
-### 50 · Qué mira el validador.
+### 51 · Qué mira el validador.
 
 **Sección:** 05 · V3 · control · **Pauta:** 4 min · **Tipo:** code
 
@@ -1268,7 +1291,7 @@ def _problema(attr: dict, esquema: dict[str, dict]) -> str | None:
 
 Cuatro comprobaciones por atributo: que exista en la categoría, que tenga dato, que el valueId esté en la lista del canal y que el nombre coincida con ese ID.
 
-### 51 · La red final no inventa: descarta y marca.
+### 52 · La red final no inventa: descarta y marca.
 
 **Sección:** 05 · V3 · control · **Pauta:** 4 min · **Tipo:** code
 
@@ -1305,7 +1328,7 @@ def limpiar(publicacion: dict, esquema: dict[str, dict]) -> dict:
 
 Lo que no pasa va a rejected con el motivo del guardrail; lo obligatorio sin dato válido va a missing; sin categoría de referencia, se pide revisión.
 
-### 52 · ¿Qué hace cuando no sabe?
+### 53 · ¿Qué hace cuando no sabe?
 
 **Sección:** 05 · V3 · control · **Pauta:** 4 min · **Tipo:** decision
 
@@ -1329,7 +1352,7 @@ Lo que no pasa va a rejected con el motivo del guardrail; lo obligatorio sin dat
 
 **Archivo:** `decisiones/12-cuando-no-sabe.md`
 
-### 53 · Memoria: correcciones del equipo de catálogo.
+### 54 · Memoria: correcciones del equipo de catálogo.
 
 **Sección:** 05 · V3 · control · **Pauta:** 3 min · **Tipo:** cards
 
@@ -1345,7 +1368,7 @@ Lo que no pasa va a rejected con el motivo del guardrail; lo obligatorio sin dat
 
 **Transición:** Una corrección también vacía la caché.
 
-### 54 · Una corrección vacía la caché.
+### 55 · Una corrección vacía la caché.
 
 **Sección:** 05 · V3 · control · **Pauta:** 4 min · **Tipo:** code
 
@@ -1376,7 +1399,7 @@ Lo que no pasa va a rejected con el motivo del guardrail; lo obligatorio sin dat
 
 La corrección se guarda con autor y fecha y reemplaza a la anterior del mismo atributo. Como puede cambiar cualquier mapeo guardado, la caché de mapeos se vacía.
 
-### 55 · Mismo SKU, misma salida.
+### 56 · Mismo SKU, misma salida.
 
 **Sección:** 05 · V3 · control · **Pauta:** 4 min · **Tipo:** code
 
@@ -1414,7 +1437,7 @@ La corrección se guarda con autor y fecha y reemplaza a la anterior del mismo a
 
 La tabla fija la categoría antes de llamar al modelo; sin referencia o sin esquema, se devuelve el faltante sin invocarlo. Si hay caché válida para SKU + categoría legacy, el modelo tampoco se llama.
 
-### 56 · ¿Cómo garantizamos determinismo?
+### 57 · ¿Cómo garantizamos determinismo?
 
 **Sección:** 05 · V3 · control · **Pauta:** 4 min · **Tipo:** decision
 
@@ -1438,7 +1461,7 @@ La tabla fija la categoría antes de llamar al modelo; sin referencia o sin esqu
 
 **Archivo:** `decisiones/13-determinismo-y-cache.md`
 
-### 57 · Demo · corregir y repetir.
+### 58 · Demo · corregir y repetir.
 
 **Sección:** 05 · V3 · control · **Pauta:** 5 min · **Tipo:** demo
 
@@ -1465,7 +1488,7 @@ scripts/correr.sh --version v3 --datos real --caso error-88904447 --cache
 
 **Respaldo:** resultados/v3-real-20260928-180524.json (corrida del 28/09, anterior a las correcciones)
 
-### 58 · La prueba.
+### 59 · La prueba.
 
 **Sección:** 06 · La prueba y el camino · **Pauta:** 1 min · **Tipo:** divider
 
@@ -1479,7 +1502,7 @@ scripts/correr.sh --version v3 --datos real --caso error-88904447 --cache
 
 **Transición:** Los resultados.
 
-### 59 · Resultados (se completan en vivo).
+### 60 · Resultados (se completan en vivo).
 
 **Sección:** 06 · La prueba y el camino · **Pauta:** 3 min · **Tipo:** table
 
@@ -1499,7 +1522,7 @@ scripts/correr.sh --version v3 --datos real --caso error-88904447 --cache
 
 **Transición:** Cómo leer la tabla.
 
-### 60 · Cómo leer la tabla.
+### 61 · Cómo leer la tabla.
 
 **Sección:** 06 · La prueba y el camino · **Pauta:** 3 min · **Tipo:** cards
 
@@ -1517,7 +1540,7 @@ scripts/correr.sh --version v3 --datos real --caso error-88904447 --cache
 
 **Transición:** El camino a producción.
 
-### 61 · Camino a producción.
+### 62 · Camino a producción.
 
 **Sección:** 06 · La prueba y el camino · **Pauta:** 3 min · **Tipo:** flow
 
@@ -1534,7 +1557,7 @@ scripts/correr.sh --version v3 --datos real --caso error-88904447 --cache
 
 **Transición:** Las trece decisiones.
 
-### 62 · Las 13 decisiones (1 a 7).
+### 63 · Las 13 decisiones (1 a 7).
 
 **Sección:** 06 · La prueba y el camino · **Pauta:** 3 min · **Tipo:** table
 
@@ -1555,7 +1578,7 @@ scripts/correr.sh --version v3 --datos real --caso error-88904447 --cache
 
 **Transición:** Las de la tarde.
 
-### 63 · Las 13 decisiones (8 a 13).
+### 64 · Las 13 decisiones (8 a 13).
 
 **Sección:** 06 · La prueba y el camino · **Pauta:** 3 min · **Tipo:** table
 
@@ -1575,7 +1598,7 @@ scripts/correr.sh --version v3 --datos real --caso error-88904447 --cache
 
 **Transición:** Quién hace qué.
 
-### 64 · Quién hace qué, para cuándo.
+### 65 · Quién hace qué, para cuándo.
 
 **Sección:** 06 · La prueba y el camino · **Pauta:** 1 min · **Tipo:** divider
 

@@ -5,7 +5,7 @@
 
 ## Revisión aplicada del material y V3 (28/09)
 
-- Presentación local: `docs/presentacion-warroom.html`, **64 diapositivas en 6 bloques** organizadas como una **cadena de 13 decisiones de diseño**, cada una con lámina de concepto, lámina de código leído del repo (tipo `code`: archivo + líneas + símbolo, el generador falla si no coinciden) y lámina de decisión (30/09). Fuente: `docs/warroom/diapositivas.json`; diseño en `docs/warroom/diseno-presentacion.md`; fuentes externas verificadas en `docs/warroom/fuentes.md`; generadores en `scripts/generar_presentacion.py` (tests en `scripts/test_generar_presentacion.py`) y `scripts/exportar_presentacion_pdf.py` (`uv run --with reportlab python …`). Los quizzes y consignas en parejas del 29/09 se quitaron; quedan tres demos y la prueba final.
+- Presentación local: `docs/presentacion-warroom.html`, **65 diapositivas en 6 bloques** organizadas como una **cadena de 13 decisiones de diseño**, cada una con lámina de concepto, lámina de código leído del repo (tipo `code`: archivo + líneas + símbolo, el generador falla si no coinciden) y lámina de decisión (30/09). Fuente: `docs/warroom/diapositivas.json`; diseño en `docs/warroom/diseno-presentacion.md`; fuentes externas verificadas en `docs/warroom/fuentes.md`; generadores en `scripts/generar_presentacion.py` (tests en `scripts/test_generar_presentacion.py`) y `scripts/exportar_presentacion_pdf.py` (`uv run --with reportlab python …`). Los quizzes y consignas en parejas del 29/09 se quitaron; quedan tres demos y la prueba final.
 - Guion: `docs/guion-warroom-propuesto.md`; diagnóstico histórico y cambios: `docs/revision-warroom.md`.
 - V3 ahora fija la categoría desde la tabla por código y detiene el mapeo con faltante explícito cuando no hay referencia o esquema. Valida ID/nombre coherentes, quita faltantes ya resueltos y revisa las entradas de caché antes de reutilizarlas.
 - Los resultados de las secciones siguientes son **anteriores a estas correcciones**. No atribuirles una mejora nueva sin otra corrida. El esquema y el expected siguen siendo mock; el chat aún no integra el catálogo.
@@ -277,7 +277,7 @@ resultados/                    salidas de cada corrida (ignorado por git)
 | Crear el repo en `craftech-io` y primer commit | Gastón | Pendiente (esperando OK) |
 | Primer deploy a sandbox **desde local** (Docker buildx + ARM64), stage a definir | Gastón | Pendiente |
 | Preparar V2 y V3 | Gastón | **Hecho** (28/09), tag `v3` |
-| Presentación del war room | Gastón | **Rehecha** (30/09): 64 láminas, 13 decisiones, código del repo en pantalla; la tabla de la prueba se completa en vivo. Ensayar tiempos del bloque 2 |
+| Presentación del war room | Gastón | **Rehecha** (30/09): 65 láminas, 13 decisiones, código del repo en pantalla; la tabla de la prueba se completa en vivo. Ensayar tiempos del bloque 2 |
 | Checkpoint Gastón / Jesus | Hoy 25/09, 10:30 | — |
 
 ## Contexto comercial (no es alcance del war room)

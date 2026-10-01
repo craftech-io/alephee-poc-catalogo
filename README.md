@@ -6,8 +6,8 @@ todavía está pendiente.
 
 ## Material para la sesión
 
-- [Presentación interactiva: 64 diapositivas en 6 bloques](docs/presentacion-warroom.html): una cadena de 13 decisiones de diseño con el código del repo en pantalla. Abrir en el navegador; menú por bloque, propuestas de decisión plegadas y notas con **N**. Diseño en [diseno-presentacion.md](docs/warroom/diseno-presentacion.md).
-- [PDF estático](docs/presentacion-warroom.pdf): 64 páginas, con las propuestas de decisión visibles y sin notas del expositor.
+- [Presentación interactiva: 65 diapositivas en 6 bloques](docs/presentacion-warroom.html): una cadena de 13 decisiones de diseño con el código del repo en pantalla. Abrir en el navegador; menú por bloque, propuestas de decisión plegadas y notas con **N**. Diseño en [diseno-presentacion.md](docs/warroom/diseno-presentacion.md).
+- [PDF estático](docs/presentacion-warroom.pdf): 65 páginas, con las propuestas de decisión visibles y sin notas del expositor.
 - [Guion del facilitador](docs/guion-warroom-propuesto.md): agenda, notas por lámina, código y demos.
 - [Fuentes externas verificadas](docs/warroom/fuentes.md) (AgentCore, Bedrock, caché de prompts, API de Alephee).
 - [Decisiones](decisiones/): 13 archivos con contexto y opciones; la decisión se completa en la sala.

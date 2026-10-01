@@ -10,7 +10,7 @@
    "work_reserve": [
     [
      "Dolores del equipo y preguntas",
-     5
+     2
     ]
    ]
   },
@@ -95,7 +95,7 @@
    "table": null,
    "notes": {
     "objective": "Qué tenemos a las 17:00: agente en local, método repetible, 13 decisiones documentadas",
-    "say": "A las 17:00 queremos tres cosas: el agente corriendo en local con el código en el repositorio, un método que se pueda repetir para el próximo caso de uso y trece decisiones escritas con su razonamiento. Hoy no se enseña teoría: se diseña y se construye en el orden en que se diseña. Gastón conduce; el grupo decide en cada punto.",
+    "say": "Después de esta portada, la lámina siguiente muestra con un producto real qué entra y qué queremos que salga. A las 17:00 queremos tres cosas: el agente corriendo en local con el código en el repositorio, un método que se pueda repetir para el próximo caso de uso y trece decisiones escritas con su razonamiento. Hoy no se enseña teoría: se diseña y se construye en el orden en que se diseña. Gastón conduce; el grupo decide en cada punto.",
     "ask": "",
     "close": "",
     "transition": "Primero, cómo funciona hoy."
@@ -104,6 +104,66 @@
   },
   {
    "id": "s02",
+   "section": "partida",
+   "title": "De un producto de Alephee a una publicación de Shopee.",
+   "kind": "table",
+   "lead": "",
+   "label": "Caso real · SKU 88904447 · Correia dentada (ACDelco) · catálogo GM Brasil",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": {
+    "headers": [
+     "Entra: el producto (Mercado Libre)",
+     "Sale: la publicación (Shopee)",
+     "Quién lo resuelve"
+    ],
+    "rows": [
+     [
+      "Categoría: Correias Dentadas (738058)",
+      "Distribuição e Correias (102278:vendor:shopee)",
+      "La tabla reference_category"
+     ],
+     [
+      "Condición del ítem = Novo",
+      "Item condition = Novo (valueId 14703)",
+      "La tabla de atributos y la lista del canal"
+     ],
+     [
+      "Tiempo de garantía = 6 meses",
+      "Duração da Garantia = 6 Months (valueId 810)",
+      "El agente: el valor equivalente de la lista"
+     ],
+     [
+      "Peso = 0.18 Kilogramos",
+      "Weight = 0.18 Kilograms",
+      "El agente, con la unidad del canal"
+     ],
+     [
+      "Código universal de producto = -1",
+      "No se publica: -1 significa sin dato",
+      "El guardrail"
+     ],
+     [
+      "Código OEM: no viene en el producto",
+      "missing: Código OEM, sin dato en el origen (hoy salió ABS Plastic y Shopee lo rechazó)",
+      "El guardrail; después decide una persona"
+     ]
+    ]
+   },
+   "notes": {
+    "objective": "Que todos vean, con un producto real, qué entra y qué queremos que salga",
+    "say": "Esto es lo que queremos lograr. Leer la tabla de arriba abajo. Entra el producto como está en Alephee: 30 atributos con nombres y valores de Mercado Libre, con -1 y N/A donde no hay dato. Queremos que salga la publicación para Shopee: su categoría, sus atributos con el URN y el valueId del canal, y dos listas más con lo que no se pudo (missing) y lo que se descartó (rejected). La tercera columna anticipa todo el día: algunas filas las resuelve una tabla, otras necesitan interpretar (6 meses → 6 Months), y las últimas necesitan una comprobación en código. El esquema de Shopee que usamos es MOCK derivado de las publicaciones; los valores de la columna del medio salen de la publicación real.",
+    "ask": "¿Qué fila les parece la más difícil de automatizar?",
+    "close": "",
+    "transition": "Cómo lo hace hoy el proceso actual."
+   },
+   "minutes": 3
+  },
+  {
+   "id": "s03",
    "section": "partida",
    "title": "Hoy: dos llamadas, un merge y un presupuesto que se agota.",
    "kind": "cards",
@@ -129,7 +189,7 @@
    "minutes": 3
   },
   {
-   "id": "s03",
+   "id": "s04",
    "section": "partida",
    "title": "Así se pide hoy la categoría.",
    "kind": "code",
@@ -161,7 +221,7 @@
    }
   },
   {
-   "id": "s04",
+   "id": "s05",
    "section": "partida",
    "title": "Lo que Shopee rechazó y lo que aceptó mal.",
    "kind": "table",
@@ -211,7 +271,7 @@
    "minutes": 3
   },
   {
-   "id": "s05",
+   "id": "s06",
    "section": "partida",
    "title": "Seis bloques: cada decisión se compila en una versión.",
    "kind": "flow",
@@ -240,7 +300,7 @@
    "minutes": 3
   },
   {
-   "id": "s06",
+   "id": "s07",
    "section": "partida",
    "title": "¿Qué hace y qué no hace?",
    "kind": "decision",
@@ -273,7 +333,7 @@
    }
   },
   {
-   "id": "s07",
+   "id": "s08",
    "section": "partida",
    "title": "Entra un producto. Sale una propuesta de publicación.",
    "kind": "cards",
@@ -299,7 +359,7 @@
    "minutes": 3
   },
   {
-   "id": "s08",
+   "id": "s09",
    "section": "partida",
    "title": "El contrato, en código.",
    "kind": "code",
@@ -333,7 +393,7 @@
    }
   },
   {
-   "id": "s09",
+   "id": "s10",
    "section": "partida",
    "title": "¿Qué recibe y qué entrega?",
    "kind": "decision",
@@ -366,7 +426,7 @@
    }
   },
   {
-   "id": "s10",
+   "id": "s11",
    "section": "diseno",
    "title": "Diseñar antes de escribir.",
    "kind": "divider",
@@ -388,7 +448,7 @@
    "minutes": 1
   },
   {
-   "id": "s11",
+   "id": "s12",
    "section": "diseno",
    "title": "Cuatro formas de usar un modelo.",
    "kind": "compare",
@@ -415,7 +475,7 @@
    "minutes": 3
   },
   {
-   "id": "s12",
+   "id": "s13",
    "section": "diseno",
    "title": "Las tres versiones conviven en el mismo runner.",
    "kind": "code",
@@ -443,7 +503,7 @@
    }
   },
   {
-   "id": "s13",
+   "id": "s14",
    "section": "diseno",
    "title": "¿Single prompt o agente?",
    "kind": "decision",
@@ -476,7 +536,7 @@
    }
   },
   {
-   "id": "s14",
+   "id": "s15",
    "section": "diseno",
    "title": "Un prompt tiene cinco partes.",
    "kind": "flow",
@@ -504,7 +564,7 @@
    "minutes": 3
   },
   {
-   "id": "s15",
+   "id": "s16",
    "section": "diseno",
    "title": "El prompt de la V1.",
    "kind": "code",
@@ -533,11 +593,11 @@
      32,
      34
     ],
-    "caption": "Rol, tarea, reglas negativas explícitas (nunca inventes) y qué hacer cuando falta (missing con motivo). Comparar con el prompt actual de la lámina 3."
+    "caption": "Rol, tarea, reglas negativas explícitas (nunca inventes) y qué hacer cuando falta (missing con motivo). Comparar con el prompt actual de la lámina 4."
    }
   },
   {
-   "id": "s16",
+   "id": "s17",
    "section": "diseno",
    "title": "Buenas prácticas que cambian el resultado.",
    "kind": "cards",
@@ -563,7 +623,7 @@
    "minutes": 3
   },
   {
-   "id": "s17",
+   "id": "s18",
    "section": "diseno",
    "title": "La salida es una herramienta con esquema.",
    "kind": "code",
@@ -594,7 +654,7 @@
    }
   },
   {
-   "id": "s18",
+   "id": "s19",
    "section": "diseno",
    "title": "¿Cómo garantizamos el formato?",
    "kind": "decision",
@@ -627,7 +687,7 @@
    }
   },
   {
-   "id": "s19",
+   "id": "s20",
    "section": "diseno",
    "title": "Dónde corre: AgentCore o contenedor propio.",
    "kind": "compare",
@@ -653,7 +713,7 @@
    "minutes": 3
   },
   {
-   "id": "s20",
+   "id": "s21",
    "section": "diseno",
    "title": "El contrato con AgentCore son dos rutas.",
    "kind": "code",
@@ -681,7 +741,7 @@
    }
   },
   {
-   "id": "s21",
+   "id": "s22",
    "section": "diseno",
    "title": "La infraestructura declara el Runtime.",
    "kind": "code",
@@ -714,7 +774,7 @@
    }
   },
   {
-   "id": "s22",
+   "id": "s23",
    "section": "diseno",
    "title": "¿Dónde corre?",
    "kind": "decision",
@@ -747,7 +807,7 @@
    }
   },
   {
-   "id": "s23",
+   "id": "s24",
    "section": "diseno",
    "title": "Elegir el modelo: qué pesa en este caso.",
    "kind": "cards",
@@ -774,7 +834,7 @@
    "minutes": 3
   },
   {
-   "id": "s24",
+   "id": "s25",
    "section": "diseno",
    "title": "Qué hay en Bedrock.",
    "kind": "table",
@@ -824,7 +884,7 @@
    "minutes": 3
   },
   {
-   "id": "s25",
+   "id": "s26",
    "section": "diseno",
    "title": "El único módulo que sabe de Bedrock.",
    "kind": "code",
@@ -857,7 +917,7 @@
    }
   },
   {
-   "id": "s26",
+   "id": "s27",
    "section": "diseno",
    "title": "¿Qué modelo?",
    "kind": "decision",
@@ -890,7 +950,7 @@
    }
   },
   {
-   "id": "s27",
+   "id": "s28",
    "section": "diseno",
    "title": "Stack y harness.",
    "kind": "cards",
@@ -916,7 +976,7 @@
    "minutes": 3
   },
   {
-   "id": "s28",
+   "id": "s29",
    "section": "diseno",
    "title": "Un Workflow de un paso.",
    "kind": "code",
@@ -948,7 +1008,7 @@
    }
   },
   {
-   "id": "s29",
+   "id": "s30",
    "section": "diseno",
    "title": "¿Con qué lo construimos?",
    "kind": "decision",
@@ -981,7 +1041,7 @@
    }
   },
   {
-   "id": "s30",
+   "id": "s31",
    "section": "diseno",
    "title": "¿Cuándo está bien hecho?",
    "kind": "cards",
@@ -1007,7 +1067,7 @@
    "minutes": 3
   },
   {
-   "id": "s31",
+   "id": "s32",
    "section": "diseno",
    "title": "La métrica en código.",
    "kind": "code",
@@ -1040,7 +1100,7 @@
    }
   },
   {
-   "id": "s32",
+   "id": "s33",
    "section": "diseno",
    "title": "¿Cuál es el número que aceptamos?",
    "kind": "decision",
@@ -1073,7 +1133,7 @@
    }
   },
   {
-   "id": "s33",
+   "id": "s34",
    "section": "diseno",
    "title": "¿Con qué dataset?",
    "kind": "decision",
@@ -1106,7 +1166,7 @@
    }
   },
   {
-   "id": "s34",
+   "id": "s35",
    "section": "v1",
    "title": "V1 · el agente responde.",
    "kind": "divider",
@@ -1128,7 +1188,7 @@
    "minutes": 1
   },
   {
-   "id": "s35",
+   "id": "s36",
    "section": "v1",
    "title": "Una llamada, una entrega.",
    "kind": "code",
@@ -1161,7 +1221,7 @@
    }
   },
   {
-   "id": "s36",
+   "id": "s37",
    "section": "v1",
    "title": "Demo · un caso real por V1.",
    "kind": "demo",
@@ -1193,7 +1253,7 @@
    }
   },
   {
-   "id": "s37",
+   "id": "s38",
    "section": "v1",
    "title": "Qué falló en V1 y qué capa lo resuelve.",
    "kind": "table",
@@ -1243,7 +1303,7 @@
    "minutes": 3
   },
   {
-   "id": "s38",
+   "id": "s39",
    "section": "v2",
    "title": "V2 · herramientas.",
    "kind": "divider",
@@ -1265,7 +1325,7 @@
    "minutes": 1
   },
   {
-   "id": "s39",
+   "id": "s40",
    "section": "v2",
    "title": "Una herramienta es una función que el modelo pide y el código ejecuta.",
    "kind": "flow",
@@ -1292,7 +1352,7 @@
    "minutes": 3
   },
   {
-   "id": "s40",
+   "id": "s41",
    "section": "v2",
    "title": "La fuente se abstrae; las herramientas no cambian.",
    "kind": "code",
@@ -1325,7 +1385,7 @@
    }
   },
   {
-   "id": "s41",
+   "id": "s42",
    "section": "v2",
    "title": "Una herramienta bien descrita.",
    "kind": "code",
@@ -1358,7 +1418,7 @@
    }
   },
   {
-   "id": "s42",
+   "id": "s43",
    "section": "v2",
    "title": "¿Qué decide la tabla y qué decide el agente?",
    "kind": "decision",
@@ -1391,7 +1451,7 @@
    }
   },
   {
-   "id": "s43",
+   "id": "s44",
    "section": "v2",
    "title": "El loop tiene un límite y una salida garantizada.",
    "kind": "code",
@@ -1424,7 +1484,7 @@
    }
   },
   {
-   "id": "s44",
+   "id": "s45",
    "section": "v2",
    "title": "Caché de prompt: lo estático se paga una vez.",
    "kind": "code",
@@ -1456,7 +1516,7 @@
    }
   },
   {
-   "id": "s45",
+   "id": "s46",
    "section": "v2",
    "title": "Costo por producto, medido.",
    "kind": "table",
@@ -1499,7 +1559,7 @@
    "minutes": 3
   },
   {
-   "id": "s46",
+   "id": "s47",
    "section": "v2",
    "title": "¿Cuánto puede costar?",
    "kind": "decision",
@@ -1532,7 +1592,7 @@
    }
   },
   {
-   "id": "s47",
+   "id": "s48",
    "section": "v2",
    "title": "Demo · el mismo caso por V2.",
    "kind": "demo",
@@ -1564,7 +1624,7 @@
    }
   },
   {
-   "id": "s48",
+   "id": "s49",
    "section": "v3",
    "title": "V3 · control.",
    "kind": "divider",
@@ -1586,7 +1646,7 @@
    "minutes": 1
   },
   {
-   "id": "s49",
+   "id": "s50",
    "section": "v3",
    "title": "Guardrail: una comprobación en código, no otra instrucción.",
    "kind": "compare",
@@ -1612,7 +1672,7 @@
    "minutes": 3
   },
   {
-   "id": "s50",
+   "id": "s51",
    "section": "v3",
    "title": "Qué mira el validador.",
    "kind": "code",
@@ -1646,7 +1706,7 @@
    }
   },
   {
-   "id": "s51",
+   "id": "s52",
    "section": "v3",
    "title": "La red final no inventa: descarta y marca.",
    "kind": "code",
@@ -1679,7 +1739,7 @@
    }
   },
   {
-   "id": "s52",
+   "id": "s53",
    "section": "v3",
    "title": "¿Qué hace cuando no sabe?",
    "kind": "decision",
@@ -1712,7 +1772,7 @@
    }
   },
   {
-   "id": "s53",
+   "id": "s54",
    "section": "v3",
    "title": "Memoria: correcciones del equipo de catálogo.",
    "kind": "cards",
@@ -1738,7 +1798,7 @@
    "minutes": 3
   },
   {
-   "id": "s54",
+   "id": "s55",
    "section": "v3",
    "title": "Una corrección vacía la caché.",
    "kind": "code",
@@ -1771,7 +1831,7 @@
    }
   },
   {
-   "id": "s55",
+   "id": "s56",
    "section": "v3",
    "title": "Mismo SKU, misma salida.",
    "kind": "code",
@@ -1805,7 +1865,7 @@
    }
   },
   {
-   "id": "s56",
+   "id": "s57",
    "section": "v3",
    "title": "¿Cómo garantizamos determinismo?",
    "kind": "decision",
@@ -1838,7 +1898,7 @@
    }
   },
   {
-   "id": "s57",
+   "id": "s58",
    "section": "v3",
    "title": "Demo · corregir y repetir.",
    "kind": "demo",
@@ -1870,7 +1930,7 @@
    }
   },
   {
-   "id": "s58",
+   "id": "s59",
    "section": "prueba",
    "title": "La prueba.",
    "kind": "divider",
@@ -1892,7 +1952,7 @@
    "minutes": 1
   },
   {
-   "id": "s59",
+   "id": "s60",
    "section": "prueba",
    "title": "Resultados (se completan en vivo).",
    "kind": "table",
@@ -1959,7 +2019,7 @@
    "minutes": 3
   },
   {
-   "id": "s60",
+   "id": "s61",
    "section": "prueba",
    "title": "Cómo leer la tabla.",
    "kind": "cards",
@@ -1985,7 +2045,7 @@
    "minutes": 3
   },
   {
-   "id": "s61",
+   "id": "s62",
    "section": "prueba",
    "title": "Camino a producción.",
    "kind": "flow",
@@ -2012,7 +2072,7 @@
    "minutes": 3
   },
   {
-   "id": "s62",
+   "id": "s63",
    "section": "prueba",
    "title": "Las 13 decisiones (1 a 7).",
    "kind": "table",
@@ -2077,7 +2137,7 @@
    "minutes": 3
   },
   {
-   "id": "s63",
+   "id": "s64",
    "section": "prueba",
    "title": "Las 13 decisiones (8 a 13).",
    "kind": "table",
@@ -2137,7 +2197,7 @@
    "minutes": 3
   },
   {
-   "id": "s64",
+   "id": "s65",
    "section": "prueba",
    "title": "Quién hace qué, para cuándo.",
    "kind": "divider",
