@@ -312,9 +312,42 @@
     "say": "La salida es una propuesta de mapeo, todavía no es la publicación final. Lo nuevo son las dos listas. Una dice qué obligatorio quedó sin dato y por qué. La otra dice qué atributo del producto se descartó y por qué. Con eso dejamos de publicar sin atributos sin que nadie se entere.",
     "ask": "",
     "close": "",
-    "transition": "Decisión 2: cómo se informa lo que no se pudo mapear."
+    "transition": "El contrato, en código."
    },
    "minutes": 3
+  },
+  {
+   "id": "c01",
+   "section": "partida",
+   "title": "El contrato, en código.",
+   "kind": "code",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Ver el contrato como código y no como texto",
+    "say": "Este es el contrato de salida, escrito como modelo Pydantic. Los nombres de los campos son los de Alephee, así la salida se compara y se guarda sin traducir. extra=\"forbid\" hace que cualquier campo de más sea un error. Las dos listas nuevas, missing y rejected, llevan siempre un motivo.",
+    "ask": "",
+    "close": "",
+    "transition": "Decisión 2: cómo se informa lo que no se pudo mapear."
+   },
+   "minutes": 3,
+   "code": {
+    "file": "core/src/catalog/models.py",
+    "lines": "21-37",
+    "symbol": "class Listing",
+    "highlight": [
+     34,
+     36,
+     37
+    ],
+    "caption": "Listing es lo que entrega la V1. Si el modelo devuelve algo que no cumple este esquema, el Workflow informa el error."
+   }
   },
   {
    "id": "s10",
@@ -503,7 +536,7 @@
     "say": "Preguntar cuántas veces tuvieron que arreglar un JSON mal formado. La salida estructurada existe en todos los proveedores grandes, así que no depende de Bedrock. El Workflow de la V1 cierra con un evento tipado, MappingCompleted, que trae el Listing.",
     "ask": "",
     "close": "",
-    "transition": "Ahora, dónde va a correr."
+    "transition": "Salida estructurada en LlamaIndex."
    },
    "minutes": 4,
    "decision": {
@@ -516,6 +549,39 @@
     ],
     "proposal": "B. El formato deja de ser un pedido en el prompt y pasa a ser un contrato. En LlamaIndex es as_structured_llm(Listing): el modelo responde por tool calling y la librería valida contra el esquema. Si la salida no cumple, el Workflow devuelve el error en lugar de publicar algo a medias. C arregla síntomas: si el modelo omite un campo, la expresión regular no lo inventa.",
     "file": "decisiones/04-salida-estructurada.md"
+   }
+  },
+  {
+   "id": "c02",
+   "section": "diseno",
+   "title": "Salida estructurada en LlamaIndex.",
+   "kind": "code",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Ver cómo se garantiza el formato",
+    "say": "Esta es la opción B en código. as_structured_llm(Listing) le pide al modelo que responda con el esquema, por tool calling, y LlamaIndex valida la respuesta. Si falla, el step devuelve el error en texto. La única excepción son las credenciales vencidas: ahí se corta todo, porque el producto siguiente fallaría igual.",
+    "ask": "",
+    "close": "",
+    "transition": "Ahora, dónde va a correr."
+   },
+   "minutes": 3,
+   "code": {
+    "file": "core/src/catalog/v1.py",
+    "lines": "69-77",
+    "symbol": "as_structured_llm",
+    "highlight": [
+     72,
+     76,
+     77
+    ],
+    "caption": "Una sola llamada. response.raw ya es un Listing validado."
    }
   },
   {
@@ -1030,7 +1096,7 @@
     "say": "Lo primero que van a preguntar es por qué Sonnet 5 y no 5.5. La decisión es del 25/09 y el modelo ya está probado en este repositorio. El 5.5 se compara sobre el mismo dataset antes de adoptarlo. Anotar las pruebas de 5.5 y de Haiku 4.5 como tareas con dueño. Si Alephee quiere seguir con OpenAI, los GPT también están en Bedrock (F6) y la arquitectura no cambia.",
     "ask": "",
     "close": "",
-    "transition": "Con qué lo construimos."
+    "transition": "El único módulo que sabe de Bedrock."
    },
    "minutes": 4,
    "decision": {
@@ -1043,6 +1109,39 @@
     ],
     "proposal": "A para construir hoy. Es la decisión del 25/09 y el ID está verificado en Converse. Claude Sonnet 5.5 también está en Bedrock (F6). Compararlo con Haiku 4.5 (B) es una corrida más del experimento con otra variable de entorno, y queda como pendiente con dueño. C mejora el costo pero no resuelve el contrato ni el control.",
     "file": "decisiones/06-modelo.md"
+   }
+  },
+  {
+   "id": "c03",
+   "section": "diseno",
+   "title": "El único módulo que sabe de Bedrock.",
+   "kind": "code",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Mostrar que cambiar de modelo es una variable",
+    "say": "El modelo se elige con una variable de entorno. Para probar Sonnet 5.5 o Haiku 4.5 alcanza con cambiar MODEL_ID y correr el mismo experimento. El resto del código recibe el modelo inyectado y no sabe que abajo hay Bedrock.",
+    "ask": "",
+    "close": "",
+    "transition": "Con qué lo construimos."
+   },
+   "minutes": 3,
+   "code": {
+    "file": "core/src/catalog/llm.py",
+    "lines": "8-20",
+    "symbol": "DEFAULT_MODEL_ID",
+    "highlight": [
+     9,
+     15,
+     18
+    ],
+    "caption": "En local usa el perfil SSO; en el Runtime de AgentCore toma el rol de la cuenta."
    }
   },
   {
@@ -1127,9 +1226,42 @@
     "say": "La vara es estricta a propósito. Pero la salida esperada es mock: la armamos a partir de la publicación actual limpia, así que hereda sus omisiones y castiga aciertos que hoy nadie mapea. Por eso los exactos van a salir bajos en todas las versiones, y hay que mirar también inválidos, duplicados y faltantes. Cada versión corre como experimento en Langfuse, al lado del proceso de hoy. El esquema oficial de Shopee y la validación con catálogo quedan pendientes.",
     "ask": "",
     "close": "",
-    "transition": "Decisiones 8 y 9."
+    "transition": "La métrica, en código."
    },
    "minutes": 3
+  },
+  {
+   "id": "c04",
+   "section": "diseno",
+   "title": "La métrica, en código.",
+   "kind": "code",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Ver que la vara es la misma para todas las versiones",
+    "say": "Esta es la regla del exacto. Un caso es exacto solo si se cumplen todas las condiciones a la vez. En Langfuse aparece como un score por producto, junto a los inválidos, los duplicados, la precisión y el recall.",
+    "ask": "",
+    "close": "",
+    "transition": "Decisiones 8 y 9."
+   },
+   "minutes": 3,
+   "code": {
+    "file": "core/src/catalog/evaluation.py",
+    "lines": "18-32",
+    "symbol": "def exact",
+    "highlight": [
+     30,
+     31,
+     32
+    ],
+    "caption": "La misma función mide el proceso de hoy y cada versión."
+   }
   },
   {
    "id": "s35",
@@ -1215,9 +1347,405 @@
     "say": "La V1 junta las decisiones 1 a 9. Es un Workflow de LlamaIndex con dos pasos. El primero, prepare, arma el mensaje: el catálogo de Shopee al principio, para que entre en la caché, y el producto al final. El segundo, map, hace una llamada estructurada y devuelve un Listing validado. El prompt de sistema vive en Langfuse y la evaluación corre ahí. La V1 no usa las tablas de referencia a propósito, porque queremos ver qué resuelve el modelo solo. La regla del día sigue: no pasamos al bloque siguiente con algo roto. Si la V1 se equivoca en un atributo, eso no frena el día. Lo anotamos como evidencia para la V2.",
     "ask": "",
     "close": "",
-    "transition": "Lo corremos sobre el caso guía."
+    "transition": "La V1 por dentro."
    },
    "minutes": 1
+  },
+  {
+   "id": "c05",
+   "section": "v1",
+   "title": "La V1 por dentro.",
+   "kind": "diagram",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Dar el mapa de la V1 antes de leer el código",
+    "say": "Verde es código y violeta es el modelo. El step prepare arma el mensaje: el prompt de sistema sale de Langfuse, después va el catálogo de Shopee y al final el producto. El step map hace una sola llamada estructurada a Claude Sonnet 5 y cierra con MappingCompleted. El experimento y el chat corren el mismo Workflow. Cada llamada deja una traza en Langfuse con el prompt, la respuesta y los tokens.",
+    "ask": "",
+    "close": "",
+    "transition": "El prompt de sistema."
+   },
+   "minutes": 3,
+   "diagram": {
+    "w": 1200,
+    "h": 400,
+    "nodes": [
+     {
+      "x": 16,
+      "y": 16,
+      "w": 260,
+      "h": 84,
+      "title": "Langfuse · prompt",
+      "sub": [
+       "catalog-v1-system",
+       "label production · semilla en el repo"
+      ],
+      "tone": "dato"
+     },
+     {
+      "x": 596,
+      "y": 16,
+      "w": 280,
+      "h": 84,
+      "title": "Amazon Bedrock",
+      "sub": [
+       "us.anthropic.claude-sonnet-5",
+       "Converse · caché de prompt"
+      ],
+      "tone": "aws"
+     },
+     {
+      "x": 16,
+      "y": 170,
+      "w": 200,
+      "h": 84,
+      "title": "Producto",
+      "sub": [
+       "MappingRequested",
+       "JSON de Alephee"
+      ],
+      "tone": "dato"
+     },
+     {
+      "x": 256,
+      "y": 156,
+      "w": 300,
+      "h": 112,
+      "title": "prepare · código",
+      "sub": [
+       "system: prompt de Langfuse",
+       "catálogo de Shopee (23 categorías)",
+       "CachePoint · producto al final"
+      ],
+      "tone": "codigo"
+     },
+     {
+      "x": 596,
+      "y": 156,
+      "w": 280,
+      "h": 112,
+      "title": "map · Claude Sonnet 5",
+      "sub": [
+       "as_structured_llm(Listing)",
+       "una sola llamada",
+       "sin herramientas"
+      ],
+      "tone": "modelo"
+     },
+     {
+      "x": 916,
+      "y": 170,
+      "w": 268,
+      "h": 84,
+      "title": "MappingCompleted",
+      "sub": [
+       "listing: Listing | None",
+       "error: str | None"
+      ],
+      "tone": "dato"
+     },
+     {
+      "x": 16,
+      "y": 310,
+      "w": 420,
+      "h": 84,
+      "title": "Experimento en Langfuse",
+      "sub": [
+       "scripts/experiment.sh --version v1 | current",
+       "datasets real y mock · evaluadores del deck"
+      ],
+      "tone": "base"
+     },
+     {
+      "x": 476,
+      "y": 310,
+      "w": 400,
+      "h": 84,
+      "title": "Chat del template",
+      "sub": [
+       "map_product(sku) corre la V1",
+       "stage warroom en sandbox"
+      ],
+      "tone": "pendiente"
+     },
+     {
+      "x": 916,
+      "y": 310,
+      "w": 268,
+      "h": 84,
+      "title": "Langfuse · trazas",
+      "sub": [
+       "prompt, respuesta y tokens",
+       "latencia de cada llamada"
+      ],
+      "tone": "dato"
+     }
+    ],
+    "edges": [
+     {
+      "points": [
+       [
+        146,
+        100
+       ],
+       [
+        146,
+        130
+       ],
+       [
+        406,
+        130
+       ],
+       [
+        406,
+        156
+       ]
+      ],
+      "label": "get_prompt",
+      "dashed": false,
+      "at": [
+       276,
+       122
+      ]
+     },
+     {
+      "points": [
+       [
+        216,
+        212
+       ],
+       [
+        256,
+        212
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        556,
+        212
+       ],
+       [
+        596,
+        212
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        736,
+        156
+       ],
+       [
+        736,
+        100
+       ]
+      ],
+      "label": "Converse",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        876,
+        212
+       ],
+       [
+        916,
+        212
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        330,
+        310
+       ],
+       [
+        330,
+        268
+       ]
+      ],
+      "label": "corre",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        500,
+        310
+       ],
+       [
+        500,
+        268
+       ]
+      ],
+      "label": "corre",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        1050,
+        254
+       ],
+       [
+        1050,
+        310
+       ]
+      ],
+      "label": "traza",
+      "dashed": false
+     }
+    ],
+    "caption": "La V1 es un Workflow de dos steps. El experimento y el chat corren el mismo Workflow, y Langfuse guarda el prompt, las trazas y los resultados."
+   }
+  },
+  {
+   "id": "c06",
+   "section": "v1",
+   "title": "El prompt de sistema.",
+   "kind": "code",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Leer el prompt nuevo con el esqueleto de cinco partes",
+    "say": "Este es el prompt de la V1, en inglés, como los prompts actuales de Alephee. Leerlo con las cinco partes: rol y tarea arriba, y después las reglas. Las resaltadas son las que hoy no están escritas: nunca inventar, nunca traducir y qué hacer cuando falta un obligatorio.",
+    "ask": "¿Qué regla agregarían con lo que saben del catálogo?",
+    "close": "",
+    "transition": "El prompt vive en Langfuse."
+   },
+   "minutes": 3,
+   "code": {
+    "file": "core/src/catalog/prompts/catalog-v1-system.txt",
+    "lines": "7-18",
+    "symbol": "Rules:",
+    "highlight": [
+     12,
+     13,
+     15
+    ],
+    "caption": "Esta copia es la semilla. La versión que se usa vive en Langfuse con el label production."
+   }
+  },
+  {
+   "id": "c07",
+   "section": "v1",
+   "title": "El prompt vive en Langfuse.",
+   "kind": "code",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Mostrar dónde vive el prompt y qué pasa si Langfuse no responde",
+    "say": "La V1 pide el prompt a Langfuse por nombre y label. Si Langfuse no responde, usa la semilla del repositorio. La versión del prompt queda registrada en cada experimento, así sabemos con qué prompt salió cada número. Ojo: si alguien edita el prompt en Langfuse, la V1 cambia sin un commit.",
+    "ask": "",
+    "close": "",
+    "transition": "Lo fijo primero, el producto al final."
+   },
+   "minutes": 3,
+   "code": {
+    "file": "core/src/catalog/prompts.py",
+    "lines": "22-27",
+    "symbol": "def get_system_prompt",
+    "highlight": [
+     26,
+     27
+    ],
+    "caption": "version None quiere decir que se usó la semilla."
+   }
+  },
+  {
+   "id": "c08",
+   "section": "v1",
+   "title": "Lo fijo primero, el producto al final.",
+   "kind": "code",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Ver la caché de prompt en el código",
+    "say": "Así se aplica la buena práctica de la caché. Todo lo que va antes del CachePoint es igual para los 30 productos: el prompt y el catálogo. Bedrock lo guarda 5 minutos desde el último uso y lo cobra más barato. Solo cambia el producto, que va al final.",
+    "ask": "",
+    "close": "",
+    "transition": "El Workflow cierra con un evento tipado."
+   },
+   "minutes": 3,
+   "code": {
+    "file": "core/src/catalog/v1.py",
+    "lines": "46-55",
+    "symbol": "def build_messages",
+    "highlight": [
+     50,
+     52,
+     53
+    ],
+    "caption": "En la traza de Langfuse se ven los tokens leídos de caché."
+   }
+  },
+  {
+   "id": "c09",
+   "section": "v1",
+   "title": "El Workflow cierra con un evento tipado.",
+   "kind": "code",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Ver el contrato del Workflow",
+    "say": "Estos son los eventos de la V1. Entra MappingRequested con el producto, pasa ContextReady con los mensajes y sale MappingCompleted. Como MappingCompleted es una subclase de StopEvent, run() lo devuelve tal cual, con el Listing tipado adentro.",
+    "ask": "",
+    "close": "",
+    "transition": "Lo corremos sobre el caso guía."
+   },
+   "minutes": 3,
+   "code": {
+    "file": "core/src/catalog/events.py",
+    "lines": "9-21",
+    "symbol": "class MappingCompleted",
+    "highlight": [
+     17,
+     20,
+     21
+    ],
+    "caption": "El batch, el chat y los tests leen fin.listing sin parsear nada."
+   }
   },
   {
    "id": "s39",

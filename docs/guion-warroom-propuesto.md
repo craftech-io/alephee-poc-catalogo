@@ -1,25 +1,25 @@
 # Guion del warroom · por diapositiva
 
-Versión del 1/10/2026 · 48 diapositivas · 6 bloques · 13 decisiones. Diseño en `warroom/diseno-presentacion.md`; fuentes externas en `warroom/fuentes.md`. Fuente única: `docs/warroom/diapositivas.json`. Se regenera con el generador que está en `old/scripts` hasta que vuelva al repositorio.
+Versión del 1/10/2026 · 57 diapositivas · 6 bloques · 13 decisiones. Diseño en `warroom/diseno-presentacion.md`; fuentes externas en `warroom/fuentes.md`. Fuente única: `docs/warroom/diapositivas.json`. Se regenera con `python3 old/deck-tools/regenerar_deck.py` (las herramientas del deck están fuera de git hasta que vuelvan al repositorio).
 
 [Presentación interactiva](presentacion-warroom.html) · [PDF estático](presentacion-warroom.pdf)
 
 ## Dinámica acordada
 
-Gastón conduce. El deck es una cadena de 13 decisiones de diseño. Cada tema tiene una lámina de concepto y una de decisión que se cierra en la sala antes de seguir. V1, V2 y V3 son los puntos donde lo decidido se construye y se corre. Pedir la opinión de quienes están remotos antes de cerrar cada decisión.
+Gastón conduce. El deck es una cadena de 13 decisiones de diseño. Cada tema tiene una lámina de concepto, en varios casos una de código leído del repositorio, y una de decisión que se cierra en la sala antes de seguir. V1, V2 y V3 son los puntos donde lo decidido se construye y se corre. Pedir la opinión de quienes están remotos antes de cerrar cada decisión.
 
-Las láminas de código salieron del deck con el reinicio del 1/10 y vuelven cuando el código nuevo exista. La propuesta de cada decisión está plegada y se abre después de escuchar al grupo. La decisión final se escribe en `decisiones/NN-titulo.md` y no en el deck. Las columnas de la prueba se completan con los experimentos del día en Langfuse.
+Las láminas de código leen el código del repositorio al generar el deck: si el código cambia, hay que regenerar. La propuesta de cada decisión está plegada y se abre después de escuchar al grupo. La decisión final se escribe en `decisiones/NN-titulo.md` y no en el deck. Las columnas de la prueba se completan con los experimentos del día en Langfuse.
 
 ## Mapa y tiempos
 
 | Sección | Horario | Diapositivas | Resultado |
 |---|---|---|---|
-| 01 · Punto de partida | 09:00-09:30 | 1 a 8 | Ver el error de hoy y acordar qué construimos |
-| 02 · Diseñar el agente | 09:30-11:15 | 9 a 25 | Tomar las decisiones que definen la V1 |
-| 03 · V1 · el agente responde | 11:15-12:30 | 26 a 28 | Construir, correr y leer la primera versión |
-| 04 · V2 · herramientas | 13:15-14:45 | 29 a 34 | Decidir qué resuelve la tabla y conectarla |
-| 05 · V3 · control | 15:00-16:15 | 35 a 41 | Decidir qué pasa cuando el agente no sabe |
-| 06 · La prueba y el camino | 16:15-17:00 | 42 a 48 | Medir contra el criterio y repartir lo que sigue |
+| 01 · Punto de partida | 09:00-09:30 | 1 a 9 | Ver el error de hoy y acordar qué construimos |
+| 02 · Diseñar el agente | 09:30-11:15 | 10 a 29 | Tomar las decisiones que definen la V1 |
+| 03 · V1 · el agente responde | 11:15-12:30 | 30 a 37 | Construir, correr y leer la primera versión |
+| 04 · V2 · herramientas | 13:15-14:45 | 38 a 43 | Decidir qué resuelve la tabla y conectarla |
+| 05 · V3 · control | 15:00-16:15 | 44 a 50 | Decidir qué pasa cuando el agente no sabe |
+| 06 · La prueba y el camino | 16:15-17:00 | 51 a 57 | Medir contra el criterio y repartir lo que sigue |
 
 Pausa de 11:00 a 11:15, almuerzo de 12:30 a 13:15 y pausa de 14:45 a 15:00. El bloque V3 incluye la preparación de la comparación, de 16:00 a 16:15. El margen de preguntas de 17:00 a 17:30 depende de la logística.
 
@@ -29,9 +29,9 @@ Los minutos por diapositiva son una pauta. Preservar la hora de cierre. Si el bl
 
 | Bloque | Diapositivas y demos | Trabajo reservado | Total |
 |---|---:|---|---:|
-| 01 · Punto de partida | 22 min | Dolores del equipo y preguntas: 2 min | 24 min |
-| 02 · Diseñar el agente | 55 min | Pizarra: dudas de AgentCore para Juan David: 5 min; Pausa 11:00: 15 min | 75 min |
-| 03 · V1 · el agente responde | 9 min | Corridas sobre otros casos: 25 min | 34 min |
+| 01 · Punto de partida | 25 min | Dolores del equipo y preguntas: 2 min | 27 min |
+| 02 · Diseñar el agente | 64 min | Pizarra: dudas de AgentCore para Juan David: 5 min; Pausa 11:00: 15 min | 84 min |
+| 03 · V1 · el agente responde | 24 min | Corridas sobre otros casos: 25 min | 49 min |
 | 04 · V2 · herramientas | 20 min | Corrida del lote y lectura: 25 min | 45 min |
 | 05 · V3 · control | 23 min | Corrida del lote con V3: 20 min | 43 min |
 | 06 · La prueba y el camino | 17 min | Documentar decisiones y responsables: 15 min | 32 min |
@@ -186,9 +186,46 @@ Las reservas son para pizarra, corridas del lote y preguntas dentro del bloque. 
 
 **Temas para hablar:** La salida es una propuesta de mapeo, todavía no es la publicación final. Lo nuevo son las dos listas. Una dice qué obligatorio quedó sin dato y por qué. La otra dice qué atributo del producto se descartó y por qué. Con eso dejamos de publicar sin atributos sin que nadie se entere.
 
+**Transición:** El contrato, en código.
+
+### 08 · El contrato, en código.
+
+**Sección:** 01 · Punto de partida · **Pauta:** 3 min · **Tipo:** code
+
+**Objetivo:** Ver el contrato como código y no como texto
+
+**En pantalla:**
+
+
+**Temas para hablar:** Este es el contrato de salida, escrito como modelo Pydantic. Los nombres de los campos son los de Alephee, así la salida se compara y se guarda sin traducir. extra="forbid" hace que cualquier campo de más sea un error. Las dos listas nuevas, missing y rejected, llevan siempre un motivo.
+
 **Transición:** Decisión 2: cómo se informa lo que no se pudo mapear.
 
-### 08 · ¿Qué recibe y qué entrega?
+**Código:** `core/src/catalog/models.py` líneas 21 a 37
+
+```py
+class MissingAttribute(_Strict):
+    urn: str = Field(description="URN of the mandatory channel attribute (or 'category').")
+    reason: str
+
+
+class RejectedAttribute(_Strict):
+    legacyId: str = Field(description="Product attribute id, without the 'urn:attribute:' prefix.")
+    reason: str
+
+
+class Listing(_Strict):
+    """Result of mapping one product to a channel listing."""
+
+    category: str | None = Field(description="Channel category URN, copied exactly. Null if it cannot be resolved.")
+    attributes: list[MappedAttribute]
+    missing: list[MissingAttribute] = Field(description="Mandatory channel attributes (or the category) that could not be filled.")
+    rejected: list[RejectedAttribute] = Field(description="Product attributes that are discarded, with the reason.")
+```
+
+Listing es lo que entrega la V1. Si el modelo devuelve algo que no cumple este esquema, el Workflow informa el error.
+
+### 09 · ¿Qué recibe y qué entrega?
 
 **Sección:** 01 · Punto de partida · **Pauta:** 3 min · **Tipo:** decision
 
@@ -211,7 +248,7 @@ Las reservas son para pizarra, corridas del lote y preguntas dentro del bloque. 
 
 **Archivo:** `decisiones/02-contrato.md`
 
-### 09 · Diseñar antes de escribir.
+### 10 · Diseñar antes de escribir.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 1 min · **Tipo:** divider
 
@@ -225,7 +262,7 @@ Las reservas son para pizarra, corridas del lote y preguntas dentro del bloque. 
 
 **Transición:** Primero, qué tipos de aplicación existen.
 
-### 10 · Cuatro formas de usar un modelo.
+### 11 · Cuatro formas de usar un modelo.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 3 min · **Tipo:** compare
 
@@ -246,7 +283,7 @@ Las reservas son para pizarra, corridas del lote y preguntas dentro del bloque. 
 
 **Transición:** Decisión 3.
 
-### 11 · ¿Single prompt o agente?
+### 12 · ¿Single prompt o agente?
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** decision
 
@@ -270,7 +307,7 @@ Las reservas son para pizarra, corridas del lote y preguntas dentro del bloque. 
 
 **Archivo:** `decisiones/03-tipo-de-aplicacion.md`
 
-### 12 · Un prompt tiene cinco partes.
+### 13 · Un prompt tiene cinco partes.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 3 min · **Tipo:** flow
 
@@ -288,7 +325,7 @@ Las reservas son para pizarra, corridas del lote y preguntas dentro del bloque. 
 
 **Transición:** Tres prácticas que cambian el resultado.
 
-### 13 · Buenas prácticas que cambian el resultado.
+### 14 · Buenas prácticas que cambian el resultado.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 3 min · **Tipo:** cards
 
@@ -304,7 +341,7 @@ Las reservas son para pizarra, corridas del lote y preguntas dentro del bloque. 
 
 **Transición:** Decisión 4.
 
-### 14 · ¿Cómo garantizamos el formato?
+### 15 · ¿Cómo garantizamos el formato?
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** decision
 
@@ -316,7 +353,7 @@ Las reservas son para pizarra, corridas del lote y preguntas dentro del bloque. 
 
 **Temas para hablar:** Preguntar cuántas veces tuvieron que arreglar un JSON mal formado. La salida estructurada existe en todos los proveedores grandes, así que no depende de Bedrock. El Workflow de la V1 cierra con un evento tipado, MappingCompleted, que trae el Listing.
 
-**Transición:** Ahora, dónde va a correr.
+**Transición:** Salida estructurada en LlamaIndex.
 
 **Decisión 4:** ¿Cómo se garantiza que la salida cumpla el contrato?
 
@@ -328,7 +365,36 @@ Las reservas son para pizarra, corridas del lote y preguntas dentro del bloque. 
 
 **Archivo:** `decisiones/04-salida-estructurada.md`
 
-### 15 · Dónde corre: AgentCore o contenedor propio.
+### 16 · Salida estructurada en LlamaIndex.
+
+**Sección:** 02 · Diseñar el agente · **Pauta:** 3 min · **Tipo:** code
+
+**Objetivo:** Ver cómo se garantiza el formato
+
+**En pantalla:**
+
+
+**Temas para hablar:** Esta es la opción B en código. as_structured_llm(Listing) le pide al modelo que responda con el esquema, por tool calling, y LlamaIndex valida la respuesta. Si falla, el step devuelve el error en texto. La única excepción son las credenciales vencidas: ahí se corta todo, porque el producto siguiente fallaría igual.
+
+**Transición:** Ahora, dónde va a correr.
+
+**Código:** `core/src/catalog/v1.py` líneas 69 a 77
+
+```py
+    @step
+    async def map(self, ev: ContextReady) -> MappingCompleted:
+        try:
+            response = await self.llm.as_structured_llm(Listing).achat(ev.messages)
+        except Exception as exc:  # noqa: BLE001, any failure becomes a reported error, except credentials
+            if is_auth_error(exc):
+                raise
+            return MappingCompleted(listing=None, error=f"{type(exc).__name__}: {exc}")
+        return MappingCompleted(listing=response.raw)
+```
+
+Una sola llamada. response.raw ya es un Listing validado.
+
+### 17 · Dónde corre: AgentCore o contenedor propio.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 3 min · **Tipo:** compare
 
@@ -347,7 +413,7 @@ Las reservas son para pizarra, corridas del lote y preguntas dentro del bloque. 
 
 **Transición:** La infraestructura completa, en un dibujo.
 
-### 16 · La infraestructura, de punta a punta.
+### 18 · La infraestructura, de punta a punta.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 2 min · **Tipo:** diagram
 
@@ -380,7 +446,7 @@ Las reservas son para pizarra, corridas del lote y preguntas dentro del bloque. 
 
 Es la infraestructura del template en infra/sst. El chat de la V1 se despliega en la cuenta sandbox con el stage warroom, y las trazas del agente van a Langfuse. AgentCore Memory se sacó del stack.
 
-### 17 · ¿Dónde corre?
+### 19 · ¿Dónde corre?
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** decision
 
@@ -403,7 +469,7 @@ Es la infraestructura del template en infra/sst. El chat de la V1 se despliega e
 
 **Archivo:** `decisiones/05-donde-corre.md`
 
-### 18 · Elegir el modelo: qué pesa en este caso.
+### 20 · Elegir el modelo: qué pesa en este caso.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 3 min · **Tipo:** cards
 
@@ -420,7 +486,7 @@ Es la infraestructura del template en infra/sst. El chat de la V1 se despliega e
 
 **Transición:** Qué hay disponible en Bedrock.
 
-### 19 · Qué hay en Bedrock.
+### 21 · Qué hay en Bedrock.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 3 min · **Tipo:** table
 
@@ -439,7 +505,7 @@ Es la infraestructura del template en infra/sst. El chat de la V1 se despliega e
 
 **Transición:** Decisión 6.
 
-### 20 · ¿Qué modelo?
+### 22 · ¿Qué modelo?
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** decision
 
@@ -451,7 +517,7 @@ Es la infraestructura del template en infra/sst. El chat de la V1 se despliega e
 
 **Temas para hablar:** Lo primero que van a preguntar es por qué Sonnet 5 y no 5.5. La decisión es del 25/09 y el modelo ya está probado en este repositorio. El 5.5 se compara sobre el mismo dataset antes de adoptarlo. Anotar las pruebas de 5.5 y de Haiku 4.5 como tareas con dueño. Si Alephee quiere seguir con OpenAI, los GPT también están en Bedrock (F6) y la arquitectura no cambia.
 
-**Transición:** Con qué lo construimos.
+**Transición:** El único módulo que sabe de Bedrock.
 
 **Decisión 6:** ¿Con qué modelo construimos y medimos?
 
@@ -463,7 +529,40 @@ Es la infraestructura del template en infra/sst. El chat de la V1 se despliega e
 
 **Archivo:** `decisiones/06-modelo.md`
 
-### 21 · Stack y harness.
+### 23 · El único módulo que sabe de Bedrock.
+
+**Sección:** 02 · Diseñar el agente · **Pauta:** 3 min · **Tipo:** code
+
+**Objetivo:** Mostrar que cambiar de modelo es una variable
+
+**En pantalla:**
+
+
+**Temas para hablar:** El modelo se elige con una variable de entorno. Para probar Sonnet 5.5 o Haiku 4.5 alcanza con cambiar MODEL_ID y correr el mismo experimento. El resto del código recibe el modelo inyectado y no sabe que abajo hay Bedrock.
+
+**Transición:** Con qué lo construimos.
+
+**Código:** `core/src/catalog/llm.py` líneas 8 a 20
+
+```py
+# Converse accepts the `us.` and `global.` profiles; the bare model id has no on-demand throughput.
+DEFAULT_MODEL_ID = "us.anthropic.claude-sonnet-5"
+_AUTH_ERRORS = (NoCredentialsError, SSOError, TokenRetrievalError, UnauthorizedSSOTokenError)
+
+
+def create_llm(env=os.environ) -> BedrockConverse:
+    return BedrockConverse(
+        model=env.get("MODEL_ID", DEFAULT_MODEL_ID),
+        region_name=env.get("AWS_REGION", "us-east-1"),
+        # Local runs use the SSO profile; inside the Runtime boto3 takes the role.
+        profile_name=env.get("AWS_PROFILE") or None,
+        max_tokens=16000,
+    )
+```
+
+En local usa el perfil SSO; en el Runtime de AgentCore toma el rol de la cuenta.
+
+### 24 · Stack y harness.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 3 min · **Tipo:** cards
 
@@ -484,7 +583,7 @@ Es la infraestructura del template en infra/sst. El chat de la V1 se despliega e
 
 **Transición:** Decisión 7.
 
-### 22 · ¿Con qué lo construimos?
+### 25 · ¿Con qué lo construimos?
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** decision
 
@@ -508,7 +607,7 @@ Es la infraestructura del template en infra/sst. El chat de la V1 se despliega e
 
 **Archivo:** `decisiones/07-stack.md`
 
-### 23 · ¿Cuándo está bien hecho?
+### 26 · ¿Cuándo está bien hecho?
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 3 min · **Tipo:** cards
 
@@ -523,9 +622,44 @@ Es la infraestructura del template en infra/sst. El chat de la V1 se despliega e
 
 **Temas para hablar:** La vara es estricta a propósito. Pero la salida esperada es mock: la armamos a partir de la publicación actual limpia, así que hereda sus omisiones y castiga aciertos que hoy nadie mapea. Por eso los exactos van a salir bajos en todas las versiones, y hay que mirar también inválidos, duplicados y faltantes. Cada versión corre como experimento en Langfuse, al lado del proceso de hoy. El esquema oficial de Shopee y la validación con catálogo quedan pendientes.
 
+**Transición:** La métrica, en código.
+
+### 27 · La métrica, en código.
+
+**Sección:** 02 · Diseñar el agente · **Pauta:** 3 min · **Tipo:** code
+
+**Objetivo:** Ver que la vara es la misma para todas las versiones
+
+**En pantalla:**
+
+
+**Temas para hablar:** Esta es la regla del exacto. Un caso es exacto solo si se cumplen todas las condiciones a la vez. En Langfuse aparece como un score por producto, junto a los inválidos, los duplicados, la precisión y el recall.
+
 **Transición:** Decisiones 8 y 9.
 
-### 24 · ¿Cuál es el número que aceptamos?
+**Código:** `core/src/catalog/evaluation.py` líneas 18 a 32
+
+```py
+@dataclass
+class CaseResult:
+    category_ok: bool
+    tp: int
+    fp: int
+    fn: int
+    invalid: list[str] = field(default_factory=list)
+    duplicates: list[str] = field(default_factory=list)
+    missing_not_detected: list[str] = field(default_factory=list)
+    extra_missing: list[str] = field(default_factory=list)
+
+    @property
+    def exact(self) -> bool:
+        return (self.category_ok and self.fp == 0 and self.fn == 0 and not self.invalid
+                and not self.duplicates and not self.missing_not_detected and not self.extra_missing)
+```
+
+La misma función mide el proceso de hoy y cada versión.
+
+### 28 · ¿Cuál es el número que aceptamos?
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** decision
 
@@ -548,7 +682,7 @@ Es la infraestructura del template en infra/sst. El chat de la V1 se despliega e
 
 **Archivo:** `decisiones/08-criterio-de-exito.md`
 
-### 25 · ¿Con qué dataset?
+### 29 · ¿Con qué dataset?
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** decision
 
@@ -571,7 +705,7 @@ Es la infraestructura del template en infra/sst. El chat de la V1 se despliega e
 
 **Archivo:** `decisiones/09-dataset.md`
 
-### 26 · V1 · el agente responde.
+### 30 · V1 · el agente responde.
 
 **Sección:** 03 · V1 · el agente responde · **Pauta:** 1 min · **Tipo:** divider
 
@@ -583,9 +717,159 @@ Es la infraestructura del template en infra/sst. El chat de la V1 se despliega e
 
 **Temas para hablar:** La V1 junta las decisiones 1 a 9. Es un Workflow de LlamaIndex con dos pasos. El primero, prepare, arma el mensaje: el catálogo de Shopee al principio, para que entre en la caché, y el producto al final. El segundo, map, hace una llamada estructurada y devuelve un Listing validado. El prompt de sistema vive en Langfuse y la evaluación corre ahí. La V1 no usa las tablas de referencia a propósito, porque queremos ver qué resuelve el modelo solo. La regla del día sigue: no pasamos al bloque siguiente con algo roto. Si la V1 se equivoca en un atributo, eso no frena el día. Lo anotamos como evidencia para la V2.
 
+**Transición:** La V1 por dentro.
+
+### 31 · La V1 por dentro.
+
+**Sección:** 03 · V1 · el agente responde · **Pauta:** 3 min · **Tipo:** diagram
+
+**Objetivo:** Dar el mapa de la V1 antes de leer el código
+
+**En pantalla:**
+
+
+**Temas para hablar:** Verde es código y violeta es el modelo. El step prepare arma el mensaje: el prompt de sistema sale de Langfuse, después va el catálogo de Shopee y al final el producto. El step map hace una sola llamada estructurada a Claude Sonnet 5 y cierra con MappingCompleted. El experimento y el chat corren el mismo Workflow. Cada llamada deja una traza en Langfuse con el prompt, la respuesta y los tokens.
+
+**Transición:** El prompt de sistema.
+
+**Diagrama (cajas):**
+
+- Langfuse · prompt: catalog-v1-system · label production · semilla en el repo
+- Amazon Bedrock: us.anthropic.claude-sonnet-5 · Converse · caché de prompt
+- Producto: MappingRequested · JSON de Alephee
+- prepare · código: system: prompt de Langfuse · catálogo de Shopee (23 categorías) · CachePoint · producto al final
+- map · Claude Sonnet 5: as_structured_llm(Listing) · una sola llamada · sin herramientas
+- MappingCompleted: listing: Listing | None · error: str | None
+- Experimento en Langfuse: scripts/experiment.sh --version v1 | current · datasets real y mock · evaluadores del deck
+- Chat del template: map_product(sku) corre la V1 · stage warroom en sandbox
+- Langfuse · trazas: prompt, respuesta y tokens · latencia de cada llamada
+
+La V1 es un Workflow de dos steps. El experimento y el chat corren el mismo Workflow, y Langfuse guarda el prompt, las trazas y los resultados.
+
+### 32 · El prompt de sistema.
+
+**Sección:** 03 · V1 · el agente responde · **Pauta:** 3 min · **Tipo:** code
+
+**Objetivo:** Leer el prompt nuevo con el esqueleto de cinco partes
+
+**En pantalla:**
+
+
+**Temas para hablar:** Este es el prompt de la V1, en inglés, como los prompts actuales de Alephee. Leerlo con las cinco partes: rol y tarea arriba, y después las reglas. Las resaltadas son las que hoy no están escritas: nunca inventar, nunca traducir y qué hacer cuando falta un obligatorio.
+
+**Pregunta / participación:** ¿Qué regla agregarían con lo que saben del catálogo?
+
+**Transición:** El prompt vive en Langfuse.
+
+**Código:** `core/src/catalog/prompts/catalog-v1-system.txt` líneas 7 a 18
+
+```txt
+Rules:
+- Copy the category URN and every attribute URN exactly from the Shopee catalog. Never invent a URN.
+- If the channel attribute has a list of values, choose the equivalent value from that list and use
+  its id and its name exactly as listed. If no value is equivalent, do not fill it.
+- If the channel attribute is free text, use valueId "0" and the product value as it is.
+- Never translate values: Shopee values stay in Portuguese, exactly as the catalog lists them.
+- Never invent values. Use only data present in the product attributes.
+- The values "-1", "N/A" or empty mean there is no data.
+- If a mandatory channel attribute cannot be filled, add it to "missing" with the reason.
+- If a product attribute cannot be used, add it to "rejected" with its legacyId and the reason.
+- Each channel attribute appears at most once.
+- If you cannot choose a category, return category null and add {"urn": "category"} to "missing".
+```
+
+Esta copia es la semilla. La versión que se usa vive en Langfuse con el label production.
+
+### 33 · El prompt vive en Langfuse.
+
+**Sección:** 03 · V1 · el agente responde · **Pauta:** 3 min · **Tipo:** code
+
+**Objetivo:** Mostrar dónde vive el prompt y qué pasa si Langfuse no responde
+
+**En pantalla:**
+
+
+**Temas para hablar:** La V1 pide el prompt a Langfuse por nombre y label. Si Langfuse no responde, usa la semilla del repositorio. La versión del prompt queda registrada en cada experimento, así sabemos con qué prompt salió cada número. Ojo: si alguien edita el prompt en Langfuse, la V1 cambia sin un commit.
+
+**Transición:** Lo fijo primero, el producto al final.
+
+**Código:** `core/src/catalog/prompts.py` líneas 22 a 27
+
+```py
+def get_system_prompt(name: str, client) -> SystemPrompt:
+    seed = load_seed(name)
+    if client is None:
+        return SystemPrompt(seed, name, None)
+    prompt = client.get_prompt(name, label=LABEL, fallback=seed)
+    return SystemPrompt(prompt.compile(), name, None if prompt.is_fallback else prompt.version)
+```
+
+version None quiere decir que se usó la semilla.
+
+### 34 · Lo fijo primero, el producto al final.
+
+**Sección:** 03 · V1 · el agente responde · **Pauta:** 3 min · **Tipo:** code
+
+**Objetivo:** Ver la caché de prompt en el código
+
+**En pantalla:**
+
+
+**Temas para hablar:** Así se aplica la buena práctica de la caché. Todo lo que va antes del CachePoint es igual para los 30 productos: el prompt y el catálogo. Bedrock lo guarda 5 minutos desde el último uso y lo cobra más barato. Solo cambia el producto, que va al final.
+
+**Transición:** El Workflow cierra con un evento tipado.
+
+**Código:** `core/src/catalog/v1.py` líneas 46 a 55
+
+```py
+def build_messages(system_prompt: str, schemas: dict[str, dict], product: dict) -> list[ChatMessage]:
+    return [
+        ChatMessage(role="system", content=system_prompt),
+        ChatMessage(role="user", blocks=[
+            TextBlock(text=catalog_text(schemas)),
+            # Everything before this point is identical for every product: Bedrock caches it.
+            CachePoint(cache_control=CacheControl(type="default")),
+            TextBlock(text=product_text(product)),
+        ]),
+    ]
+```
+
+En la traza de Langfuse se ven los tokens leídos de caché.
+
+### 35 · El Workflow cierra con un evento tipado.
+
+**Sección:** 03 · V1 · el agente responde · **Pauta:** 3 min · **Tipo:** code
+
+**Objetivo:** Ver el contrato del Workflow
+
+**En pantalla:**
+
+
+**Temas para hablar:** Estos son los eventos de la V1. Entra MappingRequested con el producto, pasa ContextReady con los mensajes y sale MappingCompleted. Como MappingCompleted es una subclase de StopEvent, run() lo devuelve tal cual, con el Listing tipado adentro.
+
 **Transición:** Lo corremos sobre el caso guía.
 
-### 27 · Demo · un caso real por V1.
+**Código:** `core/src/catalog/events.py` líneas 9 a 21
+
+```py
+class MappingRequested(StartEvent):
+    product: dict
+
+
+class ContextReady(Event):
+    messages: list[ChatMessage]
+
+
+class MappingCompleted(StopEvent):
+    """End of a mapping. No field is called `result`: it would collide with StopEvent's."""
+
+    listing: Listing | None
+    error: str | None = None
+```
+
+El batch, el chat y los tests leen fin.listing sin parsear nada.
+
+### 36 · Demo · un caso real por V1.
 
 **Sección:** 03 · V1 · el agente responde · **Pauta:** 5 min · **Tipo:** demo
 
@@ -611,7 +895,7 @@ scripts/experiment.sh --version v1 --data real --case error-88904447
 
 **Respaldo:** la corrida del experimento v1-real de la mañana, en Langfuse
 
-### 28 · Qué esperamos que falle en la V1 y qué capa lo resuelve.
+### 37 · Qué esperamos que falle en la V1 y qué capa lo resuelve.
 
 **Sección:** 03 · V1 · el agente responde · **Pauta:** 3 min · **Tipo:** table
 
@@ -633,7 +917,7 @@ scripts/experiment.sh --version v1 --data real --case error-88904447
 
 **Transición:** Almuerzo. A las 13:15, herramientas.
 
-### 29 · V2 · herramientas.
+### 38 · V2 · herramientas.
 
 **Sección:** 04 · V2 · herramientas · **Pauta:** 1 min · **Tipo:** divider
 
@@ -647,7 +931,7 @@ scripts/experiment.sh --version v1 --data real --case error-88904447
 
 **Transición:** Qué es una herramienta.
 
-### 30 · Una herramienta es una función que el modelo pide y el código ejecuta.
+### 39 · Una herramienta es una función que el modelo pide y el código ejecuta.
 
 **Sección:** 04 · V2 · herramientas · **Pauta:** 3 min · **Tipo:** flow
 
@@ -664,7 +948,7 @@ scripts/experiment.sh --version v1 --data real --case error-88904447
 
 **Transición:** Decisión 10: qué decide la tabla y qué decide el agente.
 
-### 31 · ¿Qué decide la tabla y qué decide el agente?
+### 40 · ¿Qué decide la tabla y qué decide el agente?
 
 **Sección:** 04 · V2 · herramientas · **Pauta:** 4 min · **Tipo:** decision
 
@@ -688,7 +972,7 @@ scripts/experiment.sh --version v1 --data real --case error-88904447
 
 **Archivo:** `decisiones/10-tabla-vs-agente.md`
 
-### 32 · Costo por producto, medido.
+### 41 · Costo por producto, medido.
 
 **Sección:** 04 · V2 · herramientas · **Pauta:** 3 min · **Tipo:** table
 
@@ -705,7 +989,7 @@ scripts/experiment.sh --version v1 --data real --case error-88904447
 
 **Transición:** Decisión 11: el costo.
 
-### 33 · ¿Cuánto puede costar?
+### 42 · ¿Cuánto puede costar?
 
 **Sección:** 04 · V2 · herramientas · **Pauta:** 4 min · **Tipo:** decision
 
@@ -729,7 +1013,7 @@ scripts/experiment.sh --version v1 --data real --case error-88904447
 
 **Archivo:** `decisiones/11-costo.md`
 
-### 34 · Demo · el mismo caso por V2.
+### 43 · Demo · el mismo caso por V2.
 
 **Sección:** 04 · V2 · herramientas · **Pauta:** 5 min · **Tipo:** demo
 
@@ -755,7 +1039,7 @@ scripts/experiment.sh --version v2 --data real --case error-88904447
 
 **Respaldo:** la corrida del experimento v2-real, en Langfuse
 
-### 35 · V3 · control.
+### 44 · V3 · control.
 
 **Sección:** 05 · V3 · control · **Pauta:** 1 min · **Tipo:** divider
 
@@ -769,7 +1053,7 @@ scripts/experiment.sh --version v2 --data real --case error-88904447
 
 **Transición:** El agente completo, en un dibujo.
 
-### 36 · El agente por dentro: código y modelo.
+### 45 · El agente por dentro: código y modelo.
 
 **Sección:** 05 · V3 · control · **Pauta:** 3 min · **Tipo:** diagram
 
@@ -800,7 +1084,7 @@ scripts/experiment.sh --version v2 --data real --case error-88904447
 
 La V1 es solo la caja del modelo, con una llamada estructurada. La V2 suma las herramientas y el FunctionAgent. La V3 suma la categoría por tabla, la caché, las correcciones y las validaciones.
 
-### 37 · Guardrail: una comprobación en código.
+### 46 · Guardrail: una comprobación en código.
 
 **Sección:** 05 · V3 · control · **Pauta:** 3 min · **Tipo:** compare
 
@@ -816,7 +1100,7 @@ La V1 es solo la caja del modelo, con una llamada estructurada. La V2 suma las h
 
 **Transición:** Decisión 12.
 
-### 38 · ¿Qué hace cuando no sabe?
+### 47 · ¿Qué hace cuando no sabe?
 
 **Sección:** 05 · V3 · control · **Pauta:** 4 min · **Tipo:** decision
 
@@ -840,7 +1124,7 @@ La V1 es solo la caja del modelo, con una llamada estructurada. La V2 suma las h
 
 **Archivo:** `decisiones/12-cuando-no-sabe.md`
 
-### 39 · Memoria: correcciones del equipo de catálogo.
+### 48 · Memoria: correcciones del equipo de catálogo.
 
 **Sección:** 05 · V3 · control · **Pauta:** 3 min · **Tipo:** cards
 
@@ -856,7 +1140,7 @@ La V1 es solo la caja del modelo, con una llamada estructurada. La V2 suma las h
 
 **Transición:** Decisión 13.
 
-### 40 · ¿Cómo garantizamos determinismo?
+### 49 · ¿Cómo garantizamos determinismo?
 
 **Sección:** 05 · V3 · control · **Pauta:** 4 min · **Tipo:** decision
 
@@ -880,7 +1164,7 @@ La V1 es solo la caja del modelo, con una llamada estructurada. La V2 suma las h
 
 **Archivo:** `decisiones/13-determinismo-y-cache.md`
 
-### 41 · Demo · corregir y repetir.
+### 50 · Demo · corregir y repetir.
 
 **Sección:** 05 · V3 · control · **Pauta:** 5 min · **Tipo:** demo
 
@@ -906,7 +1190,7 @@ scripts/experiment.sh --version v3 --data real --case error-88904447
 
 **Respaldo:** la corrida del experimento v3-real, en Langfuse
 
-### 42 · La prueba.
+### 51 · La prueba.
 
 **Sección:** 06 · La prueba y el camino · **Pauta:** 1 min · **Tipo:** divider
 
@@ -920,7 +1204,7 @@ scripts/experiment.sh --version v3 --data real --case error-88904447
 
 **Transición:** Los resultados.
 
-### 43 · Resultados (se completan en vivo).
+### 52 · Resultados (se completan en vivo).
 
 **Sección:** 06 · La prueba y el camino · **Pauta:** 3 min · **Tipo:** table
 
@@ -940,7 +1224,7 @@ scripts/experiment.sh --version v3 --data real --case error-88904447
 
 **Transición:** Cómo leer la tabla.
 
-### 44 · Cómo leer la tabla.
+### 53 · Cómo leer la tabla.
 
 **Sección:** 06 · La prueba y el camino · **Pauta:** 3 min · **Tipo:** cards
 
@@ -958,7 +1242,7 @@ scripts/experiment.sh --version v3 --data real --case error-88904447
 
 **Transición:** El camino a producción.
 
-### 45 · Camino a producción.
+### 54 · Camino a producción.
 
 **Sección:** 06 · La prueba y el camino · **Pauta:** 3 min · **Tipo:** flow
 
@@ -975,7 +1259,7 @@ scripts/experiment.sh --version v3 --data real --case error-88904447
 
 **Transición:** Las trece decisiones.
 
-### 46 · Las 13 decisiones (1 a 7).
+### 55 · Las 13 decisiones (1 a 7).
 
 **Sección:** 06 · La prueba y el camino · **Pauta:** 3 min · **Tipo:** table
 
@@ -996,7 +1280,7 @@ scripts/experiment.sh --version v3 --data real --case error-88904447
 
 **Transición:** Las de la tarde.
 
-### 47 · Las 13 decisiones (8 a 13).
+### 56 · Las 13 decisiones (8 a 13).
 
 **Sección:** 06 · La prueba y el camino · **Pauta:** 3 min · **Tipo:** table
 
@@ -1016,7 +1300,7 @@ scripts/experiment.sh --version v3 --data real --case error-88904447
 
 **Transición:** Quién hace qué.
 
-### 48 · Quién hace qué, para cuándo.
+### 57 · Quién hace qué, para cuándo.
 
 **Sección:** 06 · La prueba y el camino · **Pauta:** 1 min · **Tipo:** divider
 
