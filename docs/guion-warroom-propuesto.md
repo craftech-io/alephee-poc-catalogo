@@ -780,27 +780,33 @@ La V1 es un Workflow de dos steps. El experimento y el chat corren el mismo Work
 **En pantalla:**
 
 
-**Temas para hablar:** Este es el prompt de la V1, en inglés, como los prompts actuales de Alephee. Leerlo con las cinco partes: rol y tarea arriba, y después las reglas. Las resaltadas son las que hoy no están escritas: nunca inventar, nunca traducir y qué hacer cuando falta un obligatorio.
+**Temas para hablar:** Este es el prompt de la V1, en inglés como los prompts actuales de Alephee, y escrito con las cinco partes: rol, tarea, reglas, qué hacer cuando falta el dato y formato. En pantalla están las reglas y la sección de cuando falta el dato, que es la que el prompt actual no tiene. Las resaltadas dicen que nunca invente, que -1 no es un valor y que un obligatorio sin dato va a missing con el motivo. El formato no pide JSON en el texto: dice que la respuesta va por el esquema del Listing.
 
 **Pregunta / participación:** ¿Qué regla agregarían con lo que saben del catálogo?
 
 **Transición:** El prompt vive en Langfuse.
 
-**Código:** `core/src/catalog/prompts/catalog-v1-system.txt` líneas 7 a 18
+**Código:** `core/src/catalog/prompts/catalog-v1-system.txt` líneas 10 a 27
 
 ```txt
-Rules:
-- Copy the category URN and every attribute URN exactly from the Shopee catalog. Never invent a URN.
-- If the channel attribute has a list of values, choose the equivalent value from that list and use
-  its id and its name exactly as listed. If no value is equivalent, do not fill it.
+Rules
+- Choose the category only from the Shopee catalog, comparing it with the product category name
+  and the product name. Copy its URN exactly.
+- Copy every attribute URN exactly from the chosen category. Never invent a URN.
+- If the channel attribute has a list of values, choose the equivalent value from that list and
+  use its id and its name exactly as listed.
 - If the channel attribute is free text, use valueId "0" and the product value as it is.
 - Never translate values: Shopee values stay in Portuguese, exactly as the catalog lists them.
 - Never invent values. Use only data present in the product attributes.
-- The values "-1", "N/A" or empty mean there is no data.
-- If a mandatory channel attribute cannot be filled, add it to "missing" with the reason.
-- If a product attribute cannot be used, add it to "rejected" with its legacyId and the reason.
 - Each channel attribute appears at most once.
-- If you cannot choose a category, return category null and add {"urn": "category"} to "missing".
+
+When data is missing
+- The values "-1", "N/A" or empty mean there is no data. Never publish them as values.
+- If no value in the channel list is equivalent to the product value, leave the attribute out
+  and add the product attribute to "rejected" with the reason.
+- If a mandatory channel attribute cannot be filled from the product, add it to "missing" with
+  the reason. Never fill it with a guess.
+- If a product attribute has no matching attribute in the category, add it to "rejected" with
 ```
 
 Esta copia es la semilla. La versión que se usa vive en Langfuse con el label production.
@@ -1238,7 +1244,7 @@ Cada entrega queda en submissions. Si se agotan las cinco, finalize limpia la ú
 **En pantalla:**
 
 
-**Temas para hablar:** Es el mismo caso de la V1, para comparar. Antes de correr, pedir una predicción: ¿cuántos atributos resuelve el código sin preguntar? En este caso son cinco: Condição do Item, Origem, Número da Peça, Type of shell y Cor (MOCK). Al agente le quedan tres valores por decidir, Weight, Is it insurable y Aro (MOCK), y Material, que no está en la tabla. source no viaja en la salida del experimento: se ve en la traza, por los steps que corrieron. Ojo: si el SKU ya se corrió con las mismas tablas y el mismo prompt, sale de la caché y no se ve al agente. En ese caso, mostrar la traza de la corrida del 1/10 y dejar la caché para la demo de corregir y repetir. Si Bedrock no responde, mostrar el experimento guardado y decirlo.
+**Temas para hablar:** Es el mismo caso de la V1, para comparar. Antes de correr, pedir una predicción: ¿cuántos atributos resuelve el código sin preguntar? En este caso son cinco: Condição do Item, Origem, Número da Peça, Type of shell y Cor (MOCK). Al agente le quedan tres valores por decidir, Weight, Is it insurable y Aro (MOCK), y Material, que no está en la tabla. En la salida del experimento, source dice de dónde salió la publicación: cache, tables o agent. Ojo: si el SKU ya se corrió con las mismas tablas y el mismo prompt, sale de la caché y no se ve al agente. En ese caso, mostrar la traza de la corrida del 1/10 y dejar la caché para la demo de corregir y repetir. Si Bedrock no responde, mostrar el experimento guardado y decirlo.
 
 **Transición:** Cuánto cuesta por producto.
 
@@ -1268,7 +1274,7 @@ scripts/experiment.sh --version v2 --data mock --case 01-real-calota-aro14
 - V1 / ~4.560 / ~14.780 / ~3,3
 - V2 / ~9.970 / 0 / ~12,4
 
-**Temas para hablar:** Estos números salen de las trazas de Langfuse de las corridas del 1/10 sobre los 30 reales, en promedio por producto. La V1 manda el catálogo entero, pero casi todo se lee de caché. La V2 manda solo la lista de trabajo del producto y aun así paga más tokens nuevos: el agente hace varias llamadas por producto y en esta corrida no leyó nada de caché. Falta confirmar por qué. Puede ser que fuera la primera corrida con ese prompt y esas herramientas, o que el loop cambie el prefijo en cada ronda. Para hablar de dólares faltan la salida, la escritura en caché y el precio de la región. No sacar el ahorro solo de esta tabla. Un SKU que ya está en la caché de la V2 no paga tokens.
+**Temas para hablar:** Estos números salen de las trazas de Langfuse de las corridas del 1/10 sobre los 30 reales, en promedio por producto. La V1 manda el catálogo entero, pero casi todo se lee de caché. La V2 manda solo la lista de trabajo del producto y aun así paga más tokens nuevos: el agente hace varias llamadas por producto y en esta corrida no leyó nada de caché. La causa es que la V2 no marca ningún punto de caché, y Bedrock solo cachea lo que queda antes de uno. Sumarlo es una tarea pendiente. Para hablar de dólares faltan la salida, la escritura en caché y el precio de la región. No sacar el ahorro solo de esta tabla. Un SKU que ya está en la caché de la V2 no paga tokens.
 
 **Transición:** Decisión 11: el costo.
 

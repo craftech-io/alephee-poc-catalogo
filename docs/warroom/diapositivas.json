@@ -1684,7 +1684,7 @@
    "table": null,
    "notes": {
     "objective": "Leer el prompt nuevo con el esqueleto de cinco partes",
-    "say": "Este es el prompt de la V1, en inglés, como los prompts actuales de Alephee. Leerlo con las cinco partes: rol y tarea arriba, y después las reglas. Las resaltadas son las que hoy no están escritas: nunca inventar, nunca traducir y qué hacer cuando falta un obligatorio.",
+    "say": "Este es el prompt de la V1, en inglés como los prompts actuales de Alephee, y escrito con las cinco partes: rol, tarea, reglas, qué hacer cuando falta el dato y formato. En pantalla están las reglas y la sección de cuando falta el dato, que es la que el prompt actual no tiene. Las resaltadas dicen que nunca invente, que -1 no es un valor y que un obligatorio sin dato va a missing con el motivo. El formato no pide JSON en el texto: dice que la respuesta va por el esquema del Listing.",
     "ask": "¿Qué regla agregarían con lo que saben del catálogo?",
     "close": "",
     "transition": "El prompt vive en Langfuse."
@@ -1692,12 +1692,14 @@
    "minutes": 3,
    "code": {
     "file": "core/src/catalog/prompts/catalog-v1-system.txt",
-    "lines": "7-18",
-    "symbol": "Rules:",
+    "lines": "10-27",
+    "symbol": "When data is missing",
     "highlight": [
-     12,
-     13,
-     15
+     18,
+     21,
+     22,
+     25,
+     26
     ],
     "caption": "Esta copia es la semilla. La versión que se usa vive en Langfuse con el label production."
    }
@@ -3209,7 +3211,7 @@
    "table": null,
    "notes": {
     "objective": "Comparar V1 y V2 sobre el mismo caso",
-    "say": "Es el mismo caso de la V1, para comparar. Antes de correr, pedir una predicción: ¿cuántos atributos resuelve el código sin preguntar? En este caso son cinco: Condição do Item, Origem, Número da Peça, Type of shell y Cor (MOCK). Al agente le quedan tres valores por decidir, Weight, Is it insurable y Aro (MOCK), y Material, que no está en la tabla. source no viaja en la salida del experimento: se ve en la traza, por los steps que corrieron. Ojo: si el SKU ya se corrió con las mismas tablas y el mismo prompt, sale de la caché y no se ve al agente. En ese caso, mostrar la traza de la corrida del 1/10 y dejar la caché para la demo de corregir y repetir. Si Bedrock no responde, mostrar el experimento guardado y decirlo.",
+    "say": "Es el mismo caso de la V1, para comparar. Antes de correr, pedir una predicción: ¿cuántos atributos resuelve el código sin preguntar? En este caso son cinco: Condição do Item, Origem, Número da Peça, Type of shell y Cor (MOCK). Al agente le quedan tres valores por decidir, Weight, Is it insurable y Aro (MOCK), y Material, que no está en la tabla. En la salida del experimento, source dice de dónde salió la publicación: cache, tables o agent. Ojo: si el SKU ya se corrió con las mismas tablas y el mismo prompt, sale de la caché y no se ve al agente. En ese caso, mostrar la traza de la corrida del 1/10 y dejar la caché para la demo de corregir y repetir. Si Bedrock no responde, mostrar el experimento guardado y decirlo.",
     "ask": "",
     "close": "",
     "transition": "Cuánto cuesta por producto."
@@ -3262,7 +3264,7 @@
    },
    "notes": {
     "objective": "Mostrar el efecto de herramientas + caché en tokens y latencia",
-    "say": "Estos números salen de las trazas de Langfuse de las corridas del 1/10 sobre los 30 reales, en promedio por producto. La V1 manda el catálogo entero, pero casi todo se lee de caché. La V2 manda solo la lista de trabajo del producto y aun así paga más tokens nuevos: el agente hace varias llamadas por producto y en esta corrida no leyó nada de caché. Falta confirmar por qué. Puede ser que fuera la primera corrida con ese prompt y esas herramientas, o que el loop cambie el prefijo en cada ronda. Para hablar de dólares faltan la salida, la escritura en caché y el precio de la región. No sacar el ahorro solo de esta tabla. Un SKU que ya está en la caché de la V2 no paga tokens.",
+    "say": "Estos números salen de las trazas de Langfuse de las corridas del 1/10 sobre los 30 reales, en promedio por producto. La V1 manda el catálogo entero, pero casi todo se lee de caché. La V2 manda solo la lista de trabajo del producto y aun así paga más tokens nuevos: el agente hace varias llamadas por producto y en esta corrida no leyó nada de caché. La causa es que la V2 no marca ningún punto de caché, y Bedrock solo cachea lo que queda antes de uno. Sumarlo es una tarea pendiente. Para hablar de dólares faltan la salida, la escritura en caché y el precio de la región. No sacar el ahorro solo de esta tabla. Un SKU que ya está en la caché de la V2 no paga tokens.",
     "ask": "",
     "close": "",
     "transition": "Decisión 11: el costo."
