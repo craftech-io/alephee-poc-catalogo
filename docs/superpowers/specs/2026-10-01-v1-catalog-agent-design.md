@@ -65,7 +65,7 @@ MappingRequested(product)
    │
    ▼
 [prepare]  system (prompt de Langfuse)
-           user: catálogo de Shopee · CachePoint(ttl 1h) · producto
+           user: catálogo de Shopee · CachePoint (TTL de 5 minutos: `BedrockConverse` 0.14.18 no pasa el `ttl` a Converse) · producto
    │ ContextReady(messages)
    ▼
 [map]      as_structured_llm(Listing).achat(messages)
@@ -78,7 +78,7 @@ MappingCompleted(listing: Listing | None, error: str | None)
 
 1. `system`: el prompt de sistema de Langfuse.
 2. `user`, primer bloque: el catálogo de Shopee (cada categoría con esquema, sus atributos con tipo, obligatoriedad, `maxValues` y valores válidos) en JSON compacto con orden determinista. Es igual para todos los productos.
-3. `CachePoint` con TTL de 1 hora.
+3. `CachePoint` (TTL de 5 minutos: `BedrockConverse` 0.14.18 no pasa el `ttl` a Converse).
 4. `user`, último bloque: el producto (`sku`, `name`, `categories`, `brand`, `attributes` y los primeros 1.500 caracteres de `description`; hay descripciones de hasta 19.000).
 
 **`map`** hace una sola llamada estructurada y devuelve el `Listing` validado. No hay reintentos: la V1 muestra lo que hace el modelo solo. Se usa `as_structured_llm(...).achat(messages)` y no `astructured_predict(prompt_template)` porque recibe los mensajes tal cual, con el `CachePoint`; con plantilla no está garantizado que el bloque sobreviva.
@@ -95,7 +95,7 @@ Fuente: [AWS, Prompt caching for faster model inference](https://docs.aws.amazon
 - La escritura en caché puede costar más que la entrada normal; la lectura cuesta menos. La respuesta lo informa en `cacheReadInputTokens` y `cacheWriteInputTokens`.
 - No hay garantía de acierto; con inferencia entre regiones puede haber más escrituras.
 
-A verificar en la implementación: que `BedrockConverse` (0.14.x) pase el `ttl` del `CachePoint` al `cachePoint` de Converse, y que `as_structured_llm` conserve el bloque.
+A verificar en la implementación: que `as_structured_llm` conserve el bloque.
 
 ## Prompt de sistema en Langfuse
 
