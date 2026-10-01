@@ -6,7 +6,7 @@
 
 **Architecture:** Un `Workflow` de LlamaIndex con dos steps (`prepare` arma los mensajes con el catálogo cacheable y el producto; `map` hace `as_structured_llm(Listing).achat`) que cierra con `MappingCompleted(StopEvent)` tipado. El prompt de sistema vive en Langfuse con fallback a una semilla del repo. La evaluación es un experimento de Langfuse con evaluadores propios. El chat del template suma la herramienta `map_product(sku)`.
 
-**Tech Stack:** Python 3.13 + uv, `llama-index-core` 0.14.24, `llama-index-llms-bedrock-converse` 0.14.18, `llama-index-workflows` 2.23.2, `langfuse` 4.16.x, `openinference-instrumentation-llama-index` 4.4.8, Claude Sonnet 5 en Bedrock (`us.anthropic.claude-sonnet-5`), SST para el deploy.
+**Tech Stack:** Python 3.13 + uv, `llama-index-core` 0.14.24, `llama-index-llms-bedrock-converse` 0.14.18, `llama-index-workflows` 2.23.2, `langfuse` 4.15.6 (4.16 choca con el `opentelemetry-sdk` que fija `aws-opentelemetry-distro`), `openinference-instrumentation-llama-index` 4.4.8, Claude Sonnet 5 en Bedrock (`us.anthropic.claude-sonnet-5`), SST para el deploy.
 
 **Spec:** `docs/superpowers/specs/2026-10-01-v1-catalog-agent-design.md`
 
@@ -578,7 +578,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 - [ ] **Step 1: Agregar la dependencia**
 
 ```bash
-uv add "langfuse>=4.16.0"
+uv add "langfuse>=4.15.6,<4.16"
 ```
 
 Expected: `pyproject.toml` y `uv.lock` actualizados.

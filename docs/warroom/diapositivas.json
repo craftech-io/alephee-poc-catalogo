@@ -5,7 +5,7 @@
   {
    "id": "partida",
    "title": "01 · Punto de partida",
-   "time": "09:00–09:30",
+   "time": "09:00-09:30",
    "goal": "Ver el error de hoy y acordar qué construimos",
    "work_reserve": [
     [
@@ -17,7 +17,7 @@
   {
    "id": "diseno",
    "title": "02 · Diseñar el agente",
-   "time": "09:30–11:15",
+   "time": "09:30-11:15",
    "goal": "Tomar las decisiones que definen la V1",
    "work_reserve": [
     [
@@ -33,7 +33,7 @@
   {
    "id": "v1",
    "title": "03 · V1 · el agente responde",
-   "time": "11:15–12:30",
+   "time": "11:15-12:30",
    "goal": "Construir, correr y leer la primera versión",
    "work_reserve": [
     [
@@ -45,7 +45,7 @@
   {
    "id": "v2",
    "title": "04 · V2 · herramientas",
-   "time": "13:15–14:45",
+   "time": "13:15-14:45",
    "goal": "Decidir qué resuelve la tabla y conectarla",
    "work_reserve": [
     [
@@ -57,7 +57,7 @@
   {
    "id": "v3",
    "title": "05 · V3 · control",
-   "time": "15:00–16:15",
+   "time": "15:00-16:15",
    "goal": "Decidir qué pasa cuando el agente no sabe",
    "work_reserve": [
     [
@@ -69,7 +69,7 @@
   {
    "id": "prueba",
    "title": "06 · La prueba y el camino",
-   "time": "16:15–17:00",
+   "time": "16:15-17:00",
    "goal": "Medir contra el criterio y repartir lo que sigue",
    "work_reserve": [
     [
@@ -95,7 +95,7 @@
    "table": null,
    "notes": {
     "objective": "Qué tenemos a las 17:00: agente en local, método repetible, 13 decisiones documentadas",
-    "say": "Después de esta portada: la agenda por temas y, con un producto real, qué entra y qué queremos que salga. A las 17:00 queremos tres cosas: el agente corriendo en local con el código en el repositorio, un método que se pueda repetir para el próximo caso de uso y trece decisiones escritas con su razonamiento. Hoy no se enseña teoría: se diseña y se construye en el orden en que se diseña. Gastón conduce; el grupo decide en cada punto.",
+    "say": "Después de la portada viene la agenda y un producto real: qué entra y qué queremos que salga. A las 17:00 queremos tres cosas. El agente corriendo con el código en el repositorio, un método que sirva para el próximo caso de uso y trece decisiones escritas con su razonamiento. Hoy no damos teoría. Diseñamos y construimos en el mismo orden. Gastón conduce y el grupo decide en cada punto.",
     "ask": "",
     "close": "",
     "transition": "Lo que vamos a hacer hoy."
@@ -107,15 +107,15 @@
    "section": "partida",
    "title": "Lo que vamos a hacer hoy.",
    "kind": "compare",
-   "lead": "Decidimos → construimos → medimos. Cada bloque cierra con una versión que funciona.",
+   "lead": "Decidimos, construimos y medimos. Cada bloque cierra con una versión que funciona.",
    "label": "",
    "items": [
-    "1 · PUNTO DE PARTIDA | El error de hoy, alcance y contrato",
+    "1 · PUNTO DE PARTIDA | El error de hoy, el alcance y el contrato",
     "2 · DISEÑAR EL AGENTE | Tipo de aplicación, prompt, dónde corre, modelo, stack y criterio de éxito",
-    "3 · V1 · EL AGENTE RESPONDE | Solo instrucciones: qué falla y por qué",
-    "4 · V2 · HERRAMIENTAS | Las tablas como herramientas, el loop y la caché de prompt",
-    "5 · V3 · CONTROL | Guardrails, memoria y caché por SKU",
-    "6 · LA PRUEBA | Hoy contra V1, V2 y V3, y el camino a producción"
+    "3 · V1 · EL AGENTE RESPONDE | Una sola llamada al modelo, sin herramientas: qué resuelve solo y qué no",
+    "4 · V2 · HERRAMIENTAS | Las tablas de Alephee como herramientas que el agente consulta",
+    "5 · V3 · CONTROL | Validaciones en código, correcciones del equipo y caché por SKU",
+    "6 · LA PRUEBA | El proceso de hoy contra V1, V2 y V3, y el camino a producción"
    ],
    "question": "",
    "options": [],
@@ -124,7 +124,7 @@
    "table": null,
    "notes": {
     "objective": "Ubicar al grupo en el recorrido del día, por temas",
-    "say": "Seis bloques. Las decisiones de los dos primeros producen la V1; las de herramientas, la V2; las de control, la V3; y la prueba mide todo contra el criterio que acordamos antes de escribir código. Horarios para quien conduce: 09:00 punto de partida, 09:30 diseño, 11:15 V1, 13:15 V2, 15:00 V3, 16:15 prueba. Pausa a las 11:00, almuerzo 12:30 a 13:15, pausa 14:45. Cierre técnico 17:00 y preguntas hasta las 17:30.",
+    "say": "Son seis bloques. Los dos primeros terminan en la V1, el de herramientas en la V2 y el de control en la V3. La prueba mide todo con el criterio que acordamos antes de escribir código. Horarios para quien conduce: 09:00 punto de partida, 09:30 diseño, 11:15 V1, 13:15 V2, 15:00 V3 y 16:15 prueba. Hay pausa a las 11:00, almuerzo de 12:30 a 13:15 y otra pausa a las 14:45. El cierre técnico es a las 17:00 y quedan preguntas hasta las 17:30.",
     "ask": "",
     "close": "",
     "transition": "Un producto real para ver qué entra y qué queremos que salga."
@@ -174,7 +174,7 @@
    },
    "notes": {
     "objective": "Que todos vean, con un producto real, qué entra y qué queremos que salga",
-    "say": "Esto es lo que queremos lograr. Entra el producto como está en Alephee: los nombres de los atributos están en español porque así los define la plataforma; los valores y la categoría están en portugués porque el catálogo es de GM Brasil sobre la taxonomía de Mercado Libre Brasil. Sale la publicación para Shopee Brasil, que mezcla portugués e inglés según cómo expone cada atributo su API. Cruzar idiomas es parte del problema. Las tres primeras filas coinciden con lo que Alephee publicó hoy para este SKU (categoría 102278, Condition = New valueId 2497, 6 Months valueId 810); la cuarta es la conducta que queremos: hoy en Código OEM salió ABS Plastic y Shopee lo rechazó. La columna de la derecha anticipa el día: tabla, agente, guardrail. El esquema de atributos de Shopee con el que validamos es MOCK derivado de estas publicaciones.",
+    "say": "Esto es lo que queremos lograr. Entra el producto tal como está en Alephee. Los nombres de los atributos están en español porque así los define la plataforma. Los valores y la categoría están en portugués porque el catálogo es de GM Brasil y usa la taxonomía de Mercado Libre Brasil. Sale la publicación para Shopee Brasil, que mezcla portugués e inglés según el atributo. Cruzar idiomas es parte del problema. Las tres primeras filas son lo que Alephee publicó hoy para este SKU. La cuarta es lo que queremos: hoy en Código OEM salió ABS Plastic y Shopee lo rechazó. La columna de la derecha adelanta el día: tabla, agente y guardrail. El esquema de atributos de Shopee con el que validamos es MOCK y sale de estas publicaciones.",
     "ask": "¿Qué fila les parece la más difícil de automatizar?",
     "close": "",
     "transition": "Cómo lo hace hoy el proceso actual."
@@ -200,7 +200,7 @@
    "table": null,
    "notes": {
     "objective": "Entender el proceso actual sin juzgarlo",
-    "say": "Describir el flujo actual tal como lo explicó Maximiliano: la categoría se resuelve por tabla y el modelo entra cuando la tabla no la tiene; los atributos van en dos llamadas en paralelo porque un solo prompt era demasiado largo, y un merge por código prioriza la que usó la referencia. Latencia de 13 segundos en batch: no es una restricción. El punto que duele es el presupuesto: cuando se agota, la publicación sale sin atributos. El modelo exacto y sus parámetros siguen sin confirmar.",
+    "say": "Contar el flujo actual como lo explicó Maximiliano. La categoría sale de la tabla y el modelo entra solo cuando la tabla no la tiene. Los atributos van en dos llamadas en paralelo, porque un solo prompt era demasiado largo, y después un merge por código prioriza la que usó la referencia. Tarda 13 segundos por producto en batch, y eso no es un problema. Lo que duele es el presupuesto: cuando se agota, la publicación sale sin atributos. El modelo exacto y sus parámetros siguen sin confirmar.",
     "ask": "¿Qué parte de este flujo les da más trabajo hoy?",
     "close": "Anotar las respuestas en la pizarra: se retoman en la prueba final.",
     "transition": "Qué pasó con esas publicaciones en Shopee."
@@ -250,7 +250,7 @@
    },
    "notes": {
     "objective": "Ver errores reales: los que rechaza el canal y los que acepta igual",
-    "say": "Los 30 productos del zip: 20 publicados y 10 rechazados. El caso 88904447 es el hilo del día: un material (ABS Plastic) copiado al campo Código OEM, que Shopee rechazó porque el valor no está vinculado a ese atributo. El 24581199 publicó Quantity diez veces y Shopee no lo mencionó: lo rechazó por otro obligatorio (Auto-Part Number). Lo peor no es lo que Shopee rechaza, que al menos avisa, sino lo que acepta mal: un -1 publicado como valor en 9 de 30 y URN sin el sufijo del canal. Nadie se entera hasta que un comprador lo ve.",
+    "say": "Son 30 productos: 20 publicados y 10 rechazados. El caso 88904447 nos acompaña todo el día. Copió un material, ABS Plastic, al campo Código OEM, y Shopee lo rechazó porque ese valor no corresponde al atributo. El 24581199 publicó Quantity diez veces, y Shopee lo rechazó por otro motivo: faltaba Auto-Part Number. Lo que Shopee rechaza al menos avisa. Peor es lo que acepta mal: un -1 publicado como valor en 9 de 30 casos y URN sin el sufijo del canal. Nadie se entera hasta que lo ve un comprador.",
     "ask": "¿Cuál de estos errores les parece más grave para el negocio?",
     "close": "",
     "transition": "Cómo vamos a trabajar hoy."
@@ -272,7 +272,7 @@
    "table": null,
    "notes": {
     "objective": "Cerrar la decisión 1 antes de hablar de contrato",
-    "say": "Presentar las tres opciones con su consecuencia: B multiplica las tablas y los esquemas de canal sin cambiar el método; C mezcla dos problemas distintos, mapear y redactar. Abrir la propuesta solo después de escuchar al grupo. La decisión queda en decisiones/01-alcance.md con su razonamiento.",
+    "say": "Presentar las tres opciones con su consecuencia. B multiplica tablas y esquemas sin cambiar el método. C mezcla dos problemas distintos: mapear y redactar. Abrir la propuesta solo después de escuchar al grupo. La decisión queda escrita con su razonamiento.",
     "ask": "¿Hay alguna familia de productos que convenga más que otra para empezar?",
     "close": "Registrar la decisión y la familia elegida.",
     "transition": "Si el alcance es ese, ¿qué entra y qué sale?"
@@ -286,7 +286,7 @@
      "B · Todos los canales conectados (Shopee, Magalu, Tienda Nube…)",
      "C · También título, descripción y marca"
     ],
-    "proposal": "A. Un canal y una familia alcanzan para decidir el método y medirlo. Los prompts de marca, título y descripción son generación libre, no mapeo: quedan fuera. Los otros canales replican el mismo diseño con sus propias tablas.",
+    "proposal": "A. Un canal y una familia alcanzan para decidir el método y medirlo. Marca, título y descripción son redacción libre y no mapeo, así que quedan fuera. Los otros canales repiten el mismo diseño con sus propias tablas.",
     "file": "decisiones/01-alcance.md"
    }
   },
@@ -309,7 +309,7 @@
    "table": null,
    "notes": {
     "objective": "Decir el contrato en palabras antes de verlo en código",
-    "say": "La salida no es la publicación final: es una propuesta de mapeo. Lo que hoy no existe son las dos listas: qué obligatorio quedó sin dato y por qué, y qué atributo del producto se descartó y por qué. Eso es lo que reemplaza al publicar sin atributos.",
+    "say": "La salida es una propuesta de mapeo, todavía no es la publicación final. Lo nuevo son las dos listas. Una dice qué obligatorio quedó sin dato y por qué. La otra dice qué atributo del producto se descartó y por qué. Con eso dejamos de publicar sin atributos sin que nadie se entere.",
     "ask": "",
     "close": "",
     "transition": "Decisión 2: cómo se informa lo que no se pudo mapear."
@@ -331,7 +331,7 @@
    "table": null,
    "notes": {
     "objective": "Cerrar la decisión 2",
-    "say": "La opción A es el estado actual y su costo ya lo vimos en la tabla de rechazos. La B obliga a que alguien reciba esas listas: quién y cómo es la integración con la plataforma de Alephee, que se trata en el camino a producción. Registrar en decisiones/02-contrato.md.",
+    "say": "La opción A es lo que pasa hoy, y su costo ya lo vimos en la tabla de rechazos. La B obliga a que alguien reciba esas listas. Quién y cómo es parte de la integración con la plataforma de Alephee, que vemos en el camino a producción.",
     "ask": "",
     "close": "",
     "transition": "Con alcance y contrato cerrados, diseñamos el agente."
@@ -345,7 +345,7 @@
      "B · missing y rejected con motivo, en la misma salida",
      "C · Un archivo de log aparte que alguien revisa"
     ],
-    "proposal": "B. El faltante viaja con la publicación: quien revisa ve el producto, el atributo y el motivo juntos. Un log aparte se separa del dato y nadie lo mira. La decisión 12 define qué pasa después con esas listas.",
+    "proposal": "B. El faltante viaja con la publicación, y quien revisa ve el producto, el atributo y el motivo juntos. Un log aparte se separa del dato y nadie lo mira. La decisión 12 define qué pasa después con esas listas.",
     "file": "decisiones/02-contrato.md"
    }
   },
@@ -364,7 +364,7 @@
    "table": null,
    "notes": {
     "objective": "Abrir el bloque de diseño",
-    "say": "En este bloque no se corre nada. Se toman las decisiones que la V1 va a implementar a las 11:15: qué tipo de aplicación, cómo se escribe el prompt, dónde corre, qué modelo, con qué stack y cómo se mide. Cada decisión tiene opciones con consecuencias y se cierra antes de pasar a la siguiente.",
+    "say": "En este bloque no corremos nada. Tomamos las decisiones que la V1 implementa a las 11:15: tipo de aplicación, prompt, dónde corre, modelo, stack y cómo se mide. Cada decisión tiene opciones con consecuencias y se cierra antes de pasar a la siguiente.",
     "ask": "",
     "close": "",
     "transition": "Primero, qué tipos de aplicación existen."
@@ -379,9 +379,9 @@
    "lead": "",
    "label": "",
    "items": [
-    "SINGLE PROMPT | Una llamada, una respuesta. Barato y fácil de evaluar; no consulta nada",
-    "WORKFLOW | Pasos fijos en código; el modelo participa en uno o dos. Predecible",
-    "AGENTE | El modelo decide qué herramienta pedir y cuándo entregar, dentro de un límite de rondas",
+    "SINGLE PROMPT | Una llamada y una respuesta. Barato y fácil de evaluar, pero no consulta nada",
+    "WORKFLOW | Pasos fijos en código, y el modelo participa en uno o dos. Es predecible",
+    "AGENTE | El modelo decide qué herramienta pedir y cuándo entregar, con un límite de rondas",
     "MULTIAGENTE | Varios agentes con roles distintos. Solo cuando uno no alcanza"
    ],
    "question": "",
@@ -391,7 +391,7 @@
    "table": null,
    "notes": {
     "objective": "Distinguir single prompt, workflow, agente y multiagente",
-    "say": "El proceso actual de Alephee es un workflow: dos llamadas fijas y un merge en código. Un agente se diferencia en que el modelo elige qué consultar y cuándo terminar; el programa le pone el límite. Multiagente es la última opción, no la primera: cada agente extra suma latencia, costo y puntos de fallo.",
+    "say": "El proceso actual de Alephee es un workflow: dos llamadas fijas y un merge en código. En un agente, el modelo elige qué consultar y cuándo terminar, y el programa le pone el límite. Multiagente es la última opción. Cada agente extra suma latencia, costo y lugares donde fallar.",
     "ask": "¿El flujo de hoy es single prompt, workflow o agente?",
     "close": "Workflow: las llamadas y el merge están fijos en código.",
     "transition": "Decisión 3."
@@ -404,7 +404,7 @@
    "title": "¿Single prompt o agente?",
    "kind": "decision",
    "lead": "",
-   "label": "La opción A ya está en la base preparada (V1) · si gana otra, se discute qué cambia",
+   "label": "La V1 se construye con la opción A · si gana otra, vemos qué cambia",
    "items": [],
    "question": "",
    "options": [],
@@ -413,7 +413,7 @@
    "table": null,
    "notes": {
     "objective": "Cerrar la decisión 3",
-    "say": "B es tentador porque ya sabemos que vamos a necesitar herramientas, pero nos quita la evidencia de por qué. C es la pregunta que siempre hay que hacerse: ¿hace falta un modelo? Para la categoría y los campos mapeados por tabla, no; para elegir el valor equivalente de una lista, sí.",
+    "say": "B es tentador porque ya sabemos que vamos a necesitar herramientas, pero nos quita la evidencia de por qué. C es la pregunta que siempre hay que hacerse: ¿hace falta un modelo? Para la categoría y los campos que ya están en la tabla, no. Para elegir el valor equivalente de una lista, sí.",
     "ask": "",
     "close": "",
     "transition": "Si empezamos por un prompt, veamos de qué está hecho."
@@ -423,11 +423,11 @@
     "number": 3,
     "question": "¿Con qué tipo de aplicación empezamos?",
     "options": [
-     "A · Single prompt (V1) y agregar herramientas solo cuando un fallo lo justifique",
+     "A · Una sola llamada estructurada (V1) y sumar herramientas solo cuando un fallo lo justifique",
      "B · Agente con herramientas desde el inicio",
-     "C · Workflow determinista sin modelo"
+     "C · Workflow determinista, sin modelo"
     ],
-    "proposal": "A. La V1 muestra qué resuelve el modelo solo y qué no; cada fallo justifica la capa siguiente y queda documentado. C no alcanza: elegir el valor de lista equivalente (por ejemplo, '1' → Sim) necesita interpretación.",
+    "proposal": "A. La V1 muestra qué resuelve el modelo solo y qué no, y cada fallo justifica la capa siguiente. También es la buena práctica de LlamaIndex: si el modelo no tiene herramientas que elegir, no hace falta un agente. El FunctionAgent entra en la V2. C no alcanza, porque elegir el valor equivalente de una lista (por ejemplo, '1' es Sim) necesita interpretación.",
     "file": "decisiones/03-tipo-de-aplicacion.md"
    }
   },
@@ -452,7 +452,7 @@
    "table": null,
    "notes": {
     "objective": "Dar un esqueleto para leer cualquier prompt",
-    "say": "Las cinco partes sirven para leer el prompt actual y el nuevo. La quinta es la que casi siempre falta: qué hacer cuando no hay dato. Si el prompt no lo dice, el modelo elige por su cuenta, y lo que elige es completar.",
+    "say": "Con estas cinco partes leemos el prompt actual y el nuevo. La quinta casi siempre falta: qué hacer cuando no hay dato. Si el prompt no lo dice, el modelo decide solo, y casi siempre decide completar.",
     "ask": "",
     "close": "",
     "transition": "Tres prácticas que cambian el resultado."
@@ -467,9 +467,9 @@
    "lead": "",
    "label": "",
    "items": [
-    "Lo estático primero y lo variable al final: habilita la caché de prompt (F4, F7)",
-    "Salida estructurada por esquema, no JSON pedido en el texto",
-    "Decir qué hacer cuando no sabe, no solo qué hacer"
+    "Lo fijo primero y lo variable al final: así funciona la caché de prompt (F4, F7)",
+    "Salida con esquema, en lugar de pedir JSON en el texto",
+    "Decir qué hacer cuando no sabe, además de qué hacer"
    ],
    "question": "",
    "options": [],
@@ -478,7 +478,7 @@
    "table": null,
    "notes": {
     "objective": "Tres prácticas con efecto medible",
-    "say": "La primera tiene efecto directo en costo: Bedrock cachea el prefijo estable del prompt con cachePoint (F4, mínimo 1.024 tokens para Claude Sonnet 5) y OpenAI hace lo mismo de forma automática sobre el prefijo (F7). El prompt actual pone el producto antes de la lista de categorías: el prefijo cambia en cada llamada y no se cachea nada. Reordenarlo ya bajaría el costo sin cambiar de proveedor; hay que medirlo, no darlo por hecho. Fuentes en docs/warroom/fuentes.md.",
+    "say": "La primera baja el costo directamente. Bedrock guarda en caché el comienzo del prompt que no cambia, marcado con un cachePoint (F4). Para Claude Sonnet 5 el mínimo es 1.024 tokens, y la caché dura 5 minutos desde el último uso. OpenAI hace lo mismo de forma automática (F7). El prompt actual pone el producto antes de la lista de categorías, así que el comienzo cambia en cada llamada y no se cachea nada. Reordenarlo ya bajaría el costo sin cambiar de proveedor, pero hay que medirlo antes de darlo por hecho. En la V1 lo vemos en Langfuse, en cada traza. Fuentes en docs/warroom/fuentes.md.",
     "ask": "",
     "close": "",
     "transition": "Decisión 4."
@@ -491,7 +491,7 @@
    "title": "¿Cómo garantizamos el formato?",
    "kind": "decision",
    "lead": "",
-   "label": "La opción B ya está en la base preparada · si gana otra, se discute qué cambia",
+   "label": "La V1 usa la opción B · si gana otra, vemos qué cambia",
    "items": [],
    "question": "",
    "options": [],
@@ -500,7 +500,7 @@
    "table": null,
    "notes": {
     "objective": "Cerrar la decisión 4",
-    "say": "Preguntar al grupo cuántas veces tuvieron que arreglar un JSON mal formado. La opción B existe en todos los proveedores grandes (tool calling o salida estructurada); no depende de Bedrock.",
+    "say": "Preguntar cuántas veces tuvieron que arreglar un JSON mal formado. La salida estructurada existe en todos los proveedores grandes, así que no depende de Bedrock. El Workflow de la V1 cierra con un evento tipado, MappingCompleted, que trae el Listing.",
     "ask": "",
     "close": "",
     "transition": "Ahora, dónde va a correr."
@@ -510,11 +510,11 @@
     "number": 4,
     "question": "¿Cómo se garantiza que la salida cumpla el contrato?",
     "options": [
-     "A · Pedir JSON en el texto y parsear (hoy)",
-     "B · Herramienta con esquema Pydantic: la entrega es una llamada tipada",
-     "C · Post-procesar la respuesta con expresiones regulares"
+     "A · Pedir JSON en el texto y parsearlo (hoy)",
+     "B · Salida estructurada con un modelo Pydantic: el modelo devuelve un Listing validado",
+     "C · Corregir la respuesta después con expresiones regulares"
     ],
-    "proposal": "B. El formato deja de ser una regla del prompt y pasa a ser un contrato que el modelo no puede violar. C arregla síntomas: si el modelo omite un campo, la regex no lo inventa.",
+    "proposal": "B. El formato deja de ser un pedido en el prompt y pasa a ser un contrato. En LlamaIndex es as_structured_llm(Listing): el modelo responde por tool calling y la librería valida contra el esquema. Si la salida no cumple, el Workflow devuelve el error en lugar de publicar algo a medias. C arregla síntomas: si el modelo omite un campo, la expresión regular no lo inventa.",
     "file": "decisiones/04-salida-estructurada.md"
    }
   },
@@ -524,11 +524,11 @@
    "title": "Dónde corre: AgentCore o contenedor propio.",
    "kind": "compare",
    "lead": "",
-   "label": "Fuentes F1–F3b en docs/warroom/fuentes.md",
+   "label": "Fuentes F1 a F3b en docs/warroom/fuentes.md",
    "items": [
-    "AGENTCORE RESUELVE | Runtime sin servidores, identidad, memoria, gateway de herramientas y observabilidad, como servicios separados que se usan juntos o no (F2)",
-    "DUDAS | Arranque en frío sin cifra publicada, sesiones que terminan a los 15 min de inactividad y 8 h máximo (F3b), costo por CPU y memoria de la sesión (F3), región disponible",
-    "ALTERNATIVA | Contenedor o Lambda propios: más control y más trabajo de operación; el agente es el mismo"
+    "AGENTCORE RESUELVE | Runtime sin servidores, identidad, memoria, gateway de herramientas y observabilidad. Son servicios separados que se pueden usar juntos o no (F2)",
+    "DUDAS | No hay cifra publicada de arranque en frío. Las sesiones terminan a los 15 minutos sin actividad y duran 8 horas como máximo (F3b). Se cobra por CPU y memoria de la sesión (F3), y hay que confirmar la región",
+    "ALTERNATIVA | Contenedor o Lambda propios: más control y más trabajo de operación. El agente es el mismo"
    ],
    "question": "",
    "options": [],
@@ -537,7 +537,7 @@
    "table": null,
    "notes": {
     "objective": "Presentar AgentCore con sus beneficios y sus dudas, con fuente",
-    "say": "AgentCore Runtime corre el contenedor del agente en una microVM por sesión y cobra por el CPU y la memoria que consume la sesión; el CPU baja a cero mientras espera al modelo (F3). Para un chat eso es ideal. Para un batch de miles de productos la pregunta es otra: ¿conviene una sesión larga en el Runtime o un proceso propio de Alephee que llame a Bedrock? No hay cifra pública de arranque en frío; se mide. Las dudas que no se resuelvan hoy van a Juan David.",
+    "say": "AgentCore Runtime corre el contenedor del agente en una microVM por sesión. Cobra por el CPU y la memoria de la sesión, y el CPU baja a cero mientras espera al modelo (F3). Para un chat eso funciona muy bien. Para un batch de miles de productos la pregunta cambia: ¿conviene una sesión larga en el Runtime o un proceso de Alephee que llame a Bedrock? No hay cifra pública de arranque en frío, así que hay que medirlo. Las dudas que no cerremos hoy van a Juan David.",
     "ask": "¿El batch de Alephee tiene horario fijo o corre continuo?",
     "close": "",
     "transition": "La infraestructura completa, en un dibujo."
@@ -559,7 +559,7 @@
    "table": null,
    "notes": {
     "objective": "Mostrar todas las piezas de AWS y separar lo que hay de lo que falta",
-    "say": "Arriba, el camino del chat: el widget llama al BFF, que valida el token, aplica el guardrail de entrada y los topes, y encola. El worker invoca el Runtime, que llama a Bedrock y a las herramientas por el Gateway. Abajo a la derecha, punteado, el batch de catálogo: hoy corre en local contra Bedrock y su lugar en producción es la decisión 5. La franja de abajo es el monitoreo que trae el template: logs, trazas de punta a punta y un dashboard. Nada de esto está desplegado todavía para Alephee.",
+    "say": "Arriba está el camino del chat. El widget llama al BFF, que valida el token, aplica el guardrail de entrada y los topes, y encola el mensaje. El worker invoca el Runtime, que llama a Bedrock y a las herramientas por el Gateway. Una de esas herramientas es map_product, que corre la V1. Abajo a la derecha, punteado, está el batch de catálogo: hoy corre en local como experimento de Langfuse, y su lugar en producción es la decisión 5. La franja de abajo es el monitoreo: logs y métricas en CloudWatch, y trazas, prompts y experimentos en Langfuse.",
     "ask": "¿Qué piezas ya tiene Alephee y cuáles reemplazaríamos?",
     "close": "",
     "transition": "Decisión 5."
@@ -626,7 +626,7 @@
       "sub": [
        "contenedor ARM64 desde ECR",
        "core/server.py · /invocations",
-       "ChatWorkflow (catálogo pendiente)"
+       "ChatWorkflow + map_product (V1)"
       ],
       "tone": "aws"
      },
@@ -705,8 +705,8 @@
       "h": 96,
       "title": "Batch de catálogo · hoy local",
       "sub": [
-       "scripts/correr.sh → V1 / V2 / V3",
-       "Converse directo, perfil SSO sandbox",
+       "scripts/experiment.sh → V1",
+       "experimentos y trazas en Langfuse",
        "producción: a decidir (decisión 5)"
       ],
       "tone": "pendiente"
@@ -716,9 +716,9 @@
       "y": 466,
       "w": 1168,
       "h": 60,
-      "title": "Observabilidad · CloudWatch y X-Ray",
+      "title": "Observabilidad · CloudWatch, X-Ray y Langfuse",
       "sub": [
-       "logs de Lambdas y Runtime · traza BFF → cola → worker → Runtime · dashboard AWS/Bedrock-AgentCore · muestreo 5 %"
+       "logs y métricas en CloudWatch · trazas del agente, prompts y experimentos en Langfuse"
       ],
       "tone": "base"
      }
@@ -899,7 +899,7 @@
       "dashed": false
      }
     ],
-    "caption": "Es la infraestructura del template en infra/sst, desplegable con SST. Para Alephee todavía no está desplegada: en la cuenta sandbox solo hay otro Runtime. AgentCore Memory se sacó del stack."
+    "caption": "Es la infraestructura del template en infra/sst. El chat de la V1 se despliega en la cuenta sandbox con el stage warroom, y las trazas del agente van a Langfuse. AgentCore Memory se sacó del stack."
    }
   },
   {
@@ -917,7 +917,7 @@
    "table": null,
    "notes": {
     "objective": "Cerrar la decisión 5 dejando el batch como pregunta abierta con dueño",
-    "say": "No forzar la decisión del batch sin datos: anotar qué medir (duración de una corrida de 30 y de 1.000 productos, costo de sesión, arranque) y quién lo mide.",
+    "say": "No forzar la decisión del batch sin datos. Anotar qué medir: cuánto tarda una corrida de 30 productos y una de 1.000, cuánto cuesta la sesión y cuánto tarda en arrancar. Y anotar quién lo mide.",
     "ask": "",
     "close": "",
     "transition": "Siguiente: cómo elegir el modelo."
@@ -927,11 +927,11 @@
     "number": 5,
     "question": "¿Dónde corre el agente?",
     "options": [
-     "A · Hoy en local; el chat de demo en AgentCore; el batch como proceso de Alephee, a decidir con el camino a producción",
+     "A · Hoy en local y el chat de demo en AgentCore (stage warroom). El batch como proceso de Alephee se decide con el camino a producción",
      "B · Todo en AgentCore desde el inicio",
      "C · Todo en la infraestructura actual de Alephee"
     ],
-    "proposal": "A. Hoy se construye y se mide en local. El chat va a AgentCore porque es su caso natural. Para el batch hace falta medir sesiones, costo y arranque antes de decidir; se retoma a las 16:15.",
+    "proposal": "A. Hoy construimos y medimos en local. El chat va a AgentCore porque es su caso natural. Para el batch hay que medir sesiones, costo y arranque antes de decidir, y lo retomamos a las 16:15.",
     "file": "decisiones/05-donde-corre.md"
    }
   },
@@ -943,10 +943,10 @@
    "lead": "",
    "label": "",
    "items": [
-    "Seguir reglas y usar herramientas sin inventar: es lo que más falla hoy",
+    "Seguir reglas sin inventar valores: es lo que más falla hoy",
     "Costo por token con caché de prompt: el presupuesto actual es de USD 350 por mes",
-    "Latencia: no es restricción (hoy el batch tarda 13 s por producto)",
-    "Disponible en la región y habilitado en la cuenta"
+    "Latencia: no es una restricción (hoy el batch tarda 13 s por producto)",
+    "Que esté disponible en la región y habilitado en la cuenta"
    ],
    "question": "",
    "options": [],
@@ -955,7 +955,7 @@
    "table": null,
    "notes": {
     "objective": "Criterios de elección antes de nombrar modelos",
-    "say": "El orden importa: primero calidad en lo que falla hoy (alucinar valores, ignorar reglas), después costo con caché, y la latencia al final porque es batch. Un modelo más chico puede ganar en costo y perder en reglas: se decide midiendo sobre el dataset, no por intuición.",
+    "say": "El orden importa. Primero, calidad en lo que falla hoy: inventar valores e ignorar reglas. Después, costo con caché. La latencia va al final porque es batch. Un modelo más chico puede ganar en costo y perder en reglas, y eso se decide midiendo sobre el dataset.",
     "ask": "",
     "close": "",
     "transition": "Qué hay disponible en Bedrock."
@@ -1005,7 +1005,7 @@
    },
    "notes": {
     "objective": "Mostrar el catálogo real de Bedrock sin inventar modelos",
-    "say": "La tabla sale de la página oficial Models at a glance del 30/09 (F6). No es una recomendación de cada uno: es el menú. Lo que importa para elegir es la columna de la derecha y el criterio de la lámina anterior. La disponibilidad por región y la habilitación en la cuenta se verifican en la cuenta que usemos.",
+    "say": "La tabla sale de la página oficial Models at a glance, revisada el 30/09 (F6). Es el menú, no una recomendación. Para elegir importan la columna de la derecha y el criterio de la lámina anterior. La región y la habilitación se verifican en la cuenta que usemos.",
     "ask": "",
     "close": "",
     "transition": "Decisión 6."
@@ -1027,7 +1027,7 @@
    "table": null,
    "notes": {
     "objective": "Cerrar la decisión 6 con la prueba de Haiku como pendiente",
-    "say": "Lo primero que van a preguntar: por qué Sonnet 5 y no 5.5. Respuesta honesta: la decisión es del 25/09 y el modelo está probado en este repo; 5.5 se compara sobre el mismo dataset, no se adopta a ciegas. Anotar las pruebas de 5.5 y de Haiku 4.5 como tareas con dueño. Si Alephee quiere continuidad con OpenAI, los GPT también están en Bedrock (F6): la arquitectura no cambia.",
+    "say": "Lo primero que van a preguntar es por qué Sonnet 5 y no 5.5. La decisión es del 25/09 y el modelo ya está probado en este repositorio. El 5.5 se compara sobre el mismo dataset antes de adoptarlo. Anotar las pruebas de 5.5 y de Haiku 4.5 como tareas con dueño. Si Alephee quiere seguir con OpenAI, los GPT también están en Bedrock (F6) y la arquitectura no cambia.",
     "ask": "",
     "close": "",
     "transition": "Con qué lo construimos."
@@ -1041,7 +1041,7 @@
      "B · Un modelo más chico y barato (Claude Haiku 4.5) y medir",
      "C · Seguir con OpenAI y solo reordenar el prompt para la caché"
     ],
-    "proposal": "A para construir hoy: es la decisión del 25/09 y el ID está verificado en Converse. Claude Sonnet 5.5 también está en Bedrock (F6): compararlo, junto con Haiku 4.5 (B), es una corrida más con otra variable de entorno y queda como pendiente con dueño. C mejora el costo pero no resuelve herramientas, contrato ni control.",
+    "proposal": "A para construir hoy. Es la decisión del 25/09 y el ID está verificado en Converse. Claude Sonnet 5.5 también está en Bedrock (F6). Compararlo con Haiku 4.5 (B) es una corrida más del experimento con otra variable de entorno, y queda como pendiente con dueño. C mejora el costo pero no resuelve el contrato ni el control.",
     "file": "decisiones/06-modelo.md"
    }
   },
@@ -1053,9 +1053,10 @@
    "lead": "",
    "label": "",
    "items": [
-    "Python + LlamaIndex Workflows: pasos, eventos y herramientas ya resueltos",
-    "BedrockConverse: tool calling y caché de prompt sin código propio",
-    "Harness de desarrollo: propone cambios en el código; Gastón los revisa y corre los tests"
+    "Python + LlamaIndex Workflows: pasos y eventos tipados, y cada paso se prueba por separado",
+    "BedrockConverse: salida estructurada, tool calling y caché de prompt sin código propio",
+    "Langfuse: el prompt versionado, las trazas de cada llamada y los experimentos",
+    "Harness de desarrollo: propone cambios en el código, y Gastón los revisa y corre los tests"
    ],
    "question": "",
    "options": [],
@@ -1064,7 +1065,7 @@
    "table": null,
    "notes": {
     "objective": "Separar el stack del agente de la herramienta con la que lo construimos",
-    "say": "Dos cosas distintas: el stack con el que corre el agente (Python, LlamaIndex, Bedrock) y el harness con el que lo construimos hoy, un entorno de desarrollo asistido por un modelo que propone cambios. El harness no es el agente ni decide nada: cada cambio que propone pasa por revisión y por los tests. No depende de un proveedor concreto.",
+    "say": "Hay dos cosas distintas. Una es el stack con el que corre el agente: Python, LlamaIndex, Bedrock y Langfuse. La otra es el harness con el que lo construimos hoy, un entorno de desarrollo asistido por un modelo que propone cambios. El harness no es el agente ni decide nada. Cada cambio que propone pasa por revisión y por los tests, y no depende de un proveedor concreto.",
     "ask": "¿Qué revisarían antes de aceptar un cambio propuesto por el harness?",
     "close": "Que resuelva la regla acordada, que pase los tests y que no toque datos reales.",
     "transition": "Decisión 7."
@@ -1077,7 +1078,7 @@
    "title": "¿Con qué lo construimos?",
    "kind": "decision",
    "lead": "",
-   "label": "Tomada el 28/09 (CLAUDE.md, decisión 9) · hoy se valida",
+   "label": "Tomada el 28/09 · Langfuse se sumó el 1/10 · hoy se valida",
    "items": [],
    "question": "",
    "options": [],
@@ -1086,7 +1087,7 @@
    "table": null,
    "notes": {
     "objective": "Cerrar la decisión 7",
-    "say": "Dejar claro que la decisión es de continuidad, no de superioridad: AgentCore funciona con cualquier framework (F2). Lo que no se negocia es el patrón: LLM inyectado y pasos testeables.",
+    "say": "Aclarar que es una decisión de continuidad. AgentCore funciona con cualquier framework (F2). Lo que no se negocia es el patrón: el modelo se inyecta y cada paso se puede probar. Langfuse se sumó el 1/10 para guardar el prompt y correr la evaluación. Con Langfuse Cloud, los productos y las respuestas salen de AWS, y eso hay que acordarlo con Alephee.",
     "ask": "",
     "close": "",
     "transition": "Última decisión antes de construir: cómo sabemos si está bien hecho."
@@ -1096,11 +1097,11 @@
     "number": 7,
     "question": "¿Qué stack usamos para el agente?",
     "options": [
-     "A · Python + LlamaIndex Workflows + BedrockConverse",
+     "A · Python + LlamaIndex Workflows + BedrockConverse, con Langfuse para prompts y evaluación",
      "B · Llamadas directas al SDK, sin framework (como hoy)",
      "C · Otro framework de agentes (Strands, LangGraph…)"
     ],
-    "proposal": "A. Es el stack del template que Craftech ya opera: el workflow no conoce Bedrock y cada paso se prueba con dobles. B repite el código de loop, herramientas y caché que un framework ya trae. C es válido; se elige A por continuidad con lo que ya está probado.",
+    "proposal": "A. Es el stack del template que Craftech ya opera. El Workflow no conoce Bedrock y cada paso se prueba con dobles. B repite el código de loop, herramientas y caché que un framework ya trae. C es válido, y elegimos A por continuidad con lo que ya está probado.",
     "file": "decisiones/07-stack.md"
    }
   },
@@ -1112,9 +1113,9 @@
    "lead": "",
    "label": "Esquema de Shopee y salida esperada MOCK · validar con el equipo de catálogo",
    "items": [
-    "Exacto: categoría correcta, ni sobra ni falta atributo, nada fuera de dominio, sin duplicados y faltantes informados",
-    "Además se reportan precisión y recall de atributos, valores inválidos, tokens y segundos",
-    "Dataset: 30 productos reales con su publicación actual; el esquema de atributos de Shopee y el expected son simulados"
+    "Exacto: categoría correcta, ningún atributo de más ni de menos, nada fuera de la lista del canal, sin duplicados y con los faltantes informados",
+    "También medimos precisión y recall de atributos, valores inválidos, tokens y segundos, todo en Langfuse",
+    "Dataset: 30 productos reales con su publicación actual. El esquema de Shopee y la salida esperada son simulados"
    ],
    "question": "",
    "options": [],
@@ -1123,7 +1124,7 @@
    "table": null,
    "notes": {
     "objective": "Acordar la métrica antes de escribir código",
-    "say": "La vara es estricta a propósito. Pero el expected es mock: se construyó a partir de la publicación actual limpia, así que hereda sus omisiones y castiga aciertos que hoy nadie mapea. Por eso los exactos van a ser bajos en todas las versiones y hay que leer también inválidos, duplicados y faltantes. El esquema oficial de Shopee y la validación con catálogo son pendientes.",
+    "say": "La vara es estricta a propósito. Pero la salida esperada es mock: la armamos a partir de la publicación actual limpia, así que hereda sus omisiones y castiga aciertos que hoy nadie mapea. Por eso los exactos van a salir bajos en todas las versiones, y hay que mirar también inválidos, duplicados y faltantes. Cada versión corre como experimento en Langfuse, al lado del proceso de hoy. El esquema oficial de Shopee y la validación con catálogo quedan pendientes.",
     "ask": "",
     "close": "",
     "transition": "Decisiones 8 y 9."
@@ -1145,7 +1146,7 @@
    "table": null,
    "notes": {
     "objective": "Cerrar la decisión 8 con un número escrito",
-    "say": "Escribir el número en la pizarra antes de la V1. Si el grupo quiere exigir exactos (B), advertir que con el expected mock ninguna versión los supera, incluida la actual (7 de 30), y que el 28/09 las versiones dieron 5, 4 y 4: la prueba quedaría planteada para fallar por la vara, no por el agente.",
+    "say": "Escribir el número en la pizarra antes de la V1. Si el grupo quiere exigir exactos (B), advertir que con esta salida esperada ni el proceso de hoy llega: saca 7 de 30. La prueba quedaría armada para fallar por la vara y no por el agente.",
     "ask": "",
     "close": "",
     "transition": "Y con qué datos."
@@ -1155,11 +1156,11 @@
     "number": 8,
     "question": "¿Qué criterio de éxito acordamos para la prueba de las 16:15?",
     "options": [
-     "A · Cero valores inválidos, cero duplicados y todo obligatorio informado en los 30; los exactos se reportan pero no son condición hasta validar el expected con catálogo",
+     "A · Cero valores inválidos, cero duplicados y todos los obligatorios informados en los 30. Los exactos se informan, pero no son condición hasta validar la salida esperada con catálogo",
      "B · Exactos iguales o mayores al 80 %",
      "C · Solo precisión y recall de atributos"
     ],
-    "proposal": "A. Con expected mock, 'exacto' castiga aciertos que hoy nadie mapea: el 28/09 el proceso actual dio 7 y las versiones 5, 4 y 4. Los inválidos, duplicados y obligatorios sin informar sí son errores seguros y hoy hay 47, 5 y 2. El número final se fija en la sala.",
+    "proposal": "A. Con una salida esperada mock, el exacto castiga aciertos que hoy nadie mapea: el proceso actual saca 7 de 30. Los inválidos, duplicados y obligatorios sin informar sí son errores seguros, y hoy hay 47, 5 y 2. El número final se fija en la sala.",
     "file": "decisiones/08-criterio-de-exito.md"
    }
   },
@@ -1178,7 +1179,7 @@
    "table": null,
    "notes": {
     "objective": "Cerrar la decisión 9 y pasar a construir",
-    "say": "Pedir al grupo que elija el caso guía para las demos (propuesta: 88904447, el del Código OEM). Pausa de 11:00; a las 11:15 se construye la V1 con todo lo decidido.",
+    "say": "Pedir al grupo que elija el caso guía de las demos. La propuesta es 88904447, el del Código OEM. A las 11:00 hay pausa, y a las 11:15 construimos la V1 con todo lo decidido.",
     "ask": "",
     "close": "",
     "transition": "Pausa. Volvemos con la V1."
@@ -1192,7 +1193,7 @@
      "B · Solo los 10 casos mock de borde",
      "C · Esperar el esquema oficial de Shopee para empezar"
     ],
-    "proposal": "A. Son productos reales con publicaciones reales y rechazos reales de Shopee. Lo simulado queda rotulado y se valida con catálogo después. Los 10 mock quedan como tests de borde.",
+    "proposal": "A. Son productos reales, con publicaciones reales y rechazos reales de Shopee. Lo simulado queda rotulado y se valida con catálogo después. Los 10 casos mock quedan como pruebas de borde.",
     "file": "decisiones/09-dataset.md"
    }
   },
@@ -1201,7 +1202,7 @@
    "section": "v1",
    "title": "V1 · el agente responde.",
    "kind": "divider",
-   "lead": "Solo instrucciones. Se espera que falle, y esos fallos justifican lo que sigue.",
+   "lead": "Una sola llamada al modelo, sin herramientas. Esperamos que falle, y esos fallos justifican lo que sigue.",
    "label": "",
    "items": [],
    "question": "",
@@ -1211,7 +1212,7 @@
    "table": null,
    "notes": {
     "objective": "Abrir la V1 con la expectativa correcta",
-    "say": "La V1 implementa las decisiones 1 a 9: single prompt, salida por herramienta con esquema, Claude Sonnet 5 por Converse, LlamaIndex Workflows, medida con el evaluador sobre los 30 reales. No usa las tablas de referencia a propósito: queremos ver qué resuelve el modelo solo. Recordar la regla del día: no se pasa al bloque siguiente con algo roto, pero un resultado de negocio incorrecto no es algo roto, es evidencia.",
+    "say": "La V1 junta las decisiones 1 a 9. Es un Workflow de LlamaIndex con dos pasos. El primero, prepare, arma el mensaje: el catálogo de Shopee al principio, para que entre en la caché, y el producto al final. El segundo, map, hace una llamada estructurada y devuelve un Listing validado. El prompt de sistema vive en Langfuse y la evaluación corre ahí. La V1 no usa las tablas de referencia a propósito, porque queremos ver qué resuelve el modelo solo. La regla del día sigue: no pasamos al bloque siguiente con algo roto. Si la V1 se equivoca en un atributo, eso no frena el día. Lo anotamos como evidencia para la V2.",
     "ask": "",
     "close": "",
     "transition": "Lo corremos sobre el caso guía."
@@ -1233,30 +1234,30 @@
    "table": null,
    "notes": {
     "objective": "Ver una salida real y leerla con el contrato en la mano",
-    "say": "Antes de correr, pedir una predicción: ¿qué va a poner en Código OEM? Correr y leer la salida en el orden de la lista. Si Bedrock no responde (sesión SSO vencida, throttling), abrir la corrida guardada y decirlo: es una corrida vieja, anterior a las correcciones del 28/09. Después, el lote completo corre en segundo plano mientras seguimos.",
+    "say": "Antes de correr, pedir una predicción: ¿qué va a poner en Código OEM? Correr y leer la salida en el orden de la lista. Después abrir la traza en Langfuse y mostrar el prompt, la respuesta y los tokens. Si todavía no tenemos el OK de Alephee para subir los datos reales a Langfuse, usar el caso mock 01-real-calota-aro14 con --data mock. Si Bedrock no responde, por sesión SSO vencida o por throttling, mostrar la corrida de la mañana y decirlo. El lote completo corre en segundo plano mientras seguimos.",
     "ask": "",
     "close": "",
     "transition": "Qué falló y qué capa lo resuelve."
    },
    "minutes": 5,
    "demo": {
-    "command": "scripts/correr.sh --version v1 --datos real --caso error-88904447",
+    "command": "scripts/experiment.sh --version v1 --data real --case error-88904447",
     "watch": [
-     "La categoría elegida frente a la de reference_category",
-     "Cada atributo: ¿de dónde salió el valor? ¿Está en la lista del canal?",
-     "missing y rejected: ¿informa lo que no pudo o completó igual?",
-     "Tokens de entrada: todo el contexto del canal viaja en cada llamada"
+     "La categoría que eligió el modelo y la que dice reference_category",
+     "Cada atributo: de dónde sale el valor y si está en la lista del canal",
+     "missing y rejected: si informa lo que no pudo o completa igual",
+     "En la traza de Langfuse: tokens de entrada, tokens leídos de caché y segundos"
     ],
-    "fallback": "resultados/v1-real-20260928-173758.json (corrida del 28/09, anterior a las correcciones)"
+    "fallback": "la corrida del experimento v1-real de la mañana, en Langfuse"
    }
   },
   {
    "id": "s40",
    "section": "v1",
-   "title": "Qué falló en V1 y qué capa lo resuelve.",
+   "title": "Qué esperamos que falle en la V1 y qué capa lo resuelve.",
    "kind": "table",
    "lead": "",
-   "label": "Corrida del 28/09 · 30 reales (fila 1: caso MOCK 09) · anterior a las correcciones · expected MOCK",
+   "label": "Hipótesis para confirmar con la corrida del día · salida esperada MOCK",
    "items": [],
    "question": "",
    "options": [],
@@ -1264,36 +1265,41 @@
    "exercise": null,
    "table": {
     "headers": [
-     "Fallo",
-     "Dónde se vio",
+     "Fallo esperado",
+     "Cómo se ve",
      "Capa que lo resuelve"
     ],
     "rows": [
      [
-      "Categoría inventada cuando no hay referencia",
-      "Caso mock 09 (sin categoría de origen)",
-      "V2 · la tabla por herramienta"
+      "Categoría inventada cuando el producto no trae una",
+      "Caso mock 09, sin categoría de origen",
+      "V2 · la tabla de categorías"
      ],
      [
       "Valor fuera de la lista del canal",
-      "19 valores en los 30 reales",
-      "V3 · guardrail"
+      "Score invalid_values en Langfuse",
+      "V3 · validación en código"
      ],
      [
       "Obligatorio sin informar en missing",
-      "2 casos en los 30 reales",
-      "V3 · guardrail"
+      "Score missing_ok en Langfuse",
+      "V3 · validación en código"
      ],
      [
-      "~22.000 tokens de entrada por producto",
-      "Todos los casos",
-      "V2 · herramientas + caché de prompt"
+      "Unos 20.000 tokens de entrada por producto",
+      "Tokens de cada traza en Langfuse",
+      "V2 · herramientas en lugar del catálogo entero"
+     ],
+     [
+      "Categoría acertada con ayuda",
+      "Elige entre 23 categorías que incluyen la correcta",
+      "V2 · la tabla de categorías"
      ]
     ]
    },
    "notes": {
     "objective": "Convertir cada fallo de la V1 en la justificación de una capa",
-    "say": "Esto es lo que la V1 compra: evidencia. La categoría inventada es el fallo que justifica la V2: sin referencia, la respuesta tiene que ser determinista, no creativa. Los valores fuera de lista y los obligatorios sin informar justifican la V3: una regla escrita en el prompt no garantiza que se cumpla; hace falta comprobarla en código. Y los 22.000 tokens por producto son el costo de mandar todo el canal en cada llamada. Comparar con la columna Hoy: 47 inválidos.",
+    "say": "Esto es lo que buscamos con la V1: evidencia. Si inventa la categoría cuando el producto no trae una, eso justifica la V2, porque sin referencia la respuesta tiene que salir de la tabla y no del modelo. Los valores fuera de lista y los obligatorios sin informar justifican la V3: una regla escrita en el prompt no garantiza que se cumpla, y hay que comprobarla en código. Los tokens son el costo de mandar el catálogo entero en cada llamada. Un aviso: la V1 elige entre 23 categorías que siempre incluyen la correcta, así que su número de categorías sale optimista. Completar la columna con lo que muestre Langfuse.",
     "ask": "¿Alguno de estos fallos les sorprende? ¿Cuál esperaban?",
     "close": "",
     "transition": "Almuerzo. A las 13:15, herramientas."
@@ -1315,7 +1321,7 @@
    "table": null,
    "notes": {
     "objective": "Retomar después del almuerzo y abrir la V2",
-    "say": "Recapitular en una frase: la V1 responde sola y falla donde necesita datos que no tiene. La V2 le da herramientas para consultar las tablas de referencia y el esquema del canal. El prompt deja de llevar el canal entero: el agente pide solo lo que necesita para este producto.",
+    "say": "En una frase: la V1 responde sola y falla donde necesita datos que no tiene. La V2 le da herramientas para consultar las tablas de referencia y el esquema del canal. Acá entra el FunctionAgent de LlamaIndex, porque ahora el modelo sí tiene que decidir qué consultar. El prompt deja de llevar el canal entero y el agente pide solo lo que necesita para este producto.",
     "ask": "",
     "close": "",
     "transition": "Qué es una herramienta."
@@ -1342,7 +1348,7 @@
    "table": null,
    "notes": {
     "objective": "Definir herramienta sin jerga",
-    "say": "El modelo no ejecuta nada: redacta un pedido con nombre y argumentos, el programa lo ejecuta y le devuelve el resultado como un mensaje más. Por eso la herramienta es determinista y el modelo no. Hay herramientas de lectura (consultar) y de acción (publicar); hoy todas las nuestras son de lectura. Que la herramienta exista no obliga al modelo a usarla ni a respetarla: la V3 revisa la entrega contra el esquema del canal, pero imponer por código lo que dice la tabla de atributos es un pendiente.",
+    "say": "El modelo no ejecuta nada. Escribe un pedido con nombre y argumentos, el programa lo ejecuta y le devuelve el resultado como un mensaje más. Por eso la herramienta es determinista y el modelo no. Hay herramientas de lectura, para consultar, y de acción, como publicar. Hoy todas las nuestras son de lectura. Que la herramienta exista no obliga al modelo a usarla ni a respetar lo que devuelve. Eso lo controla la V3.",
     "ask": "",
     "close": "",
     "transition": "Decisión 10: qué decide la tabla y qué decide el agente."
@@ -1355,7 +1361,7 @@
    "title": "¿Qué decide la tabla y qué decide el agente?",
    "kind": "decision",
    "lead": "",
-   "label": "En la base preparada: la categoría se fija en código (V3); los campos de la tabla los aplica el modelo por instrucción",
+   "label": "Se construye en la V2 y la V3",
    "items": [],
    "question": "",
    "options": [],
@@ -1364,7 +1370,7 @@
    "table": null,
    "notes": {
     "objective": "Cerrar la decisión 10",
-    "say": "B es el error más común: dejar que el modelo mejore un mapeo que el equipo de catálogo mantiene a mano. Si la tabla está mal, se corrige la tabla. C ya se descartó en la decisión 3. Ser exacto sobre el estado: la V3 fija la categoría en código; los campos mapeados por tabla todavía dependen de que el modelo respete la herramienta, y el guardrail solo revisa el esquema. Si la sala quiere imponerlos por código, es un cambio acotado en _al_entregar y queda como pendiente.",
+    "say": "B es el error más común: dejar que el modelo mejore un mapeo que el equipo de catálogo mantiene a mano. Si la tabla está mal, se corrige la tabla. C ya lo descartamos en la decisión 3. Lo que la tabla resuelve se aplica en código, sin pasar por el modelo.",
     "ask": "",
     "close": "",
     "transition": "Los números de la corrida del 28/09."
@@ -1378,7 +1384,7 @@
      "B · El agente puede corregir la tabla si cree que está mal",
      "C · Todo por tabla; sin modelo"
     ],
-    "proposal": "A. La tabla manda (acuerdo del 25/08 con Juan David). Hoy la categoría se impone en código (V3) y la tabla de atributos la consulta el agente por herramienta, desambiguada por categoría en código; imponer también los campos por código es el siguiente paso. Lo que la tabla no cubre (valores de lista, atributos sin referencia) es lo único que decide el agente.",
+    "proposal": "A. La tabla manda, como se acordó el 25/08 con Juan David. Lo que la tabla no cubre, como los valores de lista o los atributos sin referencia, es lo único que decide el agente.",
     "file": "decisiones/10-tabla-vs-agente.md"
    }
   },
@@ -1388,7 +1394,7 @@
    "title": "Costo por producto, medido.",
    "kind": "table",
    "lead": "",
-   "label": "Corrida del 28/09 · 30 reales · anterior a las correcciones · tokens de entrada por producto",
+   "label": "Se completa con los experimentos del día en Langfuse",
    "items": [],
    "question": "",
    "options": [],
@@ -1404,21 +1410,21 @@
     "rows": [
      [
       "V1",
-      "~22.000",
-      "—",
-      "12,3"
+      "·",
+      "·",
+      "·"
      ],
      [
       "V2",
-      "~1.600",
-      "~12.000",
-      "18,3"
+      "·",
+      "·",
+      "·"
      ]
     ]
    },
    "notes": {
     "objective": "Mostrar el efecto de herramientas + caché en tokens y latencia",
-    "say": "La V2 paga 1.600 tokens nuevos por producto y lee 12.000 de caché; la V1 pagaba 22.000 nuevos. La latencia sube porque hay varias rondas: es batch, no importa. Lo que falta para hablar de dólares: sumar escritura de caché, salida y reintentos, y la tasa real de reutilización. No inferir ahorro solo de esta tabla.",
+    "say": "Completar con los datos de Langfuse. Cada traza trae tokens nuevos, tokens leídos de caché, tokens escritos en caché y segundos. Como referencia, en el ensayo del 28/09 con el código anterior, la versión de una llamada pagaba unos 22.000 tokens nuevos por producto. La de herramientas pagaba unos 1.600 nuevos y leía 12.000 de caché. Para hablar de dólares faltan la escritura en caché, la salida y los reintentos. No sacar el ahorro solo de esta tabla.",
     "ask": "",
     "close": "",
     "transition": "Decisión 11: el costo."
@@ -1431,7 +1437,7 @@
    "title": "¿Cuánto puede costar?",
    "kind": "decision",
    "lead": "",
-   "label": "Abierta: hoy no hay tope ni medición completa en la base preparada",
+   "label": "Abierta: todavía no hay tope ni una medición completa",
    "items": [],
    "question": "",
    "options": [],
@@ -1440,7 +1446,7 @@
    "table": null,
    "notes": {
     "objective": "Cerrar la decisión 11 con la medición como tarea",
-    "say": "Anotar como pendiente la corrida de medición completa con su dueño. Si el grupo quiere un número hoy, dar el de tokens, no el de dólares.",
+    "say": "Anotar como pendiente la corrida de medición completa, con su dueño. Si el grupo quiere un número hoy, dar el de tokens y no el de dólares.",
     "ask": "",
     "close": "",
     "transition": "El mismo caso por V2."
@@ -1454,7 +1460,7 @@
      "B · Sin tope: se mide después",
      "C · El tope de hoy (USD 350) y publicar sin atributos al agotarse"
     ],
-    "proposal": "A. Hoy el tope corta la calidad (C). Con caché de prompt y caché por SKU (decisión 13) el costo por producto baja; el número se fija con una corrida completa medida, no con esta tabla.",
+    "proposal": "A. Hoy el tope corta la calidad, que es la opción C. Con la caché de prompt y la caché por SKU (decisión 13) el costo por producto baja. El número se fija con una corrida completa medida en Langfuse.",
     "file": "decisiones/11-costo.md"
    }
   },
@@ -1473,21 +1479,21 @@
    "table": null,
    "notes": {
     "objective": "Comparar V1 y V2 sobre el mismo caso",
-    "say": "Mismo caso que a la mañana, para comparar. Predicción antes de correr: ¿va a usar la referencia de atributos? Leer herramientas_usadas primero. Si el modelo entrega algo fuera de lista, señalarlo: la herramienta no obliga; eso lo arregla la V3. Pausa 14:45.",
+    "say": "Es el mismo caso de la mañana, para comparar. Antes de correr, pedir una predicción: ¿va a usar la referencia de atributos? Mirar primero qué herramientas pidió. Si entrega un valor fuera de lista, señalarlo: la herramienta no obliga, y eso lo resuelve la V3. Pausa a las 14:45.",
     "ask": "",
     "close": "",
     "transition": "Pausa. A las 15:00, control."
    },
    "minutes": 5,
    "demo": {
-    "command": "scripts/correr.sh --version v2 --datos real --caso error-88904447",
+    "command": "scripts/experiment.sh --version v2 --data real --case error-88904447",
     "watch": [
-     "Qué herramientas pidió y en qué orden (herramientas_usadas)",
-     "La categoría ahora sale de la tabla, no del modelo",
-     "Código OEM: ¿sigue siendo ABS Plastic?",
+     "Qué herramientas pidió y en qué orden, en la traza de Langfuse",
+     "La categoría ahora sale de la tabla y no del modelo",
+     "Código OEM: ¿sigue saliendo ABS Plastic?",
      "Tokens leídos de caché frente a los nuevos"
     ],
-    "fallback": "resultados/v2-real-20260928-181509.json (corrida del 28/09, anterior a las correcciones)"
+    "fallback": "la corrida del experimento v2-real, en Langfuse"
    }
   },
   {
@@ -1505,7 +1511,7 @@
    "table": null,
    "notes": {
     "objective": "Abrir la V3",
-    "say": "La V2 consulta pero no está obligada a respetar lo que consulta. La V3 agrega tres cosas: guardrails en código que revisan cada entrega, memoria de correcciones del equipo de catálogo y caché por SKU para que el mismo producto no se mapee dos veces. Es la versión que reemplaza el publicar sin atributos.",
+    "say": "La V2 consulta, pero no está obligada a respetar lo que consulta. La V3 suma tres cosas: validaciones en código que revisan cada entrega, las correcciones que carga el equipo de catálogo y una caché por SKU para no mapear dos veces el mismo producto. Con la V3 dejamos de publicar sin atributos.",
     "ask": "",
     "close": "",
     "transition": "El agente completo, en un dibujo."
@@ -1527,7 +1533,7 @@
    "table": null,
    "notes": {
     "objective": "Ver las tres versiones como capas de un mismo flujo",
-    "say": "Verde es código determinista; violeta, el modelo. La categoría sale de la tabla antes de llamar al modelo; si no hay referencia, el flujo termina con un faltante explícito. Si el SKU ya se mapeó, sale de la caché. El modelo pide herramientas en un loop acotado y entrega; el guardrail revisa y, si hay problemas, devuelve la lista para una sola ronda de corrección. La red final limpia lo que siga mal. V1 era solo la caja violeta; V2 sumó las herramientas.",
+    "say": "Verde es código determinista y violeta es el modelo. La categoría sale de la tabla antes de llamar al modelo. Si no hay referencia, el flujo termina con un faltante explícito. Si el SKU ya se mapeó, sale de la caché. El modelo pide herramientas en un loop con límite y entrega. La validación revisa la entrega y, si hay problemas, se los devuelve al modelo para una sola ronda de corrección. Lo que siga mal se descarta al final. La V1 de hoy es solo la caja violeta.",
     "ask": "¿Qué caja sacarían a código si pudieran?",
     "close": "",
     "transition": "Qué es un guardrail acá."
@@ -1866,20 +1872,20 @@
       ]
      }
     ],
-    "caption": "V1 es solo la caja del modelo con la herramienta entregar_publicacion. V2 suma el loop y las herramientas. V3 suma la categoría por tabla, la caché, las correcciones y los guardrails."
+    "caption": "La V1 es solo la caja del modelo, con una llamada estructurada. La V2 suma las herramientas y el FunctionAgent. La V3 suma la categoría por tabla, la caché, las correcciones y las validaciones."
    }
   },
   {
    "id": "s53",
    "section": "v3",
-   "title": "Guardrail: una comprobación en código, no otra instrucción.",
+   "title": "Guardrail: una comprobación en código.",
    "kind": "compare",
    "lead": "",
    "label": "",
    "items": [
     "REVISAR | Lista los problemas en lenguaje claro y se los devuelve al agente, que tiene una ronda para corregir",
-    "LIMPIAR | Red final: descarta lo inválido con motivo y marca los obligatorios que faltan",
-    "NUNCA | Publica un valor fuera de la lista del canal, un -1 ni un duplicado. No verifica que el valor sea verdad: eso sigue siendo del esquema y de catálogo"
+    "LIMPIAR | Al final descarta lo inválido con su motivo y marca los obligatorios que faltan",
+    "NUNCA PUBLICA | Un valor fuera de la lista del canal, un -1 ni un duplicado. No verifica que el valor sea cierto: eso depende del esquema y de catálogo"
    ],
    "question": "",
    "options": [],
@@ -1888,7 +1894,7 @@
    "table": null,
    "notes": {
     "objective": "Diferenciar guardrail de regla del prompt",
-    "say": "Una regla en el prompt es un pedido; un guardrail es una comprobación que no depende de que el modelo obedezca. Dos pasos: primero se le devuelven los problemas al agente para que corrija (una ronda); lo que siga mal se descarta en código. Límite honesto: valida pertenencia al esquema y al dominio por ID; no verifica que el valor sea verdad respecto del producto.",
+    "say": "Una regla en el prompt depende de que el modelo obedezca. Un guardrail la comprueba en código. Funciona en dos pasos. Primero le devuelve los problemas al agente para que corrija, una sola vez. Lo que siga mal se descarta en código. Tiene un límite: comprueba que el valor esté en el esquema y en la lista del canal, pero no que sea cierto para el producto.",
     "ask": "",
     "close": "",
     "transition": "Decisión 12."
@@ -1901,7 +1907,7 @@
    "title": "¿Qué hace cuando no sabe?",
    "kind": "decision",
    "lead": "",
-   "label": "La opción B ya está en la base preparada (V3) · C se construye sobre B",
+   "label": "La V3 se construye con la opción B · C se puede armar encima",
    "items": [],
    "question": "",
    "options": [],
@@ -1910,7 +1916,7 @@
    "table": null,
    "notes": {
     "objective": "Cerrar la decisión 12 y dejar la política de revisión como pendiente",
-    "say": "Marcar missing no crea solo un circuito de revisión: hoy es una lista en la salida. Quién la mira, dónde y con qué herramienta es una decisión de producto de Alephee, no del agente. Anotar dueño.",
+    "say": "Marcar missing no arma solo un circuito de revisión. Hoy es una lista en la salida. Quién la mira, dónde y con qué herramienta lo decide Alephee como producto. Anotar el dueño.",
     "ask": "",
     "close": "",
     "transition": "Memoria."
@@ -1924,7 +1930,7 @@
      "B · Faltante explícito con motivo: la publicación sale con missing y alguien decide",
      "C · Bloquear la publicación hasta revisión humana"
     ],
-    "proposal": "B. Reemplaza el publicar sin atributos. Quién recibe missing y si bloquea o no la publicación es la integración con la plataforma de Alephee: pendiente con dueño. C es una política válida que se puede construir sobre B.",
+    "proposal": "B. Reemplaza el publicar sin atributos. Quién recibe la lista missing y si bloquea la publicación es parte de la integración con la plataforma de Alephee, y queda pendiente con dueño. C es una política válida que se puede construir sobre B.",
     "file": "decisiones/12-cuando-no-sabe.md"
    }
   },
@@ -1937,8 +1943,8 @@
    "label": "",
    "items": [
     "Una corrección dice: en esta categoría, este valor del producto va a este atributo con este valor del canal",
-    "El agente la consulta como una herramienta más y manda sobre su criterio",
-    "Hoy es un archivo JSON local; en producción, AgentCore Memory o una tabla de Alephee"
+    "El agente la consulta como una herramienta más, y la corrección manda sobre su criterio",
+    "En la V3 de hoy es un archivo local. En producción, una tabla de Alephee o AgentCore Memory"
    ],
    "question": "",
    "options": [],
@@ -1947,7 +1953,7 @@
    "table": null,
    "notes": {
     "objective": "Definir memoria para este agente sin prometer aprendizaje automático",
-    "say": "Memoria acá no es que el agente aprende solo: es que reutiliza correcciones que una persona del equipo de catálogo cargó explícitamente. Se cargan con un comando; el agente las consulta por categoría. Límite honesto: la persistencia existe; que el modelo siempre las respete depende de que las consulte, por eso la instrucción lo exige y el guardrail revisa después.",
+    "say": "Acá memoria no quiere decir que el agente aprende solo. Quiere decir que reusa correcciones que alguien del equipo de catálogo cargó a mano. Se cargan con un comando y el agente las consulta por categoría. Que las respete depende de que las consulte, por eso la instrucción lo exige y la validación revisa después.",
     "ask": "",
     "close": "",
     "transition": "Decisión 13."
@@ -1960,7 +1966,7 @@
    "title": "¿Cómo garantizamos determinismo?",
    "kind": "decision",
    "lead": "",
-   "label": "La opción A ya está en la base preparada (clave SKU + categoría legacy) · falta la invalidación por tablas",
+   "label": "La V3 se construye con la opción A · falta definir cuándo se invalida",
    "items": [],
    "question": "",
    "options": [],
@@ -1969,7 +1975,7 @@
    "table": null,
    "notes": {
     "objective": "Cerrar la decisión 13 con las extensiones de la clave como pendiente",
-    "say": "Preguntar al grupo qué cambios deberían invalidar la caché: cambio en el producto, en las tablas, en el esquema del canal. Anotar la lista: es la especificación de la clave de producción.",
+    "say": "Preguntar qué cambios deberían invalidar la caché: el producto, las tablas o el esquema del canal. Anotar la lista, porque es la especificación de la clave de producción.",
     "ask": "",
     "close": "",
     "transition": "Demo: corregir y repetir."
@@ -1983,7 +1989,7 @@
      "B · Seed fijo (lo que se intentó hoy; los parámetros exactos siguen sin confirmar)",
      "C · Recalcular siempre y aceptar variación"
     ],
-    "proposal": "A. Un mapeo por SKU y canal. B reduce la variación pero no la elimina y sigue pagando cada corrida. La clave actual es SKU + categoría legacy; falta sumar versión de las tablas y aislamiento por cuenta antes de producción.",
+    "proposal": "A. Un mapeo por SKU y canal. B reduce la variación pero no la elimina, y sigue pagando cada corrida. Antes de producción, la clave tiene que sumar la versión de las tablas y separar por cuenta.",
     "file": "decisiones/13-determinismo-y-cache.md"
    }
   },
@@ -2002,21 +2008,21 @@
    "table": null,
    "notes": {
     "objective": "Ver memoria, guardrails y caché en una sola secuencia",
-    "say": "Elegir con el grupo la corrección a cargar sobre el caso guía (un valor de lista que el modelo eligió mal). Cargarla, correr, leer. Correr de nuevo: debe salir de caché. Si algo falla, abrir la corrida guardada y decir que es vieja.",
+    "say": "Elegir con el grupo la corrección a cargar sobre el caso guía: un valor de lista que el modelo eligió mal. Cargarla, correr y leer. Correr de nuevo: tiene que salir de la caché. Si algo falla, mostrar la corrida guardada y decirlo.",
     "ask": "",
     "close": "",
     "transition": "A las 16:15, la prueba."
    },
    "minutes": 5,
    "demo": {
-    "command": "scripts/corregir.sh --categoria <urn-categoria> --urn <urn-atributo> --valor-producto <valor> --value-id <id> --value <nombre>\nscripts/correr.sh --version v3 --datos real --caso error-88904447 --cache",
+    "command": "scripts/experiment.sh --version v3 --data real --case error-88904447",
     "watch": [
-     "buscar_correcciones aparece en herramientas_usadas",
+     "La consulta de correcciones aparece en la traza",
      "El valor corregido sale tal cual lo cargó catálogo",
-     "rejected explica cada descarte del guardrail",
-     "Segunda corrida del mismo caso: herramientas_usadas = [cache] y cero tokens"
+     "rejected explica cada descarte de la validación",
+     "Segunda corrida del mismo caso: sale de caché, sin tokens"
     ],
-    "fallback": "resultados/v3-real-20260928-180524.json (corrida del 28/09, anterior a las correcciones)"
+    "fallback": "la corrida del experimento v3-real, en Langfuse"
    }
   },
   {
@@ -2024,7 +2030,7 @@
    "section": "prueba",
    "title": "La prueba.",
    "kind": "divider",
-   "lead": "Hoy contra V1, V2 y V3, sobre los 30, con el criterio de la decisión 8.",
+   "lead": "El proceso de hoy contra V1, V2 y V3, sobre los 30, con el criterio de la decisión 8.",
    "label": "",
    "items": [],
    "question": "",
@@ -2034,7 +2040,7 @@
    "table": null,
    "notes": {
     "objective": "Abrir la prueba con el criterio acordado a la vista",
-    "say": "Volver a la pizarra: el número de la decisión 8. Las corridas del lote se lanzaron durante los bloques; acá se leen. Si alguna no terminó, se usa la del 28/09 y se dice.",
+    "say": "Volver a la pizarra y al número de la decisión 8. Los experimentos corrieron durante los bloques, y acá los comparamos en Langfuse. Si alguno no terminó, decirlo.",
     "ask": "",
     "close": "",
     "transition": "Los resultados."
@@ -2047,7 +2053,7 @@
    "title": "Resultados (se completan en vivo).",
    "kind": "table",
    "lead": "",
-   "label": "Columna Hoy: publicaciones exportadas, expected MOCK. Las demás se llenan con la corrida del día",
+   "label": "Columna Hoy: publicaciones que Alephee exportó, salida esperada MOCK. Las demás salen de los experimentos de Langfuse",
    "items": [],
    "question": "",
    "options": [],
@@ -2101,7 +2107,7 @@
    },
    "notes": {
     "objective": "Leer los resultados contra el criterio, sin maquillar",
-    "say": "Completar las columnas con la corrida del día. Referencia del 28/09, anterior a las correcciones: V1 5 exactos, 19 inválidos; V2 4 exactos, 30 categorías, 9 inválidos; V3 4 exactos, 28 categorías, 0 inválidos, 0 duplicados, 0 obligatorios sin informar. Si los exactos siguen bajos en todas las columnas, decirlo y explicar por qué en la lámina siguiente.",
+    "say": "Completar las columnas con los experimentos del día. La columna Hoy sale de la misma métrica aplicada a las publicaciones actuales. Al leer la V1, recordar que su categoría es optimista, porque elige entre 23 opciones que incluyen la correcta. Si los exactos salen bajos en todas las columnas, decirlo y explicar por qué en la lámina siguiente.",
     "ask": "",
     "close": "",
     "transition": "Cómo leer la tabla."
@@ -2116,9 +2122,9 @@
    "lead": "",
    "label": "",
    "items": [
-    "Exactos bajos en todas las columnas: el expected hereda las omisiones del proceso actual y castiga aciertos que hoy nadie mapea",
-    "Inválidos y duplicados sí son errores seguros: la V3 no entrega ninguno detectable por este evaluador (28/09)",
-    "Categoría: la V3 dio 28/30 en la corrida vieja; la corrección del 28/09 la fija desde la tabla y hay que volver a medir"
+    "Exactos bajos en todas las columnas: la salida esperada hereda las omisiones del proceso actual y castiga aciertos que hoy nadie mapea",
+    "Inválidos y duplicados sí son errores seguros: es lo primero que tiene que bajar",
+    "Categoría: la V1 elige entre 23 opciones con la correcta adentro, así que su número es optimista"
    ],
    "question": "",
    "options": [],
@@ -2127,7 +2133,7 @@
    "table": null,
    "notes": {
     "objective": "Dar la lectura honesta de los resultados",
-    "say": "Conclusión defendible: en este ensayo la V3 elimina los errores que estos controles detectan, pero todavía no demuestra mejor exactitud global contra un expected que es mock. Tenemos evidencia de qué controles ayudan y una lista clara de lo que falta para validar con el canal. Un control puede reducir errores quitando información: mirar control y cobertura juntos.",
+    "say": "Lo que se puede afirmar: estos controles detectan errores concretos, y cada versión los baja o no. Lo que todavía no se puede afirmar es una mejor exactitud general, porque la salida esperada es mock. Un control también puede bajar errores quitando información, así que hay que mirar control y cobertura juntos.",
     "ask": "¿Qué evidencia pedirían antes de un piloto con un concesionario?",
     "close": "",
     "transition": "El camino a producción."
@@ -2142,10 +2148,10 @@
    "lead": "",
    "label": "",
    "items": [
-    "Esquema oficial de Shopee y expected validado con el equipo de catálogo",
-    "Integración: la API pública lee el producto (F8); escribir publicaciones y leer tablas necesita acceso interno",
-    "Decidir dónde corre el batch (decisión 5) y la política de missing (decisión 12)",
-    "Medir el costo completo y fijar el tope (decisión 11); probar Haiku 4.5 (decisión 6)"
+    "Esquema oficial de Shopee y salida esperada validada con el equipo de catálogo",
+    "Integración: la API pública lee el producto (F8), pero escribir publicaciones y leer tablas necesita acceso interno",
+    "Decidir dónde corre el batch (decisión 5) y qué pasa con missing (decisión 12)",
+    "Medir el costo completo y fijar el tope (decisión 11), y probar Haiku 4.5 (decisión 6)"
    ],
    "question": "",
    "options": [],
@@ -2154,7 +2160,7 @@
    "table": null,
    "notes": {
     "objective": "Convertir los pendientes en tareas con dueño",
-    "say": "Cada punto necesita responsable y fecha; se completan en la última lámina. Retomar las dudas de AgentCore anotadas a la mañana y asignarlas a Juan David. El código queda en el repositorio de Alephee que Rick indique.",
+    "say": "Cada punto necesita responsable y fecha, y se completan en la última lámina. Retomar las dudas de AgentCore de la mañana y asignarlas a Juan David. Confirmar con Alephee si los datos pueden quedar en Langfuse Cloud. El código queda en el repositorio de Alephee que indique Rick.",
     "ask": "",
     "close": "",
     "transition": "Las trece decisiones."
@@ -2192,12 +2198,12 @@
      ],
      [
       "3",
-      "Tipo de aplicación: single prompt y escalar",
+      "Tipo de aplicación: una llamada estructurada, y escalar",
       "decisiones/03-tipo-de-aplicacion.md"
      ],
      [
       "4",
-      "Salida estructurada por herramienta + Pydantic",
+      "Salida estructurada con Pydantic (Listing)",
       "decisiones/04-salida-estructurada.md"
      ],
      [
@@ -2212,14 +2218,14 @@
      ],
      [
       "7",
-      "Stack: Python + LlamaIndex Workflows + BedrockConverse",
+      "Stack: Python + LlamaIndex Workflows + BedrockConverse + Langfuse",
       "decisiones/07-stack.md"
      ]
     ]
    },
    "notes": {
     "objective": "Cerrar con el registro completo: las decisiones de la mañana",
-    "say": "Cada archivo tiene contexto, opciones, decisión y razonamiento. Lo que quedó distinto a la propuesta se escribe tal como se decidió en la sala.",
+    "say": "Cada archivo tiene contexto, opciones, decisión y razonamiento. Si la sala decidió algo distinto de la propuesta, se escribe tal como se decidió.",
     "ask": "",
     "close": "",
     "transition": "Las de la tarde."
@@ -2279,7 +2285,7 @@
    },
    "notes": {
     "objective": "Cerrar con el registro completo: las decisiones de la tarde",
-    "say": "Este registro es el método repetible: el próximo caso de uso de Alephee arranca por estas trece preguntas, con las respuestas de hoy como punto de partida.",
+    "say": "Este registro es el método repetible. El próximo caso de uso de Alephee arranca por estas trece preguntas, con las respuestas de hoy como punto de partida.",
     "ask": "",
     "close": "",
     "transition": "Quién hace qué."
@@ -2301,7 +2307,7 @@
    "table": null,
    "notes": {
     "objective": "Cerrar con responsables y fechas",
-    "say": "Repartir los pendientes del camino a producción entre Alephee, Craftech y AWS, con fecha. Confirmar el repositorio donde queda el código. Agradecer y cerrar a las 17:00; preguntas hasta las 17:30.",
+    "say": "Repartir los pendientes del camino a producción entre Alephee, Craftech y AWS, con fecha. Confirmar el repositorio donde queda el código. Agradecer y cerrar a las 17:00, con preguntas hasta las 17:30.",
     "ask": "",
     "close": "",
     "transition": "Fin."
