@@ -1,6 +1,10 @@
 """Load a correction from the catalog team and drop the cached mappings of that category.
 
     scripts/correct.sh --category <urn> --attribute <urn> --product-value <value> --value-id <id> --value <name>
+
+A correction only changes what the agent decides (`worklist.to_decide`): a value the code
+already matched exactly against the channel domain goes to `resolved` before the agent runs
+and never looks at a correction, so loading one for it has no visible effect.
 """
 
 import argparse

@@ -186,6 +186,13 @@ old/                           código anterior al reinicio del 1/10, fuera de g
   scripts/correct.sh --category <urn> --attribute <urn> --product-value <valor> --value-id <id> --value <nombre>
   scripts/e2e.sh    # contra Bedrock, DynamoDB y el chat desplegado (RUN_E2E=1; API_URL del BFF como env var)
   ```
+- **`scripts/correct.sh` solo afecta lo que decide el agente** (`worklist.to_decide`): un valor
+  que el código ya resolvió por coincidencia exacta con el dominio del canal (`resolved`) le
+  gana al agente en el merge y una corrección sobre ese atributo no tiene efecto visible. En
+  el dataset mock, caso `01-real-calota-aro14`, los atributos `101731` (valor `"1"`), `990001`
+  (`"14"`) y `100095` (`"0.39"`) los decide el agente; en el caso `03-valor-en-otro-idioma`,
+  `101638` (`"Nuevo"`) también. Una corrección sobre cualquiera de estos cuatro muestra su
+  efecto; sobre un atributo ya resuelto, no.
 
 ## Resultados del 1/10 en Langfuse (30 reales, salida esperada MOCK)
 
