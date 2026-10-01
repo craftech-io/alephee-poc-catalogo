@@ -29,7 +29,7 @@ Los minutos por diapositiva son una pauta. Preservar la hora de cierre. Si el bl
 
 | Bloque | Diapositivas y demos | Trabajo reservado | Total |
 |---|---:|---|---:|
-| 01 · Punto de partida | 29 min | Dolores del equipo y preguntas: 10 min | 39 min |
+| 01 · Punto de partida | 25 min | Dolores del equipo y preguntas: 5 min | 30 min |
 | 02 · Diseñar el agente | 85 min | Pizarra: dudas de AgentCore para Juan David: 5 min; Pausa 11:00: 15 min | 105 min |
 | 03 · V1 · el agente responde | 13 min | Corridas sobre otros casos: 25 min | 38 min |
 | 04 · V2 · herramientas | 36 min | Corrida del lote y lectura: 25 min | 61 min |
@@ -85,7 +85,7 @@ Las reservas son para pizarra, corridas del lote y preguntas dentro del bloque. 
 
 ### 03 · Así se pide hoy la categoría.
 
-**Sección:** 01 · Punto de partida · **Pauta:** 4 min · **Tipo:** code
+**Sección:** 01 · Punto de partida · **Pauta:** 3 min · **Tipo:** code
 
 **Objetivo:** Leer juntos el prompt actual y separar lo que se conserva de lo que se cambia
 
@@ -133,11 +133,11 @@ Reglas correctas (no inventar, copiar el URN exacto). Lo que se va a revisar: el
 - Datos reales · WarRoom.zip del 24/09 · 30 productos
 - Caso / Qué salió / Qué pasó
 - 88904447 / Código OEM = ABS Plastic / Rechazado: el valor no pertenece al atributo
-- 24581199 / Quantity publicado 10 veces / Rechazado: solo admite un valor
+- 93221445 / Inmetro Certification con varios valores / Rechazado: solo admite un valor
 - 9 de 30 / Valor -1 publicado como valor / Aceptado por Shopee
 - 98550368 / 14 de 15 URN sin sufijo del canal / Aceptado por Shopee
 
-**Temas para hablar:** Los 30 productos del zip: 20 publicados y 10 rechazados. El caso 88904447 es el hilo del día: un material (ABS Plastic) copiado al campo Código OEM. Lo peor no es lo que Shopee rechaza, que al menos avisa, sino lo que acepta mal: un -1 publicado como valor en 9 de 30 y URN sin el sufijo del canal. Nadie se entera hasta que un comprador lo ve.
+**Temas para hablar:** Los 30 productos del zip: 20 publicados y 10 rechazados. El caso 88904447 es el hilo del día: un material (ABS Plastic) copiado al campo Código OEM, que Shopee rechazó porque el valor no está vinculado a ese atributo. El 24581199 publicó Quantity diez veces y Shopee no lo mencionó: lo rechazó por otro obligatorio (Auto-Part Number). Lo peor no es lo que Shopee rechaza, que al menos avisa, sino lo que acepta mal: un -1 publicado como valor en 9 de 30 y URN sin el sufijo del canal. Nadie se entera hasta que un comprador lo ve.
 
 **Pregunta / participación:** ¿Cuál de estos errores les parece más grave para el negocio?
 
@@ -165,7 +165,7 @@ Reglas correctas (no inventar, copiar el URN exacto). Lo que se va a revisar: el
 
 ### 06 · ¿Qué hace y qué no hace?
 
-**Sección:** 01 · Punto de partida · **Pauta:** 4 min · **Tipo:** decision
+**Sección:** 01 · Punto de partida · **Pauta:** 3 min · **Tipo:** decision
 
 **Objetivo:** Cerrar la decisión 1 antes de hablar de contrato
 
@@ -208,7 +208,7 @@ Reglas correctas (no inventar, copiar el URN exacto). Lo que se va a revisar: el
 
 ### 08 · El contrato, en código.
 
-**Sección:** 01 · Punto de partida · **Pauta:** 4 min · **Tipo:** code
+**Sección:** 01 · Punto de partida · **Pauta:** 3 min · **Tipo:** code
 
 **Objetivo:** Mostrar que el contrato es código que se valida, no un acuerdo verbal
 
@@ -245,7 +245,7 @@ Pydantic con extra="forbid": ningún campo fuera del contrato pasa. Los nombres 
 
 ### 09 · ¿Qué recibe y qué entrega?
 
-**Sección:** 01 · Punto de partida · **Pauta:** 4 min · **Tipo:** decision
+**Sección:** 01 · Punto de partida · **Pauta:** 3 min · **Tipo:** decision
 
 **Objetivo:** Cerrar la decisión 2
 
@@ -262,7 +262,7 @@ Pydantic con extra="forbid": ningún campo fuera del contrato pasa. Los nombres 
 2. B · missing y rejected con motivo, en la misma salida
 3. C · Un archivo de log aparte que alguien revisa
 
-**Propuesta:** B. El faltante viaja con la publicación: quien revisa ve el producto, el atributo y el motivo juntos. Un log aparte se separa del dato y nadie lo mira.
+**Propuesta:** B. El faltante viaja con la publicación: quien revisa ve el producto, el atributo y el motivo juntos. Un log aparte se separa del dato y nadie lo mira. La decisión 12 define qué pasa después con esas listas.
 
 **Archivo:** `decisiones/02-contrato.md`
 
@@ -333,6 +333,7 @@ Cada versión es un Workflow que recibe MapeoStart y devuelve MapeoDone. Se comp
 
 **En pantalla:**
 
+- La opción A ya está en la base preparada (V1) · si gana otra, se discute qué cambia
 
 **Temas para hablar:** B es tentador porque ya sabemos que vamos a necesitar herramientas, pero nos quita la evidencia de por qué. C es la pregunta que siempre hay que hacerse: ¿hace falta un modelo? Para la categoría y los campos mapeados por tabla, no; para elegir el valor equivalente de una lista, sí.
 
@@ -461,6 +462,7 @@ fn_schema=Publicacion: el modelo solo puede entregar algo que cumpla el contrato
 
 **En pantalla:**
 
+- La opción B ya está en la base preparada · si gana otra, se discute qué cambia
 
 **Temas para hablar:** Preguntar al grupo cuántas veces tuvieron que arreglar un JSON mal formado. La opción B existe en todos los proveedores grandes (tool calling o salida estructurada); no depende de Bedrock.
 
@@ -504,7 +506,7 @@ fn_schema=Publicacion: el modelo solo puede entregar algo que cumpla el contrato
 **En pantalla:**
 
 
-**Temas para hablar:** Esto es todo lo que AgentCore exige del contenedor (F1). El servidor arma el workflow y responde; la lógica del agente está en otro módulo y se prueba sin servidor. En local se corre con un comando; en el Runtime, igual.
+**Temas para hablar:** Esto es todo lo que AgentCore exige del contenedor (F1): un GET de salud y un POST de invocación. Lo que se ve es el servidor del template, que hoy corre el ChatWorkflow del chat; el agente de catálogo corre por el runner batch y todavía no está conectado al chat. El punto: la lógica del agente vive en otro módulo y se prueba sin servidor; el contrato de despliegue no la condiciona.
 
 **Transición:** Y la infraestructura que lo declara.
 
@@ -519,7 +521,7 @@ fn_schema=Publicacion: el modelo solo puede entregar algo que cumpla el contrato
         message = payload.get("message")
 ```
 
-GET /ping y POST /invocations en el puerto 8080, imagen ARM64 (F1). El agente no sabe dónde corre: el mismo código sirve en local y en el Runtime.
+Las dos rutas que exige AgentCore (F1: puerto 8080, imagen ARM64). Hoy este servidor arma el chat del template; conectar el workflow de catálogo (mapear_producto) es un pendiente.
 
 ### 21 · La infraestructura declara el Runtime.
 
@@ -609,10 +611,10 @@ Imagen ARM64 referenciada por digest, red pública y un rol propio. Se despliega
 
 - Fuente F6 · Models at a glance · verificado el 30/09/2026
 - Proveedor / Familias / Para este caso
-- Anthropic / Claude 5.x (Sonnet 5, Opus 5.5, Fable 5.1…), 4.x (Haiku 4.5…), 3.x / Candidato principal: reglas y tool calling
-- Amazon / Nova 2, Nova Premier/Pro/Lite/Micro / Alternativa de costo a medir
+- Anthropic / Claude 5.x (Sonnet 5.5, Opus 5.5, Fable 5.1, Sonnet 5…), 4.x (Haiku 4.5…), 3.x / Candidato principal: reglas y tool calling. Sonnet 5 elegido el 25/09; 5.5 y Haiku 4.5 a comparar
+- Amazon / Nova 2 Lite, Nova Premier, Pro, Lite, Micro / Alternativa de costo a medir
 - OpenAI / GPT-5.x, GPT-6, GPT OSS / Continuidad con el proveedor actual, dentro de AWS
-- Meta · Mistral · DeepSeek · Qwen · otros / Llama 3.x/4, Mistral Large 3, DeepSeek V3.2, Qwen3… / Abiertos; evaluar si el costo lo justifica
+- Meta · Mistral · DeepSeek · Qwen · otros / Llama 3.x y 4, Mistral Large 3, DeepSeek V3.2, Qwen3… / Abiertos; evaluar si el costo lo justifica
 
 **Temas para hablar:** La tabla sale de la página oficial Models at a glance del 30/09 (F6). No es una recomendación de cada uno: es el menú. Lo que importa para elegir es la columna de la derecha y el criterio de la lámina anterior. La disponibilidad por región y la habilitación en la cuenta se verifican en la cuenta que usemos.
 
@@ -661,8 +663,9 @@ Inference profile us.: sin prefijo, Bedrock responde ValidationException por fal
 
 **En pantalla:**
 
+- Tomada el 25/09 (CLAUDE.md, decisión 6) · hoy se valida o se cambia
 
-**Temas para hablar:** Anotar la prueba de B como tarea con dueño: es la misma corrida con otra variable de entorno. Si Alephee quiere continuidad con OpenAI, los modelos GPT también están en Bedrock (F6): la arquitectura no cambia.
+**Temas para hablar:** Lo primero que van a preguntar: por qué Sonnet 5 y no 5.5. Respuesta honesta: la decisión es del 25/09 y el modelo está probado en este repo; 5.5 se compara sobre el mismo dataset, no se adopta a ciegas. Anotar las pruebas de 5.5 y de Haiku 4.5 como tareas con dueño. Si Alephee quiere continuidad con OpenAI, los GPT también están en Bedrock (F6): la arquitectura no cambia.
 
 **Transición:** Con qué lo construimos.
 
@@ -672,7 +675,7 @@ Inference profile us.: sin prefijo, Bedrock responde ValidationException por fal
 2. B · Un modelo más chico y barato (Claude Haiku 4.5) y medir
 3. C · Seguir con OpenAI y solo reordenar el prompt para la caché
 
-**Propuesta:** A para construir hoy; B queda como prueba pendiente sobre el mismo dataset: si cumple el criterio, gana por costo. C mejora el costo pero no resuelve herramientas, contrato ni control.
+**Propuesta:** A para construir hoy: es la decisión del 25/09 y el ID está verificado en Converse. Claude Sonnet 5.5 también está en Bedrock (F6): compararlo, junto con Haiku 4.5 (B), es una corrida más con otra variable de entorno y queda como pendiente con dueño. C mejora el costo pero no resuelve herramientas, contrato ni control.
 
 **Archivo:** `decisiones/06-modelo.md`
 
@@ -732,6 +735,7 @@ El LLM se inyecta: en los tests es un doble, en producción es Bedrock. El workf
 
 **En pantalla:**
 
+- Tomada el 28/09 (CLAUDE.md, decisión 9) · hoy se valida
 
 **Temas para hablar:** Dejar claro que la decisión es de continuidad, no de superioridad: AgentCore funciona con cualquier framework (F2). Lo que no se negocia es el patrón: LLM inyectado y pasos testeables.
 
@@ -804,17 +808,17 @@ Un caso es exacto solo si todo se cumple a la vez. Es determinista: no llama a n
 **En pantalla:**
 
 
-**Temas para hablar:** Escribir el número en la pizarra antes de la V1. Si el grupo elige B, advertir que el expected mock hace casi imposible el 80 % para cualquier versión, incluida la actual (7 de 30).
+**Temas para hablar:** Escribir el número en la pizarra antes de la V1. Si el grupo quiere exigir exactos (B), advertir que con el expected mock ninguna versión los supera, incluida la actual (7 de 30), y que el 28/09 las versiones dieron 5, 4 y 4: la prueba quedaría planteada para fallar por la vara, no por el agente.
 
 **Transición:** Y con qué datos.
 
 **Decisión 8:** ¿Qué criterio de éxito acordamos para la prueba de las 16:15?
 
-1. A · Cero valores inválidos y cero duplicados en los 30; exactos iguales o mejores que el proceso actual
+1. A · Cero valores inválidos, cero duplicados y todo obligatorio informado en los 30; los exactos se reportan pero no son condición hasta validar el expected con catálogo
 2. B · Exactos iguales o mayores al 80 %
 3. C · Solo precisión y recall de atributos
 
-**Propuesta:** A. Con expected mock, 'exacto' castiga aciertos que hoy nadie mapea; los inválidos y duplicados sí son errores seguros y hoy hay 47 y 5. El número final se fija en la sala.
+**Propuesta:** A. Con expected mock, 'exacto' castiga aciertos que hoy nadie mapea: el 28/09 el proceso actual dio 7 y las versiones 5, 4 y 4. Los inválidos, duplicados y obligatorios sin informar sí son errores seguros y hoy hay 47, 5 y 2. El número final se fija en la sala.
 
 **Archivo:** `decisiones/08-criterio-de-exito.md`
 
@@ -931,7 +935,7 @@ scripts/correr.sh --version v1 --datos real --caso error-88904447
 
 **En pantalla:**
 
-- Corrida del 28/09 sobre los 30 reales · anterior a las correcciones · expected MOCK
+- Corrida del 28/09 · 30 reales (fila 1: caso MOCK 09) · anterior a las correcciones · expected MOCK
 - Fallo / Dónde se vio / Capa que lo resuelve
 - Categoría inventada cuando no hay referencia / Caso mock 09 (sin categoría de origen) / V2 · la tabla por herramienta
 - Valor fuera de la lista del canal / 19 valores en los 30 reales / V3 · guardrail
@@ -971,7 +975,7 @@ scripts/correr.sh --version v1 --datos real --caso error-88904447
 - Devuelve {encontrada: true, urn, name} o {encontrada: false, motivo}
 - El modelo sigue con ese dato, no con su memoria
 
-**Temas para hablar:** El modelo no ejecuta nada: redacta un pedido con nombre y argumentos, el programa lo ejecuta y le devuelve el resultado como un mensaje más. Por eso la herramienta es determinista y el modelo no. Hay herramientas de lectura (consultar) y de acción (publicar); hoy todas las nuestras son de lectura. Que la herramienta exista no obliga al modelo a usarla ni a respetarla: eso se controla en la V3.
+**Temas para hablar:** El modelo no ejecuta nada: redacta un pedido con nombre y argumentos, el programa lo ejecuta y le devuelve el resultado como un mensaje más. Por eso la herramienta es determinista y el modelo no. Hay herramientas de lectura (consultar) y de acción (publicar); hoy todas las nuestras son de lectura. Que la herramienta exista no obliga al modelo a usarla ni a respetarla: la V3 revisa la entrega contra el esquema del canal, pero imponer por código lo que dice la tabla de atributos es un pendiente.
 
 **Transición:** La fuente se abstrae.
 
@@ -1050,18 +1054,19 @@ El docstring es lo que lee el modelo: qué devuelve, con qué formato de entrada
 
 **En pantalla:**
 
+- En la base preparada: la categoría se fija en código (V3); los campos de la tabla los aplica el modelo por instrucción
 
-**Temas para hablar:** B es el error más común: dejar que el modelo mejore un mapeo que el equipo de catálogo mantiene a mano. Si la tabla está mal, se corrige la tabla. C ya se descartó en la decisión 3. Con A, la V3 fija la categoría desde la tabla antes de llamar al modelo.
+**Temas para hablar:** B es el error más común: dejar que el modelo mejore un mapeo que el equipo de catálogo mantiene a mano. Si la tabla está mal, se corrige la tabla. C ya se descartó en la decisión 3. Ser exacto sobre el estado: la V3 fija la categoría en código; los campos mapeados por tabla todavía dependen de que el modelo respete la herramienta, y el guardrail solo revisa el esquema. Si la sala quiere imponerlos por código, es un cambio acotado en _al_entregar y queda como pendiente.
 
 **Transición:** El loop del agente y su límite.
 
 **Decisión 10:** ¿Qué decide la tabla y qué decide el agente?
 
-1. A · La tabla fija categoría y campos; el agente solo elige el valor equivalente de la lista y cubre lo que la tabla no tiene
+1. A · La tabla fija la categoría y los campos; el agente solo elige el valor equivalente de la lista y cubre lo que la tabla no tiene
 2. B · El agente puede corregir la tabla si cree que está mal
 3. C · Todo por tabla; sin modelo
 
-**Propuesta:** A. La tabla manda (acuerdo del 25/08 con Juan David). 306 ids legacy apuntan a más de un atributo de Shopee: se desambiguan por categoría, en código, no en el modelo. Lo que la tabla no cubre (valores de lista, atributos sin referencia) es lo único que decide el agente.
+**Propuesta:** A. La tabla manda (acuerdo del 25/08 con Juan David). Hoy la categoría se impone en código (V3) y la tabla de atributos la consulta el agente por herramienta, desambiguada por categoría en código; imponer también los campos por código es el siguiente paso. Lo que la tabla no cubre (valores de lista, atributos sin referencia) es lo único que decide el agente.
 
 **Archivo:** `decisiones/10-tabla-vs-agente.md`
 
@@ -1156,6 +1161,7 @@ Instrucciones, herramientas y producto quedan antes del punto de caché: las sei
 
 **En pantalla:**
 
+- Abierta: hoy no hay tope ni medición completa en la base preparada
 
 **Temas para hablar:** Anotar como pendiente la corrida de medición completa con su dueño. Si el grupo quiere un número hoy, dar el de tokens, no el de dólares.
 
@@ -1221,7 +1227,7 @@ scripts/correr.sh --version v2 --datos real --caso error-88904447
 
 - REVISAR | Lista los problemas en lenguaje claro y se los devuelve al agente, que tiene una ronda para corregir
 - LIMPIAR | Red final: descarta lo inválido con motivo y marca los obligatorios que faltan
-- NUNCA | Inventa un valor, publica un -1 ni deja pasar un duplicado
+- NUNCA | Publica un valor fuera de la lista del canal, un -1 ni un duplicado. No verifica que el valor sea verdad: eso sigue siendo del esquema y de catálogo
 
 **Temas para hablar:** Una regla en el prompt es un pedido; un guardrail es una comprobación que no depende de que el modelo obedezca. Dos pasos: primero se le devuelven los problemas al agente para que corrija (una ronda); lo que siga mal se descarta en código. Límite honesto: valida pertenencia al esquema y al dominio por ID; no verifica que el valor sea verdad respecto del producto.
 
@@ -1236,7 +1242,7 @@ scripts/correr.sh --version v2 --datos real --caso error-88904447
 **En pantalla:**
 
 
-**Temas para hablar:** Recorrer las cuatro con el caso guía: ABS Plastic en Código OEM pasa la primera (el atributo existe) y la segunda (tiene dato); si Código OEM es texto libre no tiene lista y pasa también. Eso muestra el límite: el guardrail detecta lo que el esquema permite detectar. Por eso el esquema oficial de Shopee es un pendiente de primer orden.
+**Temas para hablar:** Recorrer las cuatro con el caso guía: ABS Plastic en Código OEM pasa la primera (el atributo existe) y la segunda (tiene dato). Shopee lo rechazó con 'value is not linked': el canal sí tiene una lista para ese atributo, pero nuestro esquema MOCK no la tiene, así que la tercera comprobación no puede detectarlo. Ese es el límite: el guardrail detecta lo que el esquema permite detectar. Por eso el esquema oficial de Shopee es un pendiente de primer orden.
 
 **Pregunta / participación:** ¿Qué comprobación agregarían con lo que saben del canal?
 
@@ -1307,6 +1313,7 @@ Lo que no pasa va a rejected con el motivo del guardrail; lo obligatorio sin dat
 
 **En pantalla:**
 
+- La opción B ya está en la base preparada (V3) · C se construye sobre B
 
 **Temas para hablar:** Marcar missing no crea solo un circuito de revisión: hoy es una lista en la salida. Quién la mira, dónde y con qué herramienta es una decisión de producto de Alephee, no del agente. Anotar dueño.
 
@@ -1415,6 +1422,7 @@ La tabla fija la categoría antes de llamar al modelo; sin referencia o sin esqu
 
 **En pantalla:**
 
+- La opción A ya está en la base preparada (clave SKU + categoría legacy) · falta la invalidación por tablas
 
 **Temas para hablar:** Preguntar al grupo qué cambios deberían invalidar la caché: cambio en el producto, en las tablas, en el esquema del canal. Anotar la lista: es la especificación de la clave de producción.
 
@@ -1423,7 +1431,7 @@ La tabla fija la categoría antes de llamar al modelo; sin referencia o sin esqu
 **Decisión 13:** ¿Cómo garantizamos que el mismo SKU dé la misma salida?
 
 1. A · Caché por SKU + canal; se invalida al corregir o al cambiar las tablas
-2. B · Seed y temperatura 0 (lo que se intentó hoy)
+2. B · Seed fijo (lo que se intentó hoy; los parámetros exactos siguen sin confirmar)
 3. C · Recalcular siempre y aceptar variación
 
 **Propuesta:** A. Un mapeo por SKU y canal. B reduce la variación pero no la elimina y sigue pagando cada corrida. La clave actual es SKU + categoría legacy; falta sumar versión de las tablas y aislamiento por cuenta antes de producción.

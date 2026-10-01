@@ -2,6 +2,8 @@
 
 **Contexto.** Hoy el tope de USD 350/mes corta la calidad: al agotarse se publica sin atributos. La V2 baja los tokens de entrada con herramientas y caché de prompt; falta medir el costo completo.
 
+**Estado.** Abierta: hoy no hay tope ni medición completa en la base preparada
+
 **Pregunta.** ¿Cómo tratamos la restricción de costo del modelo?
 
 **Opciones.**

@@ -105,3 +105,20 @@ def test_render_html_omite_secciones_sin_laminas():
             "slides": [base(kind="cards", items=["a"])]}
     out = gp.render_html(data)
     assert "<option" in out and "Vacía" not in out
+
+
+def test_todas_las_laminas_code_del_deck_resuelven_contra_el_repo():
+    # Si el código commiteado cambia y un rango queda viejo, este test lo detecta en CI.
+    data = gp.cargar()
+    laminas = [s for s in data["slides"] if s["kind"] == "code"]
+    assert laminas, "el deck tiene que tener láminas de código"
+    for s in laminas:
+        gp.fragmento(s["code"], gp.RAIZ)
+
+
+def test_el_constructor_reproduce_el_json_commiteado(tmp_path):
+    # El JSON es la fuente del deck; el constructor es la forma cómoda de editarlo. Si divergen, este test avisa.
+    import json
+    import construir_diapositivas as cd  # noqa: PLC0415
+    data = cd.construir()
+    assert data == json.loads((gp.RAIZ / "docs/warroom/diapositivas.json").read_text())

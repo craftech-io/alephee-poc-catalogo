@@ -13,9 +13,9 @@
 
 ## Datos del evento
 
-**Dinámica acordada con Gastón (29/09):** una construcción compartida conducida por Gastón en la pantalla principal. Participantes en parejas toman decisiones, ejecutan casos y validan resultados mediante ejercicios cortos por bloque. Sin programación independiente de un agente completo ni rotación obligatoria de quien conduce. Consignas en `docs/guion-warroom-propuesto.md`.
+**Dinámica (actualizada el 30/09):** Gastón conduce una cadena de 13 decisiones de diseño; cada tema tiene lámina de concepto, lámina de código leído del repo y lámina de decisión que se cierra en la sala antes de seguir. V1, V2 y V3 son los puntos donde lo decidido se compila y se corre. Sin quizzes ni consignas en parejas (se quitaron el 30/09); quedan tres demos conducidas y la prueba final. Guion en `docs/guion-warroom-propuesto.md`.
 
-| | |
+| |
 |---|---|
 | **Fecha** | **Jueves 1 de octubre de 2026, 09:00–17:30** (confirmado en el calendario, en el sync del 16/09 y en el mail de Alephee del 24/09) |
 | **Lugar** | Oficinas de AWS (Buenos Aires), presencial, con sala con pizarra. Stream por Meet/Teams para quienes estén en Brasil |
@@ -222,7 +222,7 @@ resultados/                    salidas de cada corrida (ignorado por git)
   - `expected` de cada caso: la publicación actual limpia (sin `-1`, sin duplicados, sin valores fuera de dominio, categoría de la tabla) más los obligatorios que faltan, completados desde el producto vía `reference_attribute` cuando hay dato. **Hereda omisiones del proceso actual:** un atributo que hoy no se mapea tampoco está en `expected`, así que el recall del proceso actual sale inflado. Hay que validarlo con catálogo.
   - El importador normaliza los URN publicados sin `:vendor:shopee` (id ≥ 100000) y cuenta cuántos había en `actual.urnsSinVendor`.
 - **Bugs reales del proceso actual que sirven de demo:** 26306808 con URN sin sufijo y el id del atributo como valor; 88904447 con "Código OEM" = "ABS Plastic" (el material copiado a otro atributo); 24581199 con "Quantity" 10 veces; 98500020 con atributos legacy de ML publicados sin mapear; 98550368 con 14 de 15 URN sin sufijo.
-- **Línea de base del proceso actual sobre los 30 reales (28/09):** 9/30 exactos, 28/30 categorías correctas, precisión 0,72, **47 valores inválidos** (`-1` o fuera de dominio) y 5 duplicados. Comando: `scripts/correr.sh --version actual --datos real`.
+- **Línea de base del proceso actual sobre los 30 reales (28/09):** 7/30 exactos con el `expected` actual (la evaluación anterior daba 9), 28/30 categorías correctas, precisión 0,72, **47 valores inválidos** (`-1` o fuera de dominio) y 5 duplicados. Comando: `scripts/correr.sh --version actual --datos real`.
 - **Comparación sobre los 30 reales (28/09, contra el `expected` mock):**
 
   | Métrica | Proceso de hoy | V1 | V2 | V3 |
@@ -264,7 +264,7 @@ resultados/                    salidas de cada corrida (ignorado por git)
 | Tablas de referencia exportadas y 30 productos de ejemplo | Alephee | **Hecho.** Importados a `data/real/` el 28/09 |
 | Atributos por categoría de Shopee | Gastón | **Mock generado** (28/09). Reemplazar por los reales si Alephee los pasa |
 | Salida esperada de los 30 reales | Gastón | **Mock generado** (28/09). Validar con catálogo si hay tiempo |
-| Adaptar el evaluador a los datos reales | Gastón | **Hecho.** Línea de base del proceso actual: 9/30 exactos, 47 inválidos |
+| Adaptar el evaluador a los datos reales | Gastón | **Hecho.** Línea de base del proceso actual: 7/30 exactos con el `expected` actual (9 en la evaluación anterior), 47 inválidos |
 | Correr V1, V2 y V3 sobre los 30 reales | Gastón | **Hecho** (28/09) |
 | Pedirle a Rick un repo de Alephee para dejar el código a las 17:00 | Gastón | Pendiente |
 | Pedir a Maximiliano: modelo y parámetros exactos, el código del merge y del lookup de `reference_category`, y la lista de atributos de Calotas en Shopee | Gastón | Pendiente |

@@ -1,6 +1,8 @@
 # Decisión 07 · ¿Con qué lo construimos?
 
-**Contexto.** Craftech ya opera un template con Python + LlamaIndex Workflows + BedrockConverse, con el LLM inyectado y pasos probados con dobles. Alephee hoy llama al SDK directo sin framework.
+**Contexto.** Decisión tomada el 28/09 (CLAUDE.md, decisión 9). Craftech ya opera un template con Python + LlamaIndex Workflows + BedrockConverse, con el LLM inyectado y pasos probados con dobles. Alephee hoy llama al SDK directo sin framework.
+
+**Estado.** Tomada el 28/09 (CLAUDE.md, decisión 9) · hoy se valida
 
 **Pregunta.** ¿Qué stack usamos para el agente?
 

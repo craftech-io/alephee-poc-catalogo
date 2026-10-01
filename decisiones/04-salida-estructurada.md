@@ -1,6 +1,8 @@
 # Decisión 04 · ¿Cómo garantizamos el formato?
 
-**Contexto.** Los prompts actuales piden JSON válido en el texto y lo parsean. Cuando el modelo agrega texto o omite un campo, el parseo falla o pasa algo incompleto.
+**Contexto.** Los prompts actuales piden JSON válido en el texto y lo parsean. Cuando el modelo agrega texto o omite un campo, el parseo falla o pasa algo incompleto. La base preparada ya implementa la opción B.
+
+**Estado.** La opción B ya está en la base preparada · si gana otra, se discute qué cambia
 
 **Pregunta.** ¿Cómo se garantiza que la salida cumpla el contrato?
 

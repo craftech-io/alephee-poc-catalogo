@@ -9,7 +9,7 @@
 2. B · missing y rejected con motivo, en la misma salida
 3. C · Un archivo de log aparte que alguien revisa
 
-**Propuesta para la sala.** B. El faltante viaja con la publicación: quien revisa ve el producto, el atributo y el motivo juntos. Un log aparte se separa del dato y nadie lo mira.
+**Propuesta para la sala.** B. El faltante viaja con la publicación: quien revisa ve el producto, el atributo y el motivo juntos. Un log aparte se separa del dato y nadie lo mira. La decisión 12 define qué pasa después con esas listas.
 
 **Decisión.** _(se completa el 1/10)_
 

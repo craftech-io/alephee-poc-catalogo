@@ -10,7 +10,7 @@
    "work_reserve": [
     [
      "Dolores del equipo y preguntas",
-     10
+     5
     ]
    ]
   },
@@ -148,7 +148,7 @@
     "close": "",
     "transition": "Qué pasó con esas publicaciones en Shopee."
    },
-   "minutes": 4,
+   "minutes": 3,
    "code": {
     "file": "inputs/prompts-actuales/index.ts",
     "lines": "4-21",
@@ -185,8 +185,8 @@
       "Rechazado: el valor no pertenece al atributo"
      ],
      [
-      "24581199",
-      "Quantity publicado 10 veces",
+      "93221445",
+      "Inmetro Certification con varios valores",
       "Rechazado: solo admite un valor"
      ],
      [
@@ -203,7 +203,7 @@
    },
    "notes": {
     "objective": "Ver errores reales: los que rechaza el canal y los que acepta igual",
-    "say": "Los 30 productos del zip: 20 publicados y 10 rechazados. El caso 88904447 es el hilo del día: un material (ABS Plastic) copiado al campo Código OEM. Lo peor no es lo que Shopee rechaza, que al menos avisa, sino lo que acepta mal: un -1 publicado como valor en 9 de 30 y URN sin el sufijo del canal. Nadie se entera hasta que un comprador lo ve.",
+    "say": "Los 30 productos del zip: 20 publicados y 10 rechazados. El caso 88904447 es el hilo del día: un material (ABS Plastic) copiado al campo Código OEM, que Shopee rechazó porque el valor no está vinculado a ese atributo. El 24581199 publicó Quantity diez veces y Shopee no lo mencionó: lo rechazó por otro obligatorio (Auto-Part Number). Lo peor no es lo que Shopee rechaza, que al menos avisa, sino lo que acepta mal: un -1 publicado como valor en 9 de 30 y URN sin el sufijo del canal. Nadie se entera hasta que un comprador lo ve.",
     "ask": "¿Cuál de estos errores les parece más grave para el negocio?",
     "close": "",
     "transition": "Cómo vamos a trabajar hoy."
@@ -259,7 +259,7 @@
     "close": "Registrar la decisión y la familia elegida.",
     "transition": "Si el alcance es ese, ¿qué entra y qué sale?"
    },
-   "minutes": 4,
+   "minutes": 3,
    "decision": {
     "number": 1,
     "question": "¿Qué alcance tiene el agente del war room?",
@@ -318,7 +318,7 @@
     "close": "",
     "transition": "Decisión 2: cómo se informa lo que no se pudo mapear."
    },
-   "minutes": 4,
+   "minutes": 3,
    "code": {
     "file": "core/src/catalogo/modelos.py",
     "lines": "21-37",
@@ -352,7 +352,7 @@
     "close": "",
     "transition": "Con alcance y contrato cerrados, diseñamos el agente."
    },
-   "minutes": 4,
+   "minutes": 3,
    "decision": {
     "number": 2,
     "question": "¿Cómo se informa lo que no se pudo mapear?",
@@ -361,7 +361,7 @@
      "B · missing y rejected con motivo, en la misma salida",
      "C · Un archivo de log aparte que alguien revisa"
     ],
-    "proposal": "B. El faltante viaja con la publicación: quien revisa ve el producto, el atributo y el motivo juntos. Un log aparte se separa del dato y nadie lo mira.",
+    "proposal": "B. El faltante viaja con la publicación: quien revisa ve el producto, el atributo y el motivo juntos. Un log aparte se separa del dato y nadie lo mira. La decisión 12 define qué pasa después con esas listas.",
     "file": "decisiones/02-contrato.md"
    }
   },
@@ -448,7 +448,7 @@
    "title": "¿Single prompt o agente?",
    "kind": "decision",
    "lead": "",
-   "label": "",
+   "label": "La opción A ya está en la base preparada (V1) · si gana otra, se discute qué cambia",
    "items": [],
    "question": "",
    "options": [],
@@ -599,7 +599,7 @@
    "title": "¿Cómo garantizamos el formato?",
    "kind": "decision",
    "lead": "",
-   "label": "",
+   "label": "La opción B ya está en la base preparada · si gana otra, se discute qué cambia",
    "items": [],
    "question": "",
    "options": [],
@@ -667,7 +667,7 @@
    "table": null,
    "notes": {
     "objective": "Mostrar que el contrato de despliegue es mínimo y está separado del agente",
-    "say": "Esto es todo lo que AgentCore exige del contenedor (F1). El servidor arma el workflow y responde; la lógica del agente está en otro módulo y se prueba sin servidor. En local se corre con un comando; en el Runtime, igual.",
+    "say": "Esto es todo lo que AgentCore exige del contenedor (F1): un GET de salud y un POST de invocación. Lo que se ve es el servidor del template, que hoy corre el ChatWorkflow del chat; el agente de catálogo corre por el runner batch y todavía no está conectado al chat. El punto: la lógica del agente vive en otro módulo y se prueba sin servidor; el contrato de despliegue no la condiciona.",
     "ask": "",
     "close": "",
     "transition": "Y la infraestructura que lo declara."
@@ -677,7 +677,7 @@
     "file": "core/server.py",
     "lines": "194-199",
     "symbol": "invocations",
-    "caption": "GET /ping y POST /invocations en el puerto 8080, imagen ARM64 (F1). El agente no sabe dónde corre: el mismo código sirve en local y en el Runtime."
+    "caption": "Las dos rutas que exige AgentCore (F1: puerto 8080, imagen ARM64). Hoy este servidor arma el chat del template; conectar el workflow de catálogo (mapear_producto) es un pendiente."
    }
   },
   {
@@ -794,12 +794,12 @@
     "rows": [
      [
       "Anthropic",
-      "Claude 5.x (Sonnet 5, Opus 5.5, Fable 5.1…), 4.x (Haiku 4.5…), 3.x",
-      "Candidato principal: reglas y tool calling"
+      "Claude 5.x (Sonnet 5.5, Opus 5.5, Fable 5.1, Sonnet 5…), 4.x (Haiku 4.5…), 3.x",
+      "Candidato principal: reglas y tool calling. Sonnet 5 elegido el 25/09; 5.5 y Haiku 4.5 a comparar"
      ],
      [
       "Amazon",
-      "Nova 2, Nova Premier/Pro/Lite/Micro",
+      "Nova 2 Lite, Nova Premier, Pro, Lite, Micro",
       "Alternativa de costo a medir"
      ],
      [
@@ -809,7 +809,7 @@
      ],
      [
       "Meta · Mistral · DeepSeek · Qwen · otros",
-      "Llama 3.x/4, Mistral Large 3, DeepSeek V3.2, Qwen3…",
+      "Llama 3.x y 4, Mistral Large 3, DeepSeek V3.2, Qwen3…",
       "Abiertos; evaluar si el costo lo justifica"
      ]
     ]
@@ -862,7 +862,7 @@
    "title": "¿Qué modelo?",
    "kind": "decision",
    "lead": "",
-   "label": "",
+   "label": "Tomada el 25/09 (CLAUDE.md, decisión 6) · hoy se valida o se cambia",
    "items": [],
    "question": "",
    "options": [],
@@ -871,7 +871,7 @@
    "table": null,
    "notes": {
     "objective": "Cerrar la decisión 6 con la prueba de Haiku como pendiente",
-    "say": "Anotar la prueba de B como tarea con dueño: es la misma corrida con otra variable de entorno. Si Alephee quiere continuidad con OpenAI, los modelos GPT también están en Bedrock (F6): la arquitectura no cambia.",
+    "say": "Lo primero que van a preguntar: por qué Sonnet 5 y no 5.5. Respuesta honesta: la decisión es del 25/09 y el modelo está probado en este repo; 5.5 se compara sobre el mismo dataset, no se adopta a ciegas. Anotar las pruebas de 5.5 y de Haiku 4.5 como tareas con dueño. Si Alephee quiere continuidad con OpenAI, los GPT también están en Bedrock (F6): la arquitectura no cambia.",
     "ask": "",
     "close": "",
     "transition": "Con qué lo construimos."
@@ -885,7 +885,7 @@
      "B · Un modelo más chico y barato (Claude Haiku 4.5) y medir",
      "C · Seguir con OpenAI y solo reordenar el prompt para la caché"
     ],
-    "proposal": "A para construir hoy; B queda como prueba pendiente sobre el mismo dataset: si cumple el criterio, gana por costo. C mejora el costo pero no resuelve herramientas, contrato ni control.",
+    "proposal": "A para construir hoy: es la decisión del 25/09 y el ID está verificado en Converse. Claude Sonnet 5.5 también está en Bedrock (F6): compararlo, junto con Haiku 4.5 (B), es una corrida más con otra variable de entorno y queda como pendiente con dueño. C mejora el costo pero no resuelve herramientas, contrato ni control.",
     "file": "decisiones/06-modelo.md"
    }
   },
@@ -953,7 +953,7 @@
    "title": "¿Con qué lo construimos?",
    "kind": "decision",
    "lead": "",
-   "label": "",
+   "label": "Tomada el 28/09 (CLAUDE.md, decisión 9) · hoy se valida",
    "items": [],
    "question": "",
    "options": [],
@@ -1054,7 +1054,7 @@
    "table": null,
    "notes": {
     "objective": "Cerrar la decisión 8 con un número escrito",
-    "say": "Escribir el número en la pizarra antes de la V1. Si el grupo elige B, advertir que el expected mock hace casi imposible el 80 % para cualquier versión, incluida la actual (7 de 30).",
+    "say": "Escribir el número en la pizarra antes de la V1. Si el grupo quiere exigir exactos (B), advertir que con el expected mock ninguna versión los supera, incluida la actual (7 de 30), y que el 28/09 las versiones dieron 5, 4 y 4: la prueba quedaría planteada para fallar por la vara, no por el agente.",
     "ask": "",
     "close": "",
     "transition": "Y con qué datos."
@@ -1064,11 +1064,11 @@
     "number": 8,
     "question": "¿Qué criterio de éxito acordamos para la prueba de las 16:15?",
     "options": [
-     "A · Cero valores inválidos y cero duplicados en los 30; exactos iguales o mejores que el proceso actual",
+     "A · Cero valores inválidos, cero duplicados y todo obligatorio informado en los 30; los exactos se reportan pero no son condición hasta validar el expected con catálogo",
      "B · Exactos iguales o mayores al 80 %",
      "C · Solo precisión y recall de atributos"
     ],
-    "proposal": "A. Con expected mock, 'exacto' castiga aciertos que hoy nadie mapea; los inválidos y duplicados sí son errores seguros y hoy hay 47 y 5. El número final se fija en la sala.",
+    "proposal": "A. Con expected mock, 'exacto' castiga aciertos que hoy nadie mapea: el 28/09 el proceso actual dio 7 y las versiones 5, 4 y 4. Los inválidos, duplicados y obligatorios sin informar sí son errores seguros y hoy hay 47, 5 y 2. El número final se fija en la sala.",
     "file": "decisiones/08-criterio-de-exito.md"
    }
   },
@@ -1198,7 +1198,7 @@
    "title": "Qué falló en V1 y qué capa lo resuelve.",
    "kind": "table",
    "lead": "",
-   "label": "Corrida del 28/09 sobre los 30 reales · anterior a las correcciones · expected MOCK",
+   "label": "Corrida del 28/09 · 30 reales (fila 1: caso MOCK 09) · anterior a las correcciones · expected MOCK",
    "items": [],
    "question": "",
    "options": [],
@@ -1284,7 +1284,7 @@
    "table": null,
    "notes": {
     "objective": "Definir herramienta sin jerga",
-    "say": "El modelo no ejecuta nada: redacta un pedido con nombre y argumentos, el programa lo ejecuta y le devuelve el resultado como un mensaje más. Por eso la herramienta es determinista y el modelo no. Hay herramientas de lectura (consultar) y de acción (publicar); hoy todas las nuestras son de lectura. Que la herramienta exista no obliga al modelo a usarla ni a respetarla: eso se controla en la V3.",
+    "say": "El modelo no ejecuta nada: redacta un pedido con nombre y argumentos, el programa lo ejecuta y le devuelve el resultado como un mensaje más. Por eso la herramienta es determinista y el modelo no. Hay herramientas de lectura (consultar) y de acción (publicar); hoy todas las nuestras son de lectura. Que la herramienta exista no obliga al modelo a usarla ni a respetarla: la V3 revisa la entrega contra el esquema del canal, pero imponer por código lo que dice la tabla de atributos es un pendiente.",
     "ask": "",
     "close": "",
     "transition": "La fuente se abstrae."
@@ -1363,7 +1363,7 @@
    "title": "¿Qué decide la tabla y qué decide el agente?",
    "kind": "decision",
    "lead": "",
-   "label": "",
+   "label": "En la base preparada: la categoría se fija en código (V3); los campos de la tabla los aplica el modelo por instrucción",
    "items": [],
    "question": "",
    "options": [],
@@ -1372,7 +1372,7 @@
    "table": null,
    "notes": {
     "objective": "Cerrar la decisión 10",
-    "say": "B es el error más común: dejar que el modelo mejore un mapeo que el equipo de catálogo mantiene a mano. Si la tabla está mal, se corrige la tabla. C ya se descartó en la decisión 3. Con A, la V3 fija la categoría desde la tabla antes de llamar al modelo.",
+    "say": "B es el error más común: dejar que el modelo mejore un mapeo que el equipo de catálogo mantiene a mano. Si la tabla está mal, se corrige la tabla. C ya se descartó en la decisión 3. Ser exacto sobre el estado: la V3 fija la categoría en código; los campos mapeados por tabla todavía dependen de que el modelo respete la herramienta, y el guardrail solo revisa el esquema. Si la sala quiere imponerlos por código, es un cambio acotado en _al_entregar y queda como pendiente.",
     "ask": "",
     "close": "",
     "transition": "El loop del agente y su límite."
@@ -1382,11 +1382,11 @@
     "number": 10,
     "question": "¿Qué decide la tabla y qué decide el agente?",
     "options": [
-     "A · La tabla fija categoría y campos; el agente solo elige el valor equivalente de la lista y cubre lo que la tabla no tiene",
+     "A · La tabla fija la categoría y los campos; el agente solo elige el valor equivalente de la lista y cubre lo que la tabla no tiene",
      "B · El agente puede corregir la tabla si cree que está mal",
      "C · Todo por tabla; sin modelo"
     ],
-    "proposal": "A. La tabla manda (acuerdo del 25/08 con Juan David). 306 ids legacy apuntan a más de un atributo de Shopee: se desambiguan por categoría, en código, no en el modelo. Lo que la tabla no cubre (valores de lista, atributos sin referencia) es lo único que decide el agente.",
+    "proposal": "A. La tabla manda (acuerdo del 25/08 con Juan David). Hoy la categoría se impone en código (V3) y la tabla de atributos la consulta el agente por herramienta, desambiguada por categoría en código; imponer también los campos por código es el siguiente paso. Lo que la tabla no cubre (valores de lista, atributos sin referencia) es lo único que decide el agente.",
     "file": "decisiones/10-tabla-vs-agente.md"
    }
   },
@@ -1504,7 +1504,7 @@
    "title": "¿Cuánto puede costar?",
    "kind": "decision",
    "lead": "",
-   "label": "",
+   "label": "Abierta: hoy no hay tope ni medición completa en la base preparada",
    "items": [],
    "question": "",
    "options": [],
@@ -1595,7 +1595,7 @@
    "items": [
     "REVISAR | Lista los problemas en lenguaje claro y se los devuelve al agente, que tiene una ronda para corregir",
     "LIMPIAR | Red final: descarta lo inválido con motivo y marca los obligatorios que faltan",
-    "NUNCA | Inventa un valor, publica un -1 ni deja pasar un duplicado"
+    "NUNCA | Publica un valor fuera de la lista del canal, un -1 ni un duplicado. No verifica que el valor sea verdad: eso sigue siendo del esquema y de catálogo"
    ],
    "question": "",
    "options": [],
@@ -1626,7 +1626,7 @@
    "table": null,
    "notes": {
     "objective": "Leer las cuatro comprobaciones",
-    "say": "Recorrer las cuatro con el caso guía: ABS Plastic en Código OEM pasa la primera (el atributo existe) y la segunda (tiene dato); si Código OEM es texto libre no tiene lista y pasa también. Eso muestra el límite: el guardrail detecta lo que el esquema permite detectar. Por eso el esquema oficial de Shopee es un pendiente de primer orden.",
+    "say": "Recorrer las cuatro con el caso guía: ABS Plastic en Código OEM pasa la primera (el atributo existe) y la segunda (tiene dato). Shopee lo rechazó con 'value is not linked': el canal sí tiene una lista para ese atributo, pero nuestro esquema MOCK no la tiene, así que la tercera comprobación no puede detectarlo. Ese es el límite: el guardrail detecta lo que el esquema permite detectar. Por eso el esquema oficial de Shopee es un pendiente de primer orden.",
     "ask": "¿Qué comprobación agregarían con lo que saben del canal?",
     "close": "",
     "transition": "La red final."
@@ -1684,7 +1684,7 @@
    "title": "¿Qué hace cuando no sabe?",
    "kind": "decision",
    "lead": "",
-   "label": "",
+   "label": "La opción B ya está en la base preparada (V3) · C se construye sobre B",
    "items": [],
    "question": "",
    "options": [],
@@ -1810,7 +1810,7 @@
    "title": "¿Cómo garantizamos determinismo?",
    "kind": "decision",
    "lead": "",
-   "label": "",
+   "label": "La opción A ya está en la base preparada (clave SKU + categoría legacy) · falta la invalidación por tablas",
    "items": [],
    "question": "",
    "options": [],
@@ -1830,7 +1830,7 @@
     "question": "¿Cómo garantizamos que el mismo SKU dé la misma salida?",
     "options": [
      "A · Caché por SKU + canal; se invalida al corregir o al cambiar las tablas",
-     "B · Seed y temperatura 0 (lo que se intentó hoy)",
+     "B · Seed fijo (lo que se intentó hoy; los parámetros exactos siguen sin confirmar)",
      "C · Recalcular siempre y aceptar variación"
     ],
     "proposal": "A. Un mapeo por SKU y canal. B reduce la variación pero no la elimina y sigue pagando cada corrida. La clave actual es SKU + categoría legacy; falta sumar versión de las tablas y aislamiento por cuenta antes de producción.",

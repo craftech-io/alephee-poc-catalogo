@@ -1,6 +1,8 @@
 # Decisión 03 · ¿Single prompt o agente?
 
-**Contexto.** El proceso actual es un workflow fijo (dos llamadas y un merge). Antes de agregar herramientas conviene saber qué resuelve el modelo solo y qué no, para justificar cada capa con evidencia.
+**Contexto.** El proceso actual es un workflow fijo (dos llamadas y un merge). Antes de agregar herramientas conviene saber qué resuelve el modelo solo y qué no, para justificar cada capa con evidencia. La base preparada ya implementa la opción A como V1.
+
+**Estado.** La opción A ya está en la base preparada (V1) · si gana otra, se discute qué cambia
 
 **Pregunta.** ¿Con qué tipo de aplicación empezamos?
 

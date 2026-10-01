@@ -1,6 +1,8 @@
 # Decisión 12 · ¿Qué hace cuando no sabe?
 
-**Contexto.** Hoy, un obligatorio sin dato se publica sin el atributo. El guardrail de la V3 puede marcarlo en missing con motivo o bloquear la publicación.
+**Contexto.** Hoy, un obligatorio sin dato se publica sin el atributo. El guardrail de la V3 ya lo marca en missing con motivo (opción B); bloquear la publicación (C) sería una política construida sobre eso.
+
+**Estado.** La opción B ya está en la base preparada (V3) · C se construye sobre B
 
 **Pregunta.** ¿Qué hace el agente cuando no puede completar un atributo obligatorio?
 
