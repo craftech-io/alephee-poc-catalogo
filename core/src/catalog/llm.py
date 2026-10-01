@@ -23,3 +23,9 @@ def create_llm(env=os.environ) -> BedrockConverse:
 def is_auth_error(exc: BaseException) -> bool:
     """Expired or missing AWS credentials: retrying the next product would fail the same way."""
     return isinstance(exc, _AUTH_ERRORS) or "ExpiredToken" in str(exc)
+
+
+def auth_error_message(exc: BaseException, profile: str | None) -> str:
+    """Shared wording for an expired or missing AWS session, with or without a named profile."""
+    hint = f"aws sso login --profile {profile}" if profile else "aws sso login"
+    return f"AWS credentials expired or missing ({exc}). Run: {hint}"

@@ -1,10 +1,20 @@
 from types import SimpleNamespace
 
 import pytest
+from botocore.exceptions import NoCredentialsError
 
+from catalog import experiment
 from catalog.data import data_dir, load_cases, load_schemas
 from catalog.events import MappingCompleted
-from catalog.experiment import check_aws, current_task, dataset_items, main, make_v1_task, upload_dataset
+from catalog.experiment import (
+    check_aws,
+    current_task,
+    dataset_items,
+    main,
+    make_v1_task,
+    prompt_label,
+    upload_dataset,
+)
 from catalog.models import Listing
 
 REAL = load_cases(data_dir("real"))
@@ -67,14 +77,56 @@ async def test_v1_task_returns_the_listing_or_the_error():
     assert (await task(item=SimpleNamespace(input={}))) == {"error": "TypeError: boom"}
 
 
-def test_check_aws_exits_with_the_login_command():
+async def test_v1_task_exits_on_an_auth_error_instead_of_reporting_it_as_a_case_error(monkeypatch):
+    monkeypatch.setenv("AWS_PROFILE", "sandbox")
+
+    class FailingWorkflow:
+        def __init__(self, **kwargs):
+            pass
+
+        async def run(self, product):
+            raise NoCredentialsError()
+
+    task = make_v1_task(llm=None, system_prompt="S", schemas={}, workflow_cls=FailingWorkflow)
+    with pytest.raises(SystemExit) as info:
+        await task(item=SimpleNamespace(input={}))
+    assert "aws sso login --profile sandbox" in str(info.value)
+
+
+def test_check_aws_exits_with_the_login_command(monkeypatch):
+    monkeypatch.setenv("AWS_PROFILE", "sandbox")
+    seen = {}
+
     class Broken:
         def client(self, name):
             raise RuntimeError("Token has expired")
 
+    def factory(**kw):
+        seen.update(kw)
+        return Broken()
+
     with pytest.raises(SystemExit) as info:
-        check_aws(session_factory=lambda **kw: Broken())
-    assert "aws sso login --profile" in str(info.value)
+        check_aws(session_factory=factory)
+    assert seen == {"profile_name": "sandbox"}
+    assert "aws sso login --profile sandbox" in str(info.value)
+
+
+def test_check_aws_without_an_aws_profile_uses_the_default_credential_chain(monkeypatch):
+    monkeypatch.delenv("AWS_PROFILE", raising=False)
+    seen = {}
+
+    class Broken:
+        def client(self, name):
+            raise RuntimeError("Token has expired")
+
+    def factory(**kw):
+        seen.update(kw)
+        return Broken()
+
+    with pytest.raises(SystemExit) as info:
+        check_aws(session_factory=factory)
+    assert seen == {"profile_name": None}
+    assert "aws sso login" in str(info.value) and "--profile" not in str(info.value)
 
 
 def test_main_exits_without_langfuse(monkeypatch):
@@ -83,3 +135,61 @@ def test_main_exits_without_langfuse(monkeypatch):
     with pytest.raises(SystemExit) as info:
         main(["--version", "current", "--data", "mock"])
     assert "LANGFUSE" in str(info.value)
+
+
+def test_main_refuses_real_data_without_the_allow_flag(monkeypatch):
+    calls = []
+    monkeypatch.setattr(experiment, "setup_tracing", lambda: calls.append("setup_tracing"))
+    monkeypatch.setattr(experiment, "upload_dataset", lambda *a, **kw: calls.append("upload_dataset"))
+
+    with pytest.raises(SystemExit) as info:
+        main(["--version", "current", "--data", "real"])
+
+    assert "Alephee" in str(info.value)
+    assert calls == []
+
+
+class _FakeExperimentClient:
+    """Enough of the Langfuse client surface for `main` to run end to end."""
+
+    def get_dataset(self, name):
+        return SimpleNamespace(items=[SimpleNamespace(metadata={"case": None})])
+
+    def run_experiment(self, **kwargs):
+        return SimpleNamespace(format=lambda: "ok")
+
+    def flush(self):
+        pass
+
+
+def test_main_uploads_real_data_with_the_allow_flag(monkeypatch):
+    calls = []
+    monkeypatch.setattr(experiment, "setup_tracing", lambda: _FakeExperimentClient())
+    monkeypatch.setattr(experiment, "upload_dataset", lambda *a, **kw: calls.append("upload_dataset"))
+
+    main(["--version", "current", "--data", "real", "--allow-real-upload"])
+
+    assert calls == ["upload_dataset"]
+
+
+def test_check_aws_runs_before_upload_dataset_for_v1(monkeypatch):
+    calls = []
+    monkeypatch.setattr(experiment, "setup_tracing", lambda: _FakeExperimentClient())
+    monkeypatch.setattr(experiment, "check_aws", lambda: calls.append("check_aws"))
+    monkeypatch.setattr(experiment, "upload_dataset", lambda *a, **kw: calls.append("upload_dataset"))
+    monkeypatch.setattr(experiment, "sync_seed", lambda *a, **kw: None)
+    monkeypatch.setattr(
+        experiment, "get_system_prompt",
+        lambda *a, **kw: SimpleNamespace(text="S", name="catalog-v1-system", version=None),
+    )
+    monkeypatch.setattr(experiment, "create_llm", lambda: SimpleNamespace(model="fake-model"))
+    monkeypatch.setattr(experiment, "make_v1_task", lambda *a, **kw: (lambda **kw: None))
+
+    main(["--version", "v1", "--data", "mock"])
+
+    assert calls == ["check_aws", "upload_dataset"]
+
+
+def test_prompt_label_uses_seed_when_there_is_no_version():
+    assert prompt_label(SimpleNamespace(name="catalog-v1-system", version=None)) == "catalog-v1-system:seed"
+    assert prompt_label(SimpleNamespace(name="catalog-v1-system", version=3)) == "catalog-v1-system:v3"

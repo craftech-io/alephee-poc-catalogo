@@ -344,6 +344,19 @@ def test_el_log_marca_el_escalamiento_cuando_el_agente_usa_esa_tool(caplog):
     assert "ACME-42" not in caplog.text
 
 
+def test_catalog_tools_factory_is_never_called_without_catalog_enabled():
+    from llama_index.core.tools import FunctionTool
+
+    called = []
+    fake_tool = FunctionTool.from_defaults(fn=lambda sku: sku, name="map_product")
+    app = build_app(llm_factory=lambda cfg: FakeLLM(), env={"MODEL_ID": "fake"},
+                    catalog_tools_factory=lambda: called.append(1) or [fake_tool])
+    r = TestClient(app).post("/invocations", json={"message": "mapea el SKU 1", "sessionId": "s", "userId": "u"})
+    assert called == []
+    # No CATALOG_ENABLED: behavior is unchanged from a chat with no catalog tools at all.
+    assert texto_del_done(r) == "Hola mundo"
+
+
 def test_catalog_tool_is_registered_only_when_enabled():
     from llama_index.core.tools import FunctionTool
 

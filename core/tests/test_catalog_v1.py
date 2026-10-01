@@ -1,5 +1,6 @@
 import pytest
 from llama_index.core.base.llms.types import CachePoint, TextBlock
+from llama_index.core.prompts import ChatPromptTemplate
 from pydantic import ValidationError
 
 from catalog.data import data_dir, load_cases, load_schemas
@@ -68,6 +69,18 @@ def test_long_description_is_trimmed():
 def test_product_without_category_still_builds():
     product = CASES["09-sin-categoria"]["product"]
     assert build_messages("S", SCHEMAS, product)[1].blocks[2].text
+
+
+def test_chat_prompt_template_preserves_blocks_and_json_braces():
+    """`as_structured_llm(...).achat` runs the messages through ChatPromptTemplate first;
+    this must not choke on the catalog's JSON braces nor drop the CachePoint."""
+    messages = build_messages("SYSTEM", SCHEMAS, PRODUCT)
+    formatted = ChatPromptTemplate(message_templates=messages).format_messages()
+    assert [m.role.value for m in formatted] == ["system", "user"]
+    assert formatted[0].content == messages[0].content
+    assert [type(b) for b in formatted[1].blocks] == [TextBlock, CachePoint, TextBlock]
+    assert formatted[1].blocks[0].text == messages[1].blocks[0].text
+    assert formatted[1].blocks[2].text == messages[1].blocks[2].text
 
 
 async def test_map_returns_typed_listing():

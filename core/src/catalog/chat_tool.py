@@ -2,6 +2,7 @@
 
 import json
 import logging
+import os
 
 from llama_index.core.tools import FunctionTool
 
@@ -27,8 +28,16 @@ def _describe(sku: str, listing: Listing, schemas: dict[str, dict]) -> str:
     }, ensure_ascii=False)
 
 
-def create_catalog_tools(llm_factory=create_llm, workflow_cls=MappingV1, directories=None) -> list[FunctionTool]:
-    directories = directories or [data_dir("real"), data_dir("mock")]
+def create_catalog_tools(llm_factory=create_llm, workflow_cls=MappingV1, directories=None,
+                         env=None) -> list[FunctionTool]:
+    env = os.environ if env is None else env
+    if directories is None:
+        # Default to the mock dataset only: the deployed chat sends prompts and answers to
+        # Langfuse Cloud, and real Alephee/GM products wait for Alephee's confirmation
+        # (CLAUDE.md, "Chat desplegado"). The mock dataset already carries the real
+        # example product (SKU 94701411, case 01-real-calota-aro14).
+        directories = [data_dir("real"), data_dir("mock")] if env.get("CATALOG_ALLOW_REAL_DATA") == "1" \
+            else [data_dir("mock")]
 
     async def map_product(sku: str) -> str:
         """Map a product of the Alephee catalog to a Shopee listing (category and attributes) by its SKU."""
@@ -41,7 +50,9 @@ def create_catalog_tools(llm_factory=create_llm, workflow_cls=MappingV1, directo
         try:
             done = await workflow_cls(llm=llm_factory(), system_prompt=prompt.text, schemas=schemas,
                                       timeout=180).run(product=product)
-        except Exception as exc:  # noqa: BLE001 — the chat never gets an exception
+        except Exception as exc:  # noqa: BLE001 — covers only the workflow run above; the
+            # template's tool wrapper (`_ejecutar_tool` in agent/workflow.py) is the outer
+            # net that catches whatever escapes here.
             logger.error("map_product failed for a SKU: %s", type(exc).__name__)
             return f"Could not map SKU {sku}: {type(exc).__name__}."
         if done.listing is None:

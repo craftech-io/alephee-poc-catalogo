@@ -217,14 +217,17 @@ Pendiente para Gastón:
    ```bash
    API_URL="<Function URL del BFF>" CHAT_HMAC_SECRET="<el mismo secreto HMAC>" npm start -w apps/web
    ```
-   En `http://localhost:3000`, escribir: "Mapea el SKU <un SKU de data/real>". El chat debe responder una tabla con categoría, atributos y faltantes. En Langfuse, una traza del Runtime con el turno del chat, la llamada a `map_product` y, adentro, la llamada estructurada de la V1.
+   En `http://localhost:3000`, escribir: "Mapea el SKU <un SKU de data/mock, por ejemplo 94701411>". El chat debe responder una tabla con categoría, atributos y faltantes. En Langfuse, una traza del Runtime con el turno del chat, la llamada a `map_product` y, adentro, la llamada estructurada de la V1. Un SKU que solo esté en `data/real` no se encuentra hasta que `CATALOG_ALLOW_REAL_DATA=1` esté seteado.
 
 4. Destruir el stage cuando cierre:
    ```bash
    npx sst remove --stage warroom
    ```
 
-**Advertencia:** No subir productos reales a Langfuse Cloud hasta confirmar con Alephee (spec, "Condiciones").
+**Advertencias:**
+- El chat desplegado manda prompts y respuestas a Langfuse Cloud porque `contenidoEnTrazas: true`. Por eso mapea solo el dataset mock hasta que `CATALOG_ALLOW_REAL_DATA=1` se setee en el Runtime, y eso espera la confirmación de Alephee (spec, "Condiciones").
+- El chat desplegado usa la semilla del prompt de sistema del repo, no Langfuse: el Runtime no tiene las claves de Langfuse (decisión del 1/10: no sumar más secretos al Runtime para el war room).
+- `experiment.sh --data real` necesita `--allow-real-upload` después de que Alephee confirme.
 
 ## Contexto comercial (no es alcance del war room)
 - Alephee ya es cliente de Craftech: renovación, SOW "IW Build", propuesta de un equipo de arquitectura y desarrollo, y una PoC de Data Lake.

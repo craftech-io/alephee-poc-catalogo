@@ -96,7 +96,9 @@ def make_item_evaluator(schemas: dict[str, dict]):
     def evaluator(*, input, output, expected_output, metadata=None, **kwargs) -> list[Evaluation]:
         result, error = _evaluate_output(output, expected_output, schemas)
         return [
-            Evaluation(name="exact", value=result.exact, data_type="BOOLEAN", comment=error),
+            # A task that errored never scores exact, even if the empty fallback output
+            # happens to match an "empty" expected (category None, no attributes).
+            Evaluation(name="exact", value=result.exact and not error, data_type="BOOLEAN", comment=error),
             Evaluation(name="category_ok", value=result.category_ok, data_type="BOOLEAN"),
             Evaluation(name="invalid_values", value=len(result.invalid), comment=", ".join(result.invalid) or None),
             Evaluation(name="duplicates", value=len(result.duplicates), comment=", ".join(result.duplicates) or None),

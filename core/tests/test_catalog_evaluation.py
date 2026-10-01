@@ -91,6 +91,13 @@ def test_item_evaluator_scores_and_task_errors():
     assert "boom" in next(e for e in failed if e.name == "exact").comment
 
 
+def test_errored_item_is_never_scored_exact():
+    evaluator = make_item_evaluator(SCHEMAS)
+    expected = {"category": None, "attributes": [], "missing": [], "rejected": []}
+    scores = {e.name: e.value for e in evaluator(input={}, output={"error": "boom"}, expected_output=expected)}
+    assert scores["exact"] is False
+
+
 def test_run_evaluator_aggregates():
     run_evaluator = make_run_evaluator(SCHEMAS)
     expected = CASES["01-real-calota-aro14"]["expected"]

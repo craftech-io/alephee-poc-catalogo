@@ -90,7 +90,7 @@ MappingCompleted(listing: Listing | None, error: str | None)
 Fuente: [AWS, Prompt caching for faster model inference](https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-caching.html).
 
 - Bedrock guarda el prefijo anterior al `cachePoint`, procesado en orden `tools` → `system` → `messages`. Cambiar algo antes de la marca invalida la caché.
-- Claude Sonnet 5 exige al menos 1.024 tokens antes de la marca; el catálogo de la V1 tiene unos 20.000.
+- Claude Sonnet 5 exige al menos 1.024 tokens antes de la marca. Medido: el catálogo real tiene unos 30.000 caracteres (unos 7.500 tokens); el mock, unos 2.000 caracteres (unos 500 tokens, por debajo del mínimo de 1.024, así que las corridas con datos mock no muestran lecturas ni escrituras de caché).
 - TTL de 5 minutos por defecto, que se renueva con cada acierto; Sonnet 5 acepta 1 hora (`"ttl": "1h"`), que conviene para un batch con pausas.
 - La escritura en caché puede costar más que la entrada normal; la lectura cuesta menos. La respuesta lo informa en `cacheReadInputTokens` y `cacheWriteInputTokens`.
 - No hay garantía de acierto; con inferencia entre regiones puede haber más escrituras.
