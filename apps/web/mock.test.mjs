@@ -37,7 +37,7 @@ describe("planificarRespuesta", () => {
     expect(frames).toEqual([{ type: "error", code: "agent_unavailable" }]);
   });
 
-  it("'sku' answers with map_product's sample listing, labelled as mock", () => {
+  it("'sku' answers with map_product_v2's sample listing, labelled as mock", () => {
     const plan = planificarRespuesta("mapea el SKU 94701411", "A");
     expect(plan.frames).toHaveLength(1);
     expect(plan.frames[0].type).toBe("done");
