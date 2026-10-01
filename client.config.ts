@@ -311,15 +311,13 @@ export const cliente: ConfigCliente = {
     "8. When the user asks to map a product by SKU, call the `map_product` tool and present the category, the attributes and the missing ones as a table. Do not change what the tool returns.",
   ].join("\n"),
   observabilidad: {
-    // 5% de las conversaciones. Ver el doc del campo: subirlo a 1 es la forma
-    // más rápida de multiplicar la factura de observabilidad.
-    muestreo: 0.05,
-    // Redactado por default. Prenderlo es una decisión de residencia de datos,
-    // no un ajuste de verbosidad.
-    contenidoEnTrazas: false,
-    // A la cuenta del cliente. `"otlp"` exige los dos secretos del endpoint.
-    destino: "cloudwatch",
-    // Indexar todo lo que llega: con el muestreo al 5% no sobra nada.
+    // 100% de las conversaciones: modo warroom, traceable todo.
+    muestreo: 1,
+    // Contenido incluido en trazas: necesario para debugging en Langfuse.
+    contenidoEnTrazas: true,
+    // Enviar a Langfuse por OTLP. Requiere secretos del endpoint.
+    destino: "otlp",
+    // Indexar todo lo que llega.
     indexadoTrazas: 100,
     stageQueAdministraLaBusqueda: "",
   },

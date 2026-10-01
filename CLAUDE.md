@@ -194,6 +194,38 @@ old/                           código anterior al reinicio del 1/10, fuera de g
 - Cada versión (V1, V2, V3) se commitea y se tagea antes de pasar a la siguiente, para poder comparar.
 - Los datos del catálogo son de Alephee y de sus clientes (GM, concesionarios). No se suben a servicios externos fuera de los acordados.
 
+## Chat desplegado (stage warroom)
+
+Pendiente para Gastón:
+
+1. Cargar secretos para el stage `warroom`:
+   ```bash
+   AUTH=$(printf '%s:%s' "$LANGFUSE_PUBLIC_KEY" "$LANGFUSE_SECRET_KEY" | base64)
+   npx sst secret set ClientHmacSecret "<secreto HMAC>" --stage warroom
+   npx sst secret set ObservabilidadOtlpEndpoint "https://us.cloud.langfuse.com/api/public/otel/v1/traces" --stage warroom
+   npx sst secret set ObservabilidadOtlpHeaders "Authorization=Basic%20${AUTH},x-langfuse-ingestion-version=4" --stage warroom
+   ```
+   (Nota: los `LANGFUSE_*` deben ser los valores rotados de la organización.)
+
+2. Desplegar a sandbox:
+   ```bash
+   AWS_PROFILE=sandbox npx sst deploy --stage warroom
+   ```
+   La salida lista los outputs (runtimeArn, repoCore, Function URL del BFF).
+
+3. Probar el chat con el Runtime desplegado:
+   ```bash
+   API_URL="<Function URL del BFF>" CHAT_HMAC_SECRET="<el mismo secreto HMAC>" npm start -w apps/web
+   ```
+   En `http://localhost:3000`, escribir: "Mapea el SKU <un SKU de data/real>". El chat debe responder una tabla con categoría, atributos y faltantes. En Langfuse, una traza del Runtime con el turno del chat, la llamada a `map_product` y, adentro, la llamada estructurada de la V1.
+
+4. Destruir el stage cuando cierre:
+   ```bash
+   npx sst remove --stage warroom
+   ```
+
+**Advertencia:** No subir productos reales a Langfuse Cloud hasta confirmar con Alephee (spec, "Condiciones").
+
 ## Contexto comercial (no es alcance del war room)
 - Alephee ya es cliente de Craftech: renovación, SOW "IW Build", propuesta de un equipo de arquitectura y desarrollo, y una PoC de Data Lake.
 - Alephee está migrando su base a Postgres. Cuando cierre la etapa 1, Rick comparte los esquemas para arrancar los cimientos del data lake.
