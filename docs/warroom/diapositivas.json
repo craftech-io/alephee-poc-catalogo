@@ -482,7 +482,7 @@
     "say": "Lo único que cambia entre versiones es la clase. El runner, el dataset y el evaluador son los mismos: así la comparación de la tarde es justa. Sumar una V4 es registrar una clase más.",
     "ask": "",
     "close": "",
-    "transition": "Decisión 3."
+    "transition": "Dónde vive cada pieza en el repositorio."
    },
    "minutes": 4,
    "code": {
@@ -494,6 +494,361 @@
   },
   {
    "id": "s14",
+   "section": "diseno",
+   "title": "Dónde vive cada versión en el código.",
+   "kind": "diagram",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Dar el mapa del repositorio antes de entrar en cada pieza",
+    "say": "Arriba, las dos entradas: el runner batch, que es como se usa hoy, y el servidor de AgentCore, que corre el chat del template. Al medio, las tres versiones, cada una en su archivo. Debajo, las capas que cada versión suma y la base común: el contrato, los eventos, el único módulo que sabe de Bedrock y la carga de datos. La flecha punteada es el pendiente: el chat todavía no llama al agente de catálogo.",
+    "ask": "¿Dónde pondrían el código en el repositorio de Alephee?",
+    "close": "",
+    "transition": "Decisión 3."
+   },
+   "minutes": 2,
+   "diagram": {
+    "w": 1200,
+    "h": 520,
+    "groups": [
+     {
+      "x": 16,
+      "y": 58,
+      "label": "Entradas"
+     },
+     {
+      "x": 16,
+      "y": 164,
+      "label": "Versiones"
+     },
+     {
+      "x": 16,
+      "y": 270,
+      "label": "Capas"
+     },
+     {
+      "x": 16,
+      "y": 376,
+      "label": "Base común"
+     },
+     {
+      "x": 16,
+      "y": 482,
+      "label": "Fuera del código"
+     }
+    ],
+    "nodes": [
+     {
+      "x": 190,
+      "y": 16,
+      "w": 670,
+      "h": 74,
+      "title": "Runner batch",
+      "sub": [
+       "scripts/correr.sh --version v1 | v2 | v3 | actual",
+       "core/src/catalogo/correr.py · evalúa y guarda en resultados/"
+      ],
+      "tone": "base"
+     },
+     {
+      "x": 880,
+      "y": 16,
+      "w": 304,
+      "h": 74,
+      "title": "Servidor AgentCore",
+      "sub": [
+       "core/server.py",
+       "/ping y /invocations"
+      ],
+      "tone": "aws"
+     },
+     {
+      "x": 190,
+      "y": 122,
+      "w": 213,
+      "h": 74,
+      "title": "V1 · MapeoV1",
+      "sub": [
+       "v1.py",
+       "una llamada, sin herramientas"
+      ],
+      "tone": "modelo"
+     },
+     {
+      "x": 419,
+      "y": 122,
+      "w": 213,
+      "h": 74,
+      "title": "V2 · MapeoV2",
+      "sub": [
+       "v2.py",
+       "loop de hasta 6 rondas"
+      ],
+      "tone": "modelo"
+     },
+     {
+      "x": 647,
+      "y": 122,
+      "w": 213,
+      "h": 74,
+      "title": "V3 · MapeoV3",
+      "sub": [
+       "v3.py",
+       "hereda de V2 y agrega control"
+      ],
+      "tone": "modelo"
+     },
+     {
+      "x": 880,
+      "y": 122,
+      "w": 304,
+      "h": 74,
+      "title": "Chat del template",
+      "sub": [
+       "core/src/agent · ChatWorkflow",
+       "falta mapear_producto(sku)"
+      ],
+      "tone": "pendiente"
+     },
+     {
+      "x": 190,
+      "y": 228,
+      "w": 156,
+      "h": 74,
+      "title": "Herramientas",
+      "sub": [
+       "herramientas.py",
+       "V2 y V3"
+      ],
+      "tone": "codigo"
+     },
+     {
+      "x": 362,
+      "y": 228,
+      "w": 156,
+      "h": 74,
+      "title": "Guardrails",
+      "sub": [
+       "guardrails.py",
+       "V3"
+      ],
+      "tone": "codigo"
+     },
+     {
+      "x": 533,
+      "y": 228,
+      "w": 156,
+      "h": 74,
+      "title": "Memoria y caché",
+      "sub": [
+       "memoria.py",
+       "V3"
+      ],
+      "tone": "codigo"
+     },
+     {
+      "x": 704,
+      "y": 228,
+      "w": 156,
+      "h": 74,
+      "title": "Evaluador",
+      "sub": [
+       "evaluacion.py",
+       "todas"
+      ],
+      "tone": "codigo"
+     },
+     {
+      "x": 880,
+      "y": 228,
+      "w": 304,
+      "h": 74,
+      "title": "Correcciones",
+      "sub": [
+       "scripts/corregir.sh",
+       "corregir.py → memoria/"
+      ],
+      "tone": "codigo"
+     },
+     {
+      "x": 190,
+      "y": 334,
+      "w": 156,
+      "h": 74,
+      "title": "Contrato",
+      "sub": [
+       "modelos.py",
+       "Publicacion"
+      ],
+      "tone": "base"
+     },
+     {
+      "x": 362,
+      "y": 334,
+      "w": 156,
+      "h": 74,
+      "title": "Eventos",
+      "sub": [
+       "eventos.py",
+       "MapeoStart / Done"
+      ],
+      "tone": "base"
+     },
+     {
+      "x": 533,
+      "y": 334,
+      "w": 156,
+      "h": 74,
+      "title": "LLM inyectado",
+      "sub": [
+       "llm.py",
+       "BedrockConverse"
+      ],
+      "tone": "base"
+     },
+     {
+      "x": 704,
+      "y": 334,
+      "w": 156,
+      "h": 74,
+      "title": "Datos",
+      "sub": [
+       "datos.py",
+       "DATA_DIR"
+      ],
+      "tone": "base"
+     },
+     {
+      "x": 880,
+      "y": 334,
+      "w": 304,
+      "h": 74,
+      "title": "Tests sin AWS",
+      "sub": [
+       "core/tests/test_catalogo_*.py",
+       "con dobles del LLM"
+      ],
+      "tone": "base"
+     },
+     {
+      "x": 190,
+      "y": 440,
+      "w": 327,
+      "h": 74,
+      "title": "Amazon Bedrock",
+      "sub": [
+       "us.anthropic.claude-sonnet-5",
+       "perfil SSO sandbox · us-east-1"
+      ],
+      "tone": "aws"
+     },
+     {
+      "x": 533,
+      "y": 440,
+      "w": 327,
+      "h": 74,
+      "title": "data/real · data/mock",
+      "sub": [
+       "tablas reference_*, esquema",
+       "y dataset con expected"
+      ],
+      "tone": "dato"
+     },
+     {
+      "x": 880,
+      "y": 440,
+      "w": 304,
+      "h": 74,
+      "title": "memoria/ y resultados/",
+      "sub": [
+       "JSON fuera de git"
+      ],
+      "tone": "dato"
+     }
+    ],
+    "edges": [
+     {
+      "points": [
+       [
+        300,
+        90
+       ],
+       [
+        300,
+        122
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        525,
+        90
+       ],
+       [
+        525,
+        122
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        749,
+        90
+       ],
+       [
+        749,
+        122
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        1032,
+        90
+       ],
+       [
+        1032,
+        122
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        880,
+        159
+       ],
+       [
+        860,
+        159
+       ]
+      ],
+      "label": "",
+      "dashed": true
+     }
+    ],
+    "caption": "Las tres versiones son Workflows que reciben MapeoStart y devuelven MapeoDone: el runner las intercambia y el evaluador las compara sobre el mismo dataset."
+   }
+  },
+  {
+   "id": "s15",
    "section": "diseno",
    "title": "¿Single prompt o agente?",
    "kind": "decision",
@@ -526,7 +881,7 @@
    }
   },
   {
-   "id": "s15",
+   "id": "s16",
    "section": "diseno",
    "title": "Un prompt tiene cinco partes.",
    "kind": "flow",
@@ -554,7 +909,7 @@
    "minutes": 3
   },
   {
-   "id": "s16",
+   "id": "s17",
    "section": "diseno",
    "title": "El prompt de la V1.",
    "kind": "code",
@@ -587,7 +942,7 @@
    }
   },
   {
-   "id": "s17",
+   "id": "s18",
    "section": "diseno",
    "title": "Buenas prácticas que cambian el resultado.",
    "kind": "cards",
@@ -613,7 +968,7 @@
    "minutes": 3
   },
   {
-   "id": "s18",
+   "id": "s19",
    "section": "diseno",
    "title": "La salida es una herramienta con esquema.",
    "kind": "code",
@@ -644,7 +999,7 @@
    }
   },
   {
-   "id": "s19",
+   "id": "s20",
    "section": "diseno",
    "title": "¿Cómo garantizamos el formato?",
    "kind": "decision",
@@ -677,7 +1032,7 @@
    }
   },
   {
-   "id": "s20",
+   "id": "s21",
    "section": "diseno",
    "title": "Dónde corre: AgentCore o contenedor propio.",
    "kind": "compare",
@@ -703,7 +1058,7 @@
    "minutes": 3
   },
   {
-   "id": "s21",
+   "id": "s22",
    "section": "diseno",
    "title": "El contrato con AgentCore son dos rutas.",
    "kind": "code",
@@ -731,7 +1086,7 @@
    }
   },
   {
-   "id": "s22",
+   "id": "s23",
    "section": "diseno",
    "title": "La infraestructura declara el Runtime.",
    "kind": "code",
@@ -748,7 +1103,7 @@
     "say": "Infraestructura como código: el Runtime, su imagen y su rol se declaran acá y se despliegan con un comando. El comentario sobre el digest es una lección aprendida: la validación acepta una referencia que la microVM después no puede resolver. Esto ya está probado en el template de Craftech; para Alephee cambia el slug y la cuenta.",
     "ask": "",
     "close": "",
-    "transition": "Decisión 5."
+    "transition": "La infraestructura completa, en un dibujo."
    },
    "minutes": 4,
    "code": {
@@ -764,7 +1119,365 @@
    }
   },
   {
-   "id": "s23",
+   "id": "s24",
+   "section": "diseno",
+   "title": "La infraestructura, de punta a punta.",
+   "kind": "diagram",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Mostrar todas las piezas de AWS y separar lo que hay de lo que falta",
+    "say": "Arriba, el camino del chat: el widget llama al BFF, que valida el token, aplica el guardrail de entrada y los topes, y encola. El worker invoca el Runtime, que llama a Bedrock y a las herramientas por el Gateway. Abajo a la derecha, punteado, el batch de catálogo: hoy corre en local contra Bedrock y su lugar en producción es la decisión 5. La franja de abajo es el monitoreo que trae el template: logs, trazas de punta a punta y un dashboard. Nada de esto está desplegado todavía para Alephee.",
+    "ask": "¿Qué piezas ya tiene Alephee y cuáles reemplazaríamos?",
+    "close": "",
+    "transition": "Decisión 5."
+   },
+   "minutes": 2,
+   "diagram": {
+    "w": 1200,
+    "h": 530,
+    "nodes": [
+     {
+      "x": 16,
+      "y": 60,
+      "w": 170,
+      "h": 84,
+      "title": "Widget de chat",
+      "sub": [
+       "apps/web",
+       "packages/widget"
+      ],
+      "tone": "dato"
+     },
+     {
+      "x": 216,
+      "y": 60,
+      "w": 190,
+      "h": 84,
+      "title": "BFF · Lambda",
+      "sub": [
+       "auth HMAC · topes",
+       "guardrail de entrada"
+      ],
+      "tone": "aws"
+     },
+     {
+      "x": 436,
+      "y": 60,
+      "w": 170,
+      "h": 84,
+      "title": "SQS FIFO",
+      "sub": [
+       "MensajesCola",
+       "con DLQ"
+      ],
+      "tone": "aws"
+     },
+     {
+      "x": 636,
+      "y": 60,
+      "w": 190,
+      "h": 84,
+      "title": "Worker · Lambda",
+      "sub": [
+       "InvokeAgentRuntime",
+       "timeout 3 min"
+      ],
+      "tone": "aws"
+     },
+     {
+      "x": 866,
+      "y": 40,
+      "w": 318,
+      "h": 124,
+      "title": "AgentCore Runtime",
+      "sub": [
+       "contenedor ARM64 desde ECR",
+       "core/server.py · /invocations",
+       "ChatWorkflow (catálogo pendiente)"
+      ],
+      "tone": "aws"
+     },
+     {
+      "x": 216,
+      "y": 210,
+      "w": 190,
+      "h": 84,
+      "title": "DynamoDB",
+      "sub": [
+       "Messages · Sessions",
+       "Limits"
+      ],
+      "tone": "aws"
+     },
+     {
+      "x": 636,
+      "y": 210,
+      "w": 190,
+      "h": 84,
+      "title": "AgentCore Gateway",
+      "sub": [
+       "tools MCP · SigV4"
+      ],
+      "tone": "aws"
+     },
+     {
+      "x": 866,
+      "y": 210,
+      "w": 318,
+      "h": 84,
+      "title": "Amazon Bedrock",
+      "sub": [
+       "Claude Sonnet 5 · us-east-1",
+       "guardrail de salida"
+      ],
+      "tone": "aws"
+     },
+     {
+      "x": 226,
+      "y": 360,
+      "w": 180,
+      "h": 76,
+      "title": "API del cliente",
+      "sub": [
+       "target OpenAPI (demo)"
+      ],
+      "tone": "aws"
+     },
+     {
+      "x": 436,
+      "y": 360,
+      "w": 180,
+      "h": 76,
+      "title": "Knowledge Base",
+      "sub": [
+       "S3 Vectors · ToolDocumentos"
+      ],
+      "tone": "aws"
+     },
+     {
+      "x": 641,
+      "y": 360,
+      "w": 180,
+      "h": 76,
+      "title": "Escalamiento",
+      "sub": [
+       "ToolEscalamiento"
+      ],
+      "tone": "aws"
+     },
+     {
+      "x": 866,
+      "y": 350,
+      "w": 318,
+      "h": 96,
+      "title": "Batch de catálogo · hoy local",
+      "sub": [
+       "scripts/correr.sh → V1 / V2 / V3",
+       "Converse directo, perfil SSO sandbox",
+       "producción: a decidir (decisión 5)"
+      ],
+      "tone": "pendiente"
+     },
+     {
+      "x": 16,
+      "y": 466,
+      "w": 1168,
+      "h": 60,
+      "title": "Observabilidad · CloudWatch y X-Ray",
+      "sub": [
+       "logs de Lambdas y Runtime · traza BFF → cola → worker → Runtime · dashboard AWS/Bedrock-AgentCore · muestreo 5 %"
+      ],
+      "tone": "base"
+     }
+    ],
+    "edges": [
+     {
+      "points": [
+       [
+        186,
+        102
+       ],
+       [
+        216,
+        102
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        406,
+        102
+       ],
+       [
+        436,
+        102
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        606,
+        102
+       ],
+       [
+        636,
+        102
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        826,
+        102
+       ],
+       [
+        866,
+        102
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        311,
+        144
+       ],
+       [
+        311,
+        210
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        1025,
+        164
+       ],
+       [
+        1025,
+        210
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        900,
+        164
+       ],
+       [
+        900,
+        187
+       ],
+       [
+        731,
+        187
+       ],
+       [
+        731,
+        210
+       ]
+      ],
+      "label": "tools/call",
+      "dashed": false,
+      "at": [
+       815,
+       181
+      ]
+     },
+     {
+      "points": [
+       [
+        731,
+        294
+       ],
+       [
+        731,
+        360
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        731,
+        326
+       ],
+       [
+        526,
+        326
+       ],
+       [
+        526,
+        360
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        731,
+        326
+       ],
+       [
+        316,
+        326
+       ],
+       [
+        316,
+        360
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        1025,
+        350
+       ],
+       [
+        1025,
+        294
+       ]
+      ],
+      "label": "Converse",
+      "dashed": false
+     }
+    ],
+    "caption": "Es la infraestructura del template en infra/sst, desplegable con SST. Para Alephee todavía no está desplegada: en la cuenta sandbox solo hay otro Runtime. AgentCore Memory se sacó del stack."
+   }
+  },
+  {
+   "id": "s25",
    "section": "diseno",
    "title": "¿Dónde corre?",
    "kind": "decision",
@@ -797,7 +1510,7 @@
    }
   },
   {
-   "id": "s24",
+   "id": "s26",
    "section": "diseno",
    "title": "Elegir el modelo: qué pesa en este caso.",
    "kind": "cards",
@@ -824,7 +1537,7 @@
    "minutes": 3
   },
   {
-   "id": "s25",
+   "id": "s27",
    "section": "diseno",
    "title": "Qué hay en Bedrock.",
    "kind": "table",
@@ -874,7 +1587,7 @@
    "minutes": 3
   },
   {
-   "id": "s26",
+   "id": "s28",
    "section": "diseno",
    "title": "El único módulo que sabe de Bedrock.",
    "kind": "code",
@@ -907,7 +1620,7 @@
    }
   },
   {
-   "id": "s27",
+   "id": "s29",
    "section": "diseno",
    "title": "¿Qué modelo?",
    "kind": "decision",
@@ -940,7 +1653,7 @@
    }
   },
   {
-   "id": "s28",
+   "id": "s30",
    "section": "diseno",
    "title": "Stack y harness.",
    "kind": "cards",
@@ -966,7 +1679,7 @@
    "minutes": 3
   },
   {
-   "id": "s29",
+   "id": "s31",
    "section": "diseno",
    "title": "Un Workflow de un paso.",
    "kind": "code",
@@ -998,7 +1711,7 @@
    }
   },
   {
-   "id": "s30",
+   "id": "s32",
    "section": "diseno",
    "title": "¿Con qué lo construimos?",
    "kind": "decision",
@@ -1031,7 +1744,7 @@
    }
   },
   {
-   "id": "s31",
+   "id": "s33",
    "section": "diseno",
    "title": "¿Cuándo está bien hecho?",
    "kind": "cards",
@@ -1057,7 +1770,7 @@
    "minutes": 3
   },
   {
-   "id": "s32",
+   "id": "s34",
    "section": "diseno",
    "title": "La métrica en código.",
    "kind": "code",
@@ -1090,7 +1803,7 @@
    }
   },
   {
-   "id": "s33",
+   "id": "s35",
    "section": "diseno",
    "title": "¿Cuál es el número que aceptamos?",
    "kind": "decision",
@@ -1123,7 +1836,7 @@
    }
   },
   {
-   "id": "s34",
+   "id": "s36",
    "section": "diseno",
    "title": "¿Con qué dataset?",
    "kind": "decision",
@@ -1156,7 +1869,7 @@
    }
   },
   {
-   "id": "s35",
+   "id": "s37",
    "section": "v1",
    "title": "V1 · el agente responde.",
    "kind": "divider",
@@ -1178,7 +1891,7 @@
    "minutes": 1
   },
   {
-   "id": "s36",
+   "id": "s38",
    "section": "v1",
    "title": "Una llamada, una entrega.",
    "kind": "code",
@@ -1211,7 +1924,7 @@
    }
   },
   {
-   "id": "s37",
+   "id": "s39",
    "section": "v1",
    "title": "Demo · un caso real por V1.",
    "kind": "demo",
@@ -1243,7 +1956,7 @@
    }
   },
   {
-   "id": "s38",
+   "id": "s40",
    "section": "v1",
    "title": "Qué falló en V1 y qué capa lo resuelve.",
    "kind": "table",
@@ -1293,7 +2006,7 @@
    "minutes": 3
   },
   {
-   "id": "s39",
+   "id": "s41",
    "section": "v2",
    "title": "V2 · herramientas.",
    "kind": "divider",
@@ -1315,7 +2028,7 @@
    "minutes": 1
   },
   {
-   "id": "s40",
+   "id": "s42",
    "section": "v2",
    "title": "Una herramienta es una función que el modelo pide y el código ejecuta.",
    "kind": "flow",
@@ -1342,7 +2055,7 @@
    "minutes": 3
   },
   {
-   "id": "s41",
+   "id": "s43",
    "section": "v2",
    "title": "La fuente se abstrae; las herramientas no cambian.",
    "kind": "code",
@@ -1375,7 +2088,7 @@
    }
   },
   {
-   "id": "s42",
+   "id": "s44",
    "section": "v2",
    "title": "Una herramienta bien descrita.",
    "kind": "code",
@@ -1408,7 +2121,7 @@
    }
   },
   {
-   "id": "s43",
+   "id": "s45",
    "section": "v2",
    "title": "¿Qué decide la tabla y qué decide el agente?",
    "kind": "decision",
@@ -1441,7 +2154,7 @@
    }
   },
   {
-   "id": "s44",
+   "id": "s46",
    "section": "v2",
    "title": "El loop tiene un límite y una salida garantizada.",
    "kind": "code",
@@ -1474,7 +2187,7 @@
    }
   },
   {
-   "id": "s45",
+   "id": "s47",
    "section": "v2",
    "title": "Caché de prompt: lo estático se paga una vez.",
    "kind": "code",
@@ -1506,7 +2219,7 @@
    }
   },
   {
-   "id": "s46",
+   "id": "s48",
    "section": "v2",
    "title": "Costo por producto, medido.",
    "kind": "table",
@@ -1549,7 +2262,7 @@
    "minutes": 3
   },
   {
-   "id": "s47",
+   "id": "s49",
    "section": "v2",
    "title": "¿Cuánto puede costar?",
    "kind": "decision",
@@ -1582,7 +2295,7 @@
    }
   },
   {
-   "id": "s48",
+   "id": "s50",
    "section": "v2",
    "title": "Demo · el mismo caso por V2.",
    "kind": "demo",
@@ -1614,7 +2327,7 @@
    }
   },
   {
-   "id": "s49",
+   "id": "s51",
    "section": "v3",
    "title": "V3 · control.",
    "kind": "divider",
@@ -1631,12 +2344,369 @@
     "say": "La V2 consulta pero no está obligada a respetar lo que consulta. La V3 agrega tres cosas: guardrails en código que revisan cada entrega, memoria de correcciones del equipo de catálogo y caché por SKU para que el mismo producto no se mapee dos veces. Es la versión que reemplaza el publicar sin atributos.",
     "ask": "",
     "close": "",
-    "transition": "Qué es un guardrail acá."
+    "transition": "El agente completo, en un dibujo."
    },
    "minutes": 1
   },
   {
-   "id": "s50",
+   "id": "s52",
+   "section": "v3",
+   "title": "El agente por dentro: código y modelo.",
+   "kind": "diagram",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Ver las tres versiones como capas de un mismo flujo",
+    "say": "Verde es código determinista; violeta, el modelo. La categoría sale de la tabla antes de llamar al modelo; si no hay referencia, el flujo termina con un faltante explícito. Si el SKU ya se mapeó, sale de la caché. El modelo pide herramientas en un loop acotado y entrega; el guardrail revisa y, si hay problemas, devuelve la lista para una sola ronda de corrección. La red final limpia lo que siga mal. V1 era solo la caja violeta; V2 sumó las herramientas.",
+    "ask": "¿Qué caja sacarían a código si pudieran?",
+    "close": "",
+    "transition": "Qué es un guardrail acá."
+   },
+   "minutes": 3,
+   "diagram": {
+    "w": 1200,
+    "h": 470,
+    "nodes": [
+     {
+      "x": 500,
+      "y": 16,
+      "w": 342,
+      "h": 116,
+      "title": "Herramientas · código",
+      "sub": [
+       "buscar_categoria · atributos_del_canal",
+       "buscar_atributos_referencia",
+       "buscar_correcciones (V3)"
+      ],
+      "tone": "codigo"
+     },
+     {
+      "x": 880,
+      "y": 32,
+      "w": 304,
+      "h": 84,
+      "title": "FuenteCatalogo",
+      "sub": [
+       "hoy: archivos de data/",
+       "mañana: lo que exponga Alephee"
+      ],
+      "tone": "dato"
+     },
+     {
+      "x": 16,
+      "y": 200,
+      "w": 130,
+      "h": 84,
+      "title": "Producto",
+      "sub": [
+       "MapeoStart",
+       "SKU + categoría"
+      ],
+      "tone": "dato"
+     },
+     {
+      "x": 176,
+      "y": 200,
+      "w": 170,
+      "h": 84,
+      "title": "Categoría por tabla",
+      "sub": [
+       "reference_category",
+       "en código (V3)"
+      ],
+      "tone": "codigo"
+     },
+     {
+      "x": 376,
+      "y": 200,
+      "w": 150,
+      "h": 84,
+      "title": "Caché (V3)",
+      "sub": [
+       "SKU + categoría",
+       "legacy"
+      ],
+      "tone": "codigo"
+     },
+     {
+      "x": 556,
+      "y": 186,
+      "w": 230,
+      "h": 112,
+      "title": "Claude Sonnet 5",
+      "sub": [
+       "decide qué consultar",
+       "hasta 6 rondas",
+       "la última: solo entregar"
+      ],
+      "tone": "modelo"
+     },
+     {
+      "x": 812,
+      "y": 200,
+      "w": 180,
+      "h": 84,
+      "title": "Guardrail (V3)",
+      "sub": [
+       "revisar: dominio,",
+       "duplicados, obligatorios"
+      ],
+      "tone": "codigo"
+     },
+     {
+      "x": 1012,
+      "y": 200,
+      "w": 172,
+      "h": 84,
+      "title": "Red final (V3)",
+      "sub": [
+       "limpiar: descarta",
+       "y marca missing"
+      ],
+      "tone": "codigo"
+     },
+     {
+      "x": 176,
+      "y": 370,
+      "w": 170,
+      "h": 84,
+      "title": "Sin referencia",
+      "sub": [
+       "missing: category",
+       "fin, sin modelo"
+      ],
+      "tone": "alerta"
+     },
+     {
+      "x": 376,
+      "y": 370,
+      "w": 150,
+      "h": 84,
+      "title": "Guardada",
+      "sub": [
+       "sale sin llamar",
+       "al modelo"
+      ],
+      "tone": "dato"
+     },
+     {
+      "x": 1012,
+      "y": 370,
+      "w": 172,
+      "h": 84,
+      "title": "Publicación",
+      "sub": [
+       "MapeoDone",
+       "se guarda en caché"
+      ],
+      "tone": "dato"
+     }
+    ],
+    "edges": [
+     {
+      "points": [
+       [
+        146,
+        242
+       ],
+       [
+        176,
+        242
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        346,
+        242
+       ],
+       [
+        376,
+        242
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        526,
+        242
+       ],
+       [
+        556,
+        242
+       ]
+      ],
+      "label": "miss",
+      "dashed": false,
+      "at": [
+       541,
+       226
+      ]
+     },
+     {
+      "points": [
+       [
+        786,
+        242
+       ],
+       [
+        812,
+        242
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        992,
+        242
+       ],
+       [
+        1012,
+        242
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        640,
+        186
+       ],
+       [
+        640,
+        132
+       ]
+      ],
+      "label": "pide",
+      "dashed": false,
+      "at": [
+       612,
+       164
+      ]
+     },
+     {
+      "points": [
+       [
+        702,
+        132
+       ],
+       [
+        702,
+        186
+       ]
+      ],
+      "label": "resultado",
+      "dashed": false,
+      "at": [
+       744,
+       164
+      ]
+     },
+     {
+      "points": [
+       [
+        842,
+        74
+       ],
+       [
+        880,
+        74
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        261,
+        284
+       ],
+       [
+        261,
+        370
+       ]
+      ],
+      "label": "no está",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        451,
+        284
+       ],
+       [
+        451,
+        370
+       ]
+      ],
+      "label": "hit",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        1098,
+        284
+       ],
+       [
+        1098,
+        370
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        902,
+        284
+       ],
+       [
+        902,
+        336
+       ],
+       [
+        671,
+        336
+       ],
+       [
+        671,
+        298
+       ]
+      ],
+      "label": "problemas: una ronda para corregir",
+      "dashed": true,
+      "at": [
+       786,
+       356
+      ]
+     }
+    ],
+    "caption": "V1 es solo la caja del modelo con la herramienta entregar_publicacion. V2 suma el loop y las herramientas. V3 suma la categoría por tabla, la caché, las correcciones y los guardrails."
+   }
+  },
+  {
+   "id": "s53",
    "section": "v3",
    "title": "Guardrail: una comprobación en código, no otra instrucción.",
    "kind": "compare",
@@ -1662,7 +2732,7 @@
    "minutes": 3
   },
   {
-   "id": "s51",
+   "id": "s54",
    "section": "v3",
    "title": "Qué mira el validador.",
    "kind": "code",
@@ -1696,7 +2766,7 @@
    }
   },
   {
-   "id": "s52",
+   "id": "s55",
    "section": "v3",
    "title": "La red final no inventa: descarta y marca.",
    "kind": "code",
@@ -1729,7 +2799,7 @@
    }
   },
   {
-   "id": "s53",
+   "id": "s56",
    "section": "v3",
    "title": "¿Qué hace cuando no sabe?",
    "kind": "decision",
@@ -1762,7 +2832,7 @@
    }
   },
   {
-   "id": "s54",
+   "id": "s57",
    "section": "v3",
    "title": "Memoria: correcciones del equipo de catálogo.",
    "kind": "cards",
@@ -1788,7 +2858,7 @@
    "minutes": 3
   },
   {
-   "id": "s55",
+   "id": "s58",
    "section": "v3",
    "title": "Una corrección vacía la caché.",
    "kind": "code",
@@ -1821,7 +2891,7 @@
    }
   },
   {
-   "id": "s56",
+   "id": "s59",
    "section": "v3",
    "title": "Mismo SKU, misma salida.",
    "kind": "code",
@@ -1855,7 +2925,7 @@
    }
   },
   {
-   "id": "s57",
+   "id": "s60",
    "section": "v3",
    "title": "¿Cómo garantizamos determinismo?",
    "kind": "decision",
@@ -1888,7 +2958,7 @@
    }
   },
   {
-   "id": "s58",
+   "id": "s61",
    "section": "v3",
    "title": "Demo · corregir y repetir.",
    "kind": "demo",
@@ -1920,7 +2990,7 @@
    }
   },
   {
-   "id": "s59",
+   "id": "s62",
    "section": "prueba",
    "title": "La prueba.",
    "kind": "divider",
@@ -1942,7 +3012,7 @@
    "minutes": 1
   },
   {
-   "id": "s60",
+   "id": "s63",
    "section": "prueba",
    "title": "Resultados (se completan en vivo).",
    "kind": "table",
@@ -2009,7 +3079,7 @@
    "minutes": 3
   },
   {
-   "id": "s61",
+   "id": "s64",
    "section": "prueba",
    "title": "Cómo leer la tabla.",
    "kind": "cards",
@@ -2035,7 +3105,7 @@
    "minutes": 3
   },
   {
-   "id": "s62",
+   "id": "s65",
    "section": "prueba",
    "title": "Camino a producción.",
    "kind": "flow",
@@ -2062,7 +3132,7 @@
    "minutes": 3
   },
   {
-   "id": "s63",
+   "id": "s66",
    "section": "prueba",
    "title": "Las 13 decisiones (1 a 7).",
    "kind": "table",
@@ -2127,7 +3197,7 @@
    "minutes": 3
   },
   {
-   "id": "s64",
+   "id": "s67",
    "section": "prueba",
    "title": "Las 13 decisiones (8 a 13).",
    "kind": "table",
@@ -2187,7 +3257,7 @@
    "minutes": 3
   },
   {
-   "id": "s65",
+   "id": "s68",
    "section": "prueba",
    "title": "Quién hace qué, para cuándo.",
    "kind": "divider",
