@@ -1,14 +1,14 @@
 # Guion del warroom · por diapositiva
 
-Versión del 29/09/2026 · 63 diapositivas · 7 secciones. Fuente única: `docs/warroom/diapositivas.json`. Se regenera con `python3 scripts/generar_presentacion.py`.
+Versión del 30/09/2026 · 64 diapositivas · 6 bloques · 13 decisiones. Diseño en `warroom/diseno-presentacion.md`; fuentes externas en `warroom/fuentes.md`. Fuente única: `docs/warroom/diapositivas.json`. Se regenera con `python3 scripts/generar_presentacion.py`.
 
-[Presentación interactiva](presentacion-warroom.html) · [PDF estático](presentacion-warroom.pdf) · [Ficha de participantes](warroom/ficha-participantes.md)
+[Presentación interactiva](presentacion-warroom.html) · [PDF estático](presentacion-warroom.pdf)
 
 ## Dinámica acordada
 
-Gastón conduce una construcción compartida. En parejas, el equipo toma decisiones, ejecuta casos y valida resultados. No se exige programar un agente completo ni rotar a quien conduce. Si falla un entorno, la pareja dirige su prueba en la pantalla principal. Pedir devoluciones de participantes remotos.
+Gastón conduce. El deck es una cadena de 13 decisiones de diseño: cada tema tiene una lámina de concepto, una de código leído del repositorio y una de decisión que se cierra en la sala antes de seguir. V1, V2 y V3 son los puntos donde lo decidido se compila y se corre. Pedir la opinión de quienes están remotos antes de cerrar cada decisión.
 
-Las selecciones, respuestas revelables y temporizadores son ayudas locales de facilitación. No reciben votos remotos ni ejecutan el agente. Las pruebas reales se corren en el repositorio. Los ejemplos DEMO-01 usan reglas e IDs inventados; los resultados históricos siguen rotulados como anteriores a las correcciones nuevas.
+Los fragmentos de código se leen del repositorio al generar el deck: si el código cambia, hay que regenerar. La propuesta de cada decisión está plegada y se abre después de escuchar al grupo; la decisión final se escribe en `decisiones/NN-titulo.md`, no en el deck. Las cifras del 28/09 son anteriores a las correcciones de esa fecha; las columnas de la prueba se completan con la corrida del día.
 
 ## Mapa y tiempos
 
@@ -19,31 +19,31 @@ Las selecciones, respuestas revelables y temporizadores son ayudas locales de fa
 | 03 · V1 · el agente responde | 11:15–12:30 | 34–37 | Construir, correr y leer la primera versión |
 | 04 · V2 · herramientas | 13:15–14:45 | 38–47 | Decidir qué resuelve la tabla y conectarla |
 | 05 · V3 · control | 15:00–16:15 | 48–57 | Decidir qué pasa cuando el agente no sabe |
-| 06 · La prueba y el camino | 16:15–17:00 | 58–63 | Medir contra el criterio y repartir lo que sigue |
+| 06 · La prueba y el camino | 16:15–17:00 | 58–64 | Medir contra el criterio y repartir lo que sigue |
 
 Pausa 11:00–11:15; almuerzo 12:30–13:15; pausa 14:45–15:00. El bloque V3 incluye preparación de comparación 16:00–16:15. Margen de preguntas 17:00–17:30 sujeto a confirmación logística.
 
-Los minutos por diapositiva son una pauta para explicaciones y consignas, no un cronograma adicional: el resto de cada bloque se dedica a construcción compartida, demos y discusión. Preservar la hora de cierre. Si falta tiempo, abreviar teoría ya comprendida y abrir las respuestas directamente; mantener prácticas y conclusiones.
+Los minutos por diapositiva son una pauta. Preservar la hora de cierre. Si el bloque 2 se pasa, fusionar las láminas de criterios de modelo y catálogo de Bedrock y acortar la de stack; nunca saltar una decisión.
 
 ## Distribución completa dentro de cada bloque
 
-| Bloque | Diapositivas, consignas y demos | Trabajo reservado | Total |
+| Bloque | Diapositivas y demos | Trabajo reservado | Total |
 |---|---:|---|---:|
 | 01 · Punto de partida | 29 min | Dolores del equipo y preguntas: 10 min | 39 min |
-| 02 · Diseñar el agente | 85 min | Pizarra: tipos de aplicación y dónde corre: 15 min; Pausa 11:00: 15 min | 115 min |
+| 02 · Diseñar el agente | 85 min | Pizarra: dudas de AgentCore para Juan David: 5 min; Pausa 11:00: 15 min | 105 min |
 | 03 · V1 · el agente responde | 13 min | Corridas sobre otros casos: 25 min | 38 min |
 | 04 · V2 · herramientas | 36 min | Corrida del lote y lectura: 25 min | 61 min |
 | 05 · V3 · control | 36 min | Corrida del lote con V3: 20 min | 56 min |
-| 06 · La prueba y el camino | 14 min | Documentar decisiones y responsables: 15 min | 29 min |
+| 06 · La prueba y el camino | 17 min | Documentar decisiones y responsables: 15 min | 32 min |
 
-Las consignas y puestas en común ya están incluidas en los minutos de sus diapositivas. Las reservas son para trabajo adicional dentro del bloque; no duplican la demo indicada en una diapositiva. Son pautas ajustables de esta jornada, no reglas prescritas por los libros.
+Las reservas son para pizarra, corridas del lote y preguntas dentro del bloque. Son pautas ajustables de esta jornada.
 
 ## Preparación del facilitador
 
-- Elegir tres casos guiados y asignar IDs del dataset a las parejas; no confundirlos con DEMO-01.
+- Caso guía de las demos: `error-88904447` (Código OEM = ABS Plastic). Confirmarlo con el grupo en la decisión 9.
 - Validar entornos y acceso al modelo antes del día. Tener una corrida guardada identificada como respaldo.
 - Para un caso: `scripts/correr.sh --version v1 --datos real --caso <id>`; cambiar versión para comparar el mismo caso.
-- En V3, usar copias o tests locales para alterar entradas: no modificar `data/real` ni el lote de comparación.
+- En V3, la corrección de la demo se carga con `scripts/corregir.sh`; no modificar `data/real` ni el lote de comparación. Exportar el PDF con `uv run --with reportlab python scripts/exportar_presentacion_pdf.py`.
 - Registrar decisiones en `decisiones/`: contexto, opciones, decisión y razonamiento. No cambiar expected para favorecer una versión.
 - Ensayar el lote durante los bloques. La latencia histórica de V3 implica unos 12 minutos por 30 productos; las nuevas mediciones pueden variar.
 
@@ -1526,11 +1526,11 @@ scripts/correr.sh --version v3 --datos real --caso error-88904447 --cache
 
 **Transición:** Las trece decisiones.
 
-### 62 · Las 13 decisiones.
+### 62 · Las 13 decisiones (1 a 7).
 
 **Sección:** 06 · La prueba y el camino · **Pauta:** 3 min · **Tipo:** table
 
-**Objetivo:** Cerrar con el registro completo
+**Objetivo:** Cerrar con el registro completo: las decisiones de la mañana
 
 **En pantalla:**
 
@@ -1542,6 +1542,20 @@ scripts/correr.sh --version v3 --datos real --caso error-88904447 --cache
 - 5 / Dónde corre: local hoy, chat en AgentCore, batch a medir / decisiones/05-donde-corre.md
 - 6 / Modelo: Claude Sonnet 5; Haiku 4.5 a probar / decisiones/06-modelo.md
 - 7 / Stack: Python + LlamaIndex Workflows + BedrockConverse / decisiones/07-stack.md
+
+**Temas para hablar:** Cada archivo tiene contexto, opciones, decisión y razonamiento. Lo que quedó distinto a la propuesta se escribe tal como se decidió en la sala.
+
+**Transición:** Las de la tarde.
+
+### 63 · Las 13 decisiones (8 a 13).
+
+**Sección:** 06 · La prueba y el camino · **Pauta:** 3 min · **Tipo:** table
+
+**Objetivo:** Cerrar con el registro completo: las decisiones de la tarde
+
+**En pantalla:**
+
+- N / Decisión / Archivo
 - 8 / Criterio de éxito: el número de la pizarra / decisiones/08-criterio-de-exito.md
 - 9 / Dataset: 30 reales con mock rotulado / decisiones/09-dataset.md
 - 10 / La tabla manda; el agente elige valores y lo no cubierto / decisiones/10-tabla-vs-agente.md
@@ -1549,11 +1563,11 @@ scripts/correr.sh --version v3 --datos real --caso error-88904447 --cache
 - 12 / Cuando no sabe: faltante explícito, nunca inventar / decisiones/12-cuando-no-sabe.md
 - 13 / Determinismo: caché por SKU + canal con invalidación / decisiones/13-determinismo-y-cache.md
 
-**Temas para hablar:** Cada archivo tiene contexto, opciones, decisión y razonamiento. Lo que quedó distinto a la propuesta se escribe tal como se decidió en la sala. Este registro es el método repetible: el próximo caso de uso de Alephee arranca por estas trece preguntas.
+**Temas para hablar:** Este registro es el método repetible: el próximo caso de uso de Alephee arranca por estas trece preguntas, con las respuestas de hoy como punto de partida.
 
 **Transición:** Quién hace qué.
 
-### 63 · Quién hace qué, para cuándo.
+### 64 · Quién hace qué, para cuándo.
 
 **Sección:** 06 · La prueba y el camino · **Pauta:** 1 min · **Tipo:** divider
 
@@ -1569,4 +1583,4 @@ scripts/correr.sh --version v3 --datos real --caso error-88904447 --cache
 
 ## Fundamento editorial y revisión
 
-Ver [revisión de los dos agentes](warroom/revision-agentes.md). Se aplican principios de claridad, audiencia y explicación de Garr Reynolds, Nancy Duarte y Lee LeFever; el número de diapositivas, los tiempos y las parejas son decisiones de esta sesión.
+Diseño de esta versión: [diseno-presentacion.md](warroom/diseno-presentacion.md). Revisión editorial de la versión anterior: [revision-agentes.md](warroom/revision-agentes.md).

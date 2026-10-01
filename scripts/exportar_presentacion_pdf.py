@@ -65,7 +65,7 @@ def make_blocks(s,k):
     if s['table']:
         t=s['table'];rows=[t['headers'],*t['rows']]
         values=[[para(v,15*k,ACCENT if i==0 else INK,i==0 or j==0) for j,v in enumerate(row)] for i,row in enumerate(rows)]
-        table=Table(values,colWidths=[320,116,116,116,116])
+        n=len(t['headers']);table=Table(values,colWidths=[320]+[(W-100-320)//(n-1)]*(n-1) if n>1 else [W-100])
         table.setStyle(TableStyle([('BACKGROUND',(0,0),(-1,0),PANEL),('LINEBELOW',(0,0),(-1,-1),.5,colors.HexColor('#365166')),('VALIGN',(0,0),(-1,-1),'MIDDLE'),('TOPPADDING',(0,0),(-1,-1),12*k),('BOTTOMPADDING',(0,0),(-1,-1),12*k)]))
         b.append((table,15*k))
     if s['exercise']:

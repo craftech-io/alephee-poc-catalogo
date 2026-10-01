@@ -1,4 +1,43 @@
-# craftech-ai-chat
+# War Room · Alephee × Craftech × AWS
+
+Prototipo local para mapear categoría y atributos del catálogo de Alephee a Shopee.
+El recorrido del warroom se ejecuta en batch; la integración del catálogo al chat
+todavía está pendiente.
+
+## Material para la sesión
+
+- [Presentación interactiva: 64 diapositivas en 6 bloques](docs/presentacion-warroom.html): una cadena de 13 decisiones de diseño con el código del repo en pantalla. Abrir en el navegador; menú por bloque, propuestas de decisión plegadas y notas con **N**. Diseño en [diseno-presentacion.md](docs/warroom/diseno-presentacion.md).
+- [PDF estático](docs/presentacion-warroom.pdf): 64 páginas, con las propuestas de decisión visibles y sin notas del expositor.
+- [Guion del facilitador](docs/guion-warroom-propuesto.md): agenda, notas por lámina, código y demos.
+- [Fuentes externas verificadas](docs/warroom/fuentes.md) (AgentCore, Bedrock, caché de prompts, API de Alephee).
+- [Decisiones](decisiones/): 13 archivos con contexto y opciones; la decisión se completa en la sala.
+- [Revisión de los dos agentes y fuentes de los libros](docs/warroom/revision-agentes.md).
+- [Revisión y límites de la evidencia](docs/revision-warroom.md).
+
+La presentación funciona sin conexión y usa un **harness de desarrollo genérico**, sin proveedor obligatorio. La fuente de contenido es `docs/warroom/diapositivas.json`.
+
+Regenerar HTML y guion: `python3 scripts/generar_presentacion.py` (lee los fragmentos de código del repo y falla si un rango o símbolo no coincide). Tests: `uv run pytest scripts/test_generar_presentacion.py && node --test scripts/warroom.test.mjs`. Exportar el PDF: `uv run --with reportlab python scripts/exportar_presentacion_pdf.py`.
+
+## Ejecutar el catálogo
+
+```bash
+uv sync
+uv run pytest core/tests/test_catalogo*.py -q
+scripts/correr.sh --version actual --datos real  # evalúa publicaciones exportadas, sin modelo
+aws sso login --profile sandbox
+scripts/correr.sh --version v3 --datos real      # llama al modelo en Bedrock
+```
+
+Los 30 productos y las tablas de referencia son reales. El esquema por categoría
+y las respuestas esperadas son simulados: los resultados no equivalen a aceptación
+por Shopee. Las cifras del deck son históricas, anteriores a las correcciones de
+V3 de esta revisión; hace falta una nueva corrida para medir su impacto.
+
+V3 fija la categoría desde la referencia, comprueba la correspondencia entre ID y
+nombre del valor y hace visibles los obligatorios faltantes. Estos controles no
+verifican toda la evidencia semántica ni implementan el circuito de publicación.
+
+## Base de chat e infraestructura
 
 Template de chatbot + agent core sobre Amazon Bedrock AgentCore. La idea es
 que un cliente lo adopte como punto de partida para su propio chat: el core

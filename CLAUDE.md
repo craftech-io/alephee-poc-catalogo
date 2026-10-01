@@ -1,9 +1,19 @@
 # War Room Alephee × Craftech × AWS
 
 > Contexto de trabajo para construir, en un día, el agente que mapea categorías y atributos de un producto del catálogo de Alephee a una publicación de canal (Shopee).
-> Última actualización: 2026-09-28 (Gastón Zarate).
+> Última actualización: 2026-09-30 (Gastón Zarate).
+
+## Revisión aplicada del material y V3 (28/09)
+
+- Presentación local: `docs/presentacion-warroom.html`, **64 diapositivas en 6 bloques** organizadas como una **cadena de 13 decisiones de diseño**, cada una con lámina de concepto, lámina de código leído del repo (tipo `code`: archivo + líneas + símbolo, el generador falla si no coinciden) y lámina de decisión (30/09). Fuente: `docs/warroom/diapositivas.json`; diseño en `docs/warroom/diseno-presentacion.md`; fuentes externas verificadas en `docs/warroom/fuentes.md`; generadores en `scripts/generar_presentacion.py` (tests en `scripts/test_generar_presentacion.py`) y `scripts/exportar_presentacion_pdf.py` (`uv run --with reportlab python …`). Los quizzes y consignas en parejas del 29/09 se quitaron; quedan tres demos y la prueba final.
+- Guion: `docs/guion-warroom-propuesto.md`; diagnóstico histórico y cambios: `docs/revision-warroom.md`.
+- V3 ahora fija la categoría desde la tabla por código y detiene el mapeo con faltante explícito cuando no hay referencia o esquema. Valida ID/nombre coherentes, quita faltantes ya resueltos y revisa las entradas de caché antes de reutilizarlas.
+- Los resultados de las secciones siguientes son **anteriores a estas correcciones**. No atribuirles una mejora nueva sin otra corrida. El esquema y el expected siguen siendo mock; el chat aún no integra el catálogo.
+- El deck original de Claude no estuvo disponible durante esta revisión. El HTML es una nueva versión local, no una edición de aquel artefacto.
 
 ## Datos del evento
+
+**Dinámica acordada con Gastón (29/09):** una construcción compartida conducida por Gastón en la pantalla principal. Participantes en parejas toman decisiones, ejecutan casos y validan resultados mediante ejercicios cortos por bloque. Sin programación independiente de un agente completo ni rotación obligatoria de quien conduce. Consignas en `docs/guion-warroom-propuesto.md`.
 
 | | |
 |---|---|
@@ -30,7 +40,7 @@
 - Luciano Serra: experto en IA.
 
 **AWS**
-- Maria Alejandra "Mariale" Cotes (mcotes@amazon.com): Account Manager Startups. Sala, licencias de Kiro, merch.
+- Maria Alejandra "Mariale" Cotes (mcotes@amazon.com): Account Manager Startups. Sala y coordinación de accesos para la jornada.
 - Juan David Novoa (jdnovoa@amazon.com): SA de AWS. Propuso el flujo mixto determinista + agéntico y el whiteboarding de criterios de éxito.
 
 ## Qué es Alephee
@@ -97,7 +107,7 @@ El archivo tiene 5 prompts en TypeScript. Los tres primeros son el alcance del w
 ## Decisiones ya tomadas (antes del war room)
 1. Este proyecto es la **base arquitectónica**: el stack y la arquitectura agéntica se van a replicar en otros casos de uso de Alephee (25/08).
 2. **Flujo mixto:** lo que ya resuelven las tablas se hace con una capa determinista y **no pasa por el modelo**. El agente invoca esa capa como herramienta pero no razona sobre ella (25/08, a propuesta de Juan David).
-3. **Kiro** es la herramienta de desarrollo durante el día, con licencias pagas activadas vía AWS, para no consumir tokens del cliente (16/09).
+3. **Harness de desarrollo genérico** para conducir la construcción, sin proveedor obligatorio (actualizado por Gastón, 29/09). Verificar capacidades, accesos y presupuesto del entorno elegido; no asumir créditos ni licencias de un proveedor concreto.
 4. La solución se llama "agente" o "solución", no "bot", porque puede terminar siendo un flujo agéntico con más de un agente (16/09).
 5. La definición de la solución incluye whiteboarding de arquitectura, criterios de éxito y el dataset de prueba (16/09).
 6. **El agente corre sobre Amazon Bedrock con Claude Sonnet 5** (Gastón, 25/09).
@@ -107,17 +117,26 @@ El archivo tiene 5 prompts en TypeScript. Los tres primeros son el alcance del w
 10. **Interfaz: chat y batch.** En la sala se muestra el chat del template (widget + BFF + AgentCore) y el mismo workflow corre en batch sobre el dataset, que es como lo usaría Alephee en producción (Gastón, 28/09).
 11. **Clon:** remoto en GitHub `craftech-io`, auth del chat por **HMAC** para la demo, trazas **solo en CloudWatch** (Gastón, 28/09).
 
-## Decisiones a tomar en la sala (bloque 09:30)
-Cada decisión se presenta con opciones y consecuencias, y se cierra antes de pasar a la siguiente. Se documentan en `decisiones/` con el formato `NN-titulo.md` (contexto, opciones, decisión, razonamiento).
-1. ¿Qué hace y qué no hace? (un canal, una familia de productos)
-2. ¿Qué recibe y qué entrega? (contrato de entrada y salida por escrito)
-3. ¿Qué decide el agente y qué decide una tabla?
-4. ¿Qué hace cuando no sabe? (reemplaza el "publicar sin atributos" de hoy)
-5. ¿Cuándo está bien hecho? (un número acordado antes de escribir código)
-6. Criterios de éxito de la solución (incluir restricción de costo del modelo)
-7. Dataset de prueba (los 30 productos)
+## Decisiones a tomar en la sala (13, repartidas en la jornada)
+Cada decisión se presenta con opciones y consecuencias, y se cierra antes de pasar a la siguiente. Se documentan en `decisiones/NN-titulo.md` (contexto, opciones, propuesta, decisión, razonamiento, responsable); los 13 archivos ya existen con la decisión en blanco.
 
-Temas abiertos para el whiteboarding, que no están decididos: caché por SKU, gobernanza, seguridad e integración con Alephee (API pública para leer, acceso interno para escribir).
+| N | Decisión | Bloque | Archivo |
+|---|---|---|---|
+| 1 | ¿Qué hace y qué no hace? (un canal, una familia) | 09:00 | `decisiones/01-alcance.md` |
+| 2 | ¿Qué recibe y qué entrega? (`missing` y `rejected` con motivo) | 09:00 | `decisiones/02-contrato.md` |
+| 3 | ¿Single prompt, workflow, agente o multiagente? | 09:30 | `decisiones/03-tipo-de-aplicacion.md` |
+| 4 | ¿Cómo se garantiza el formato? (tool + Pydantic) | 09:30 | `decisiones/04-salida-estructurada.md` |
+| 5 | ¿Dónde corre? (local hoy; chat en AgentCore; batch a medir) | 09:30 | `decisiones/05-donde-corre.md` |
+| 6 | ¿Qué modelo? (Sonnet 5; Haiku 4.5 a probar) | 09:30 | `decisiones/06-modelo.md` |
+| 7 | ¿Con qué stack? | 09:30 | `decisiones/07-stack.md` |
+| 8 | ¿Cuándo está bien hecho? (número acordado antes de la V1) | 09:30 | `decisiones/08-criterio-de-exito.md` |
+| 9 | ¿Con qué dataset? | 09:30 | `decisiones/09-dataset.md` |
+| 10 | ¿Qué decide la tabla y qué decide el agente? | V2 | `decisiones/10-tabla-vs-agente.md` |
+| 11 | ¿Cuánto puede costar? | V2 | `decisiones/11-costo.md` |
+| 12 | ¿Qué hace cuando no sabe? (reemplaza "publicar sin atributos") | V3 | `decisiones/12-cuando-no-sabe.md` |
+| 13 | ¿Cómo garantizamos determinismo? (caché por SKU + canal) | V3 | `decisiones/13-determinismo-y-cache.md` |
+
+Temas abiertos que no se deciden hoy: gobernanza, seguridad, política de revisión de `missing` e integración con Alephee (API pública para leer, acceso interno para escribir).
 
 ## Agenda
 | Hora | Bloque |
@@ -240,8 +259,8 @@ resultados/                    salidas de cada corrida (ignorado por git)
 | Qué | Quién | Estado |
 |---|---|---|
 | Corregir la fecha en el temario (dice 14/10) | Jesus / Gastón | Pendiente |
-| Instructivo de instalación de Kiro a Alephee (vencía "una semana antes", o sea, alrededor del 24/09) | Craftech (Juan David o Lucas lo tienen) | **Verificar si ya se envió** |
-| Licencias de Kiro: 9 usuarios, falta el AWS Account ID donde se asignan los créditos | Mariale ↔ Rick | Esperando respuesta de Rick (24/09) |
+| Instructivo y prueba del harness de desarrollo elegido | Craftech | **Verificar entorno y accesos antes de la jornada** |
+| Accesos y presupuesto del harness de desarrollo | Craftech / Alephee | Confirmar según el entorno elegido; sin proveedor obligatorio |
 | Tablas de referencia exportadas y 30 productos de ejemplo | Alephee | **Hecho.** Importados a `data/real/` el 28/09 |
 | Atributos por categoría de Shopee | Gastón | **Mock generado** (28/09). Reemplazar por los reales si Alephee los pasa |
 | Salida esperada de los 30 reales | Gastón | **Mock generado** (28/09). Validar con catálogo si hay tiempo |
@@ -258,7 +277,7 @@ resultados/                    salidas de cada corrida (ignorado por git)
 | Crear el repo en `craftech-io` y primer commit | Gastón | Pendiente (esperando OK) |
 | Primer deploy a sandbox **desde local** (Docker buildx + ARM64), stage a definir | Gastón | Pendiente |
 | Preparar V2 y V3 | Gastón | **Hecho** (28/09), tag `v3` |
-| Presentación del war room | Gastón | **Hecho** (28/09): deck de 16 diapositivas en claude.ai; los resultados del agente se completan en vivo |
+| Presentación del war room | Gastón | **Rehecha** (30/09): 64 láminas, 13 decisiones, código del repo en pantalla; la tabla de la prueba se completa en vivo. Ensayar tiempos del bloque 2 |
 | Checkpoint Gastón / Jesus | Hoy 25/09, 10:30 | — |
 
 ## Contexto comercial (no es alcance del war room)

@@ -21,8 +21,8 @@
    "goal": "Tomar las decisiones que definen la V1",
    "work_reserve": [
     [
-     "Pizarra: tipos de aplicación y dónde corre",
-     15
+     "Pizarra: dudas de AgentCore para Juan David",
+     5
     ],
     [
      "Pausa 11:00",
@@ -2014,7 +2014,7 @@
   {
    "id": "s62",
    "section": "prueba",
-   "title": "Las 13 decisiones.",
+   "title": "Las 13 decisiones (1 a 7).",
    "kind": "table",
    "lead": "",
    "label": "",
@@ -2064,7 +2064,37 @@
       "7",
       "Stack: Python + LlamaIndex Workflows + BedrockConverse",
       "decisiones/07-stack.md"
-     ],
+     ]
+    ]
+   },
+   "notes": {
+    "objective": "Cerrar con el registro completo: las decisiones de la mañana",
+    "say": "Cada archivo tiene contexto, opciones, decisión y razonamiento. Lo que quedó distinto a la propuesta se escribe tal como se decidió en la sala.",
+    "ask": "",
+    "close": "",
+    "transition": "Las de la tarde."
+   },
+   "minutes": 3
+  },
+  {
+   "id": "s63",
+   "section": "prueba",
+   "title": "Las 13 decisiones (8 a 13).",
+   "kind": "table",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": {
+    "headers": [
+     "N",
+     "Decisión",
+     "Archivo"
+    ],
+    "rows": [
      [
       "8",
       "Criterio de éxito: el número de la pizarra",
@@ -2098,8 +2128,8 @@
     ]
    },
    "notes": {
-    "objective": "Cerrar con el registro completo",
-    "say": "Cada archivo tiene contexto, opciones, decisión y razonamiento. Lo que quedó distinto a la propuesta se escribe tal como se decidió en la sala. Este registro es el método repetible: el próximo caso de uso de Alephee arranca por estas trece preguntas.",
+    "objective": "Cerrar con el registro completo: las decisiones de la tarde",
+    "say": "Este registro es el método repetible: el próximo caso de uso de Alephee arranca por estas trece preguntas, con las respuestas de hoy como punto de partida.",
     "ask": "",
     "close": "",
     "transition": "Quién hace qué."
@@ -2107,7 +2137,7 @@
    "minutes": 3
   },
   {
-   "id": "s63",
+   "id": "s64",
    "section": "prueba",
    "title": "Quién hace qué, para cuándo.",
    "kind": "divider",
