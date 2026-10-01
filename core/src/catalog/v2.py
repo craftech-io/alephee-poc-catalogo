@@ -128,7 +128,12 @@ class MappingV2(Workflow):
         try:
             # `parse_agent_output` raises "Max iterations" before running the tools of the
             # turn that reaches the limit, so MAX_ITERATIONS submissions need MAX_ITERATIONS + 1
-            # here: otherwise the last model turn is paid for and its tool call never runs.
+            # here: the +1 is what lets the fifth submit_listing call actually run, instead of
+            # being counted against the limit and discarded unexecuted. When the loop runs its
+            # full course anyway (the agent never submits something valid), a sixth model turn
+            # still gets requested, paid for and then discarded by the library's own check —
+            # that extra turn is inherent to how the library counts iterations, not a bug to
+            # "fix" by tuning this number differently.
             await agent.run(user_msg=work_message(ev), memory=ChatMemoryBuffer.from_defaults(token_limit=MEMORY_TOKENS),
                             max_iterations=MAX_ITERATIONS + 1)
         except WorkflowRuntimeError as exc:
