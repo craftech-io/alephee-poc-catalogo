@@ -1,43 +1,4 @@
-# War Room · Alephee × Craftech × AWS
-
-Prototipo local para mapear categoría y atributos del catálogo de Alephee a Shopee.
-El recorrido del warroom se ejecuta en batch; la integración del catálogo al chat
-todavía está pendiente.
-
-## Material para la sesión
-
-- [Presentación interactiva: 65 diapositivas en 6 bloques](docs/presentacion-warroom.html): una cadena de 13 decisiones de diseño con el código del repo en pantalla. Abrir en el navegador; menú por bloque, propuestas de decisión plegadas y notas con **N**. Diseño en [diseno-presentacion.md](docs/warroom/diseno-presentacion.md).
-- [PDF estático](docs/presentacion-warroom.pdf): 65 páginas, con las propuestas de decisión visibles y sin notas del expositor.
-- [Guion del facilitador](docs/guion-warroom-propuesto.md): agenda, notas por lámina, código y demos.
-- [Fuentes externas verificadas](docs/warroom/fuentes.md) (AgentCore, Bedrock, caché de prompts, API de Alephee).
-- [Decisiones](decisiones/): 13 archivos con contexto y opciones; la decisión se completa en la sala.
-- [Revisión de los dos agentes y fuentes de los libros](docs/warroom/revision-agentes.md).
-- [Revisión y límites de la evidencia](docs/revision-warroom.md).
-
-La presentación funciona sin conexión y usa un **harness de desarrollo genérico**, sin proveedor obligatorio. La fuente de contenido es `docs/warroom/diapositivas.json`.
-
-Regenerar HTML y guion: `python3 scripts/generar_presentacion.py` (lee los fragmentos de código del repo y falla si un rango o símbolo no coincide). Tests: `uv run pytest scripts/test_generar_presentacion.py && node --test scripts/warroom.test.mjs`. Exportar el PDF: `uv run --with reportlab python scripts/exportar_presentacion_pdf.py`.
-
-## Ejecutar el catálogo
-
-```bash
-uv sync
-uv run pytest core/tests/test_catalogo*.py -q
-scripts/correr.sh --version actual --datos real  # evalúa publicaciones exportadas, sin modelo
-aws sso login --profile sandbox
-scripts/correr.sh --version v3 --datos real      # llama al modelo en Bedrock
-```
-
-Los 30 productos y las tablas de referencia son reales. El esquema por categoría
-y las respuestas esperadas son simulados: los resultados no equivalen a aceptación
-por Shopee. Las cifras del deck son históricas, anteriores a las correcciones de
-V3 de esta revisión; hace falta una nueva corrida para medir su impacto.
-
-V3 fija la categoría desde la referencia, comprueba la correspondencia entre ID y
-nombre del valor y hace visibles los obligatorios faltantes. Estos controles no
-verifican toda la evidencia semántica ni implementan el circuito de publicación.
-
-## Base de chat e infraestructura
+# craftech-ai-chat
 
 Template de chatbot + agent core sobre Amazon Bedrock AgentCore. La idea es
 que un cliente lo adopte como punto de partida para su propio chat: el core
@@ -61,7 +22,7 @@ npm run dev     # http://localhost:3000
 
 No hace falta cuenta de AWS, credenciales ni deploy. El server responde
 `POST/GET /mensajes` por su cuenta con respuestas escritas a mano
-(`apps/web/mock.mjs`), y la UI muestra chips con las palabras que disparan cada
+(`examples/demo-client/mock.mjs`), y la UI muestra chips con las palabras que disparan cada
 escenario —búsqueda en documentos, escalamiento, error— para recorrer el
 comportamiento del bot sin gastar un centavo de Bedrock.
 
@@ -77,12 +38,12 @@ configurado el emisor de tokens:
 # Con HMAC
 API_URL="<Function URL del BFF>" \
 CHAT_HMAC_SECRET="<el mismo secreto del stack>" \
-  npm start -w @alephee-catalogo/web
+  npm start -w @craftech-ai-chat/demo-client
 
 # Con Cognito u otro IdP por JWKS
 API_URL="<Function URL del BFF>" \
 COGNITO_CLIENT_ID="<client id del pool>" \
-  npm start -w @alephee-catalogo/web
+  npm start -w @craftech-ai-chat/demo-client
 ```
 
 **El modo se elige por las variables**, no por un flag: sin `API_URL` es mock;
@@ -90,7 +51,7 @@ con `API_URL` y sin `COGNITO_CLIENT_ID` es HMAC; con `COGNITO_CLIENT_ID` es logi
 real. La Function URL sale del output `Chat` del deploy.
 
 El detalle de los tres modos, con el mini-login y cómo integrar el widget en una
-app propia, está en [`apps/web/README.md`](apps/web/README.md).
+app propia, está en [`examples/demo-client/README.md`](examples/demo-client/README.md).
 
 ## Mapa del monorepo
 
@@ -102,7 +63,7 @@ app propia, está en [`apps/web/README.md`](apps/web/README.md).
 | `packages/worker/` | El worker (TypeScript) que consume MensajesCola en background: agrega mensajes pendientes, invoca el AgentCore Runtime (con streaming SSE interno), parsea la respuesta y la escribe en MessagesTable |
 | `packages/widget/` | El widget que el cliente monta en su página, sin framework; hace polling a `/mensajes` GET para ver las respuestas |
 | `infra/` | El IaC. `infra/CONTRACT.md` es el contrato entre el producto y CUALQUIER sabor de IaC (SST, Terraform, Pulumi); `infra/sst/` es el primer sabor implementado |
-| `apps/web/` | Una app mínima que integra el widget, para probar el flujo completo sin un cliente real |
+| `examples/demo-client/` | Una app mínima que integra el widget, para probar el flujo completo sin un cliente real |
 
 ## Adoptar el template
 
@@ -155,7 +116,7 @@ RECREA los recursos. Se elige una vez, al clonar.
   template y su showcase es un solo ambiente; un clon elige los stages que
   quiera.
 - **La identidad del repo**: el `name` de `package.json` y `pyproject.toml` y el
-  scope `@alephee-catalogo/*` de los workspaces npm. No forman parte de ningún
+  scope `@craftech-ai-chat/*` de los workspaces npm. No forman parte de ningún
   nombre desplegado — renombrarlos es opcional y cosmético.
 
 ## Correr los tests
@@ -186,4 +147,4 @@ npm run typecheck                 # typecheck de los workspaces de npm
   los knobs que mueven todo eso.
 - `infra/CONTRACT.md` — el contrato multi-IaC: qué recursos y variables debe
   proveer cualquier sabor de infraestructura.
-- `apps/web/README.md` — cómo integra el chat una app cliente.
+- `examples/demo-client/README.md` — cómo integra el chat una app cliente.

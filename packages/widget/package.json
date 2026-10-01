@@ -1,5 +1,5 @@
 {
-  "name": "@alephee-catalogo/widget",
+  "name": "@craftech-ai-chat/widget",
   "version": "1.0.0",
   "type": "module",
   "scripts": {
@@ -16,6 +16,6 @@
     "vitest": "4.1.11"
   },
   "dependencies": {
-    "@alephee-catalogo/shared": "*"
+    "@craftech-ai-chat/shared": "*"
   }
 }

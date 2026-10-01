@@ -203,41 +203,9 @@
     "say": "Describir el flujo actual tal como lo explicó Maximiliano: la categoría se resuelve por tabla y el modelo entra cuando la tabla no la tiene; los atributos van en dos llamadas en paralelo porque un solo prompt era demasiado largo, y un merge por código prioriza la que usó la referencia. Latencia de 13 segundos en batch: no es una restricción. El punto que duele es el presupuesto: cuando se agota, la publicación sale sin atributos. El modelo exacto y sus parámetros siguen sin confirmar.",
     "ask": "¿Qué parte de este flujo les da más trabajo hoy?",
     "close": "Anotar las respuestas en la pizarra: se retoman en la prueba final.",
-    "transition": "Veamos cómo se le pide hoy la categoría al modelo."
-   },
-   "minutes": 3
-  },
-  {
-   "id": "s05",
-   "section": "partida",
-   "title": "Así se pide hoy la categoría.",
-   "kind": "code",
-   "lead": "",
-   "label": "Prompt actual de Alephee · inputs/prompts-actuales/index.ts",
-   "items": [],
-   "question": "",
-   "options": [],
-   "answer": "",
-   "exercise": null,
-   "table": null,
-   "notes": {
-    "objective": "Leer juntos el prompt actual y separar lo que se conserva de lo que se cambia",
-    "say": "Leer las reglas resaltadas: son buenas y se conservan. Señalar tres cosas que vamos a decidir distinto a lo largo del día: la salida es JSON pedido por favor en el texto (decisión 4), la lista completa de categorías viaja en cada llamada y después del producto (decisión sobre caché, bloque V2), y solo usa el nombre de la categoría y del producto, no la descripción. No es una crítica al equipo: es el punto de partida.",
-    "ask": "",
-    "close": "",
     "transition": "Qué pasó con esas publicaciones en Shopee."
    },
-   "minutes": 3,
-   "code": {
-    "file": "inputs/prompts-actuales/index.ts",
-    "lines": "4-21",
-    "symbol": "categoryPrompt",
-    "highlight": [
-     20,
-     21
-    ],
-    "caption": "Reglas correctas (no inventar, copiar el URN exacto). Lo que se va a revisar: el JSON se pide en el texto y la lista completa de categorías viaja en cada llamada."
-   }
+   "minutes": 3
   },
   {
    "id": "s06",
@@ -344,43 +312,9 @@
     "say": "La salida no es la publicación final: es una propuesta de mapeo. Lo que hoy no existe son las dos listas: qué obligatorio quedó sin dato y por qué, y qué atributo del producto se descartó y por qué. Eso es lo que reemplaza al publicar sin atributos.",
     "ask": "",
     "close": "",
-    "transition": "El mismo contrato, en código."
-   },
-   "minutes": 3
-  },
-  {
-   "id": "s09",
-   "section": "partida",
-   "title": "El contrato, en código.",
-   "kind": "code",
-   "lead": "",
-   "label": "",
-   "items": [],
-   "question": "",
-   "options": [],
-   "answer": "",
-   "exercise": null,
-   "table": null,
-   "notes": {
-    "objective": "Mostrar que el contrato es código que se valida, no un acuerdo verbal",
-    "say": "Recorrer las cuatro partes: category puede ser null si no se resuelve; attributes lleva URN, valueId y value; missing y rejected llevan el motivo. extra=forbid significa que si el modelo agrega un campo que no existe, la salida se rechaza. Este archivo es lo primero que se escribió y lo último que debería cambiar.",
-    "ask": "",
-    "close": "",
     "transition": "Decisión 2: cómo se informa lo que no se pudo mapear."
    },
-   "minutes": 3,
-   "code": {
-    "file": "core/src/catalogo/modelos.py",
-    "lines": "21-37",
-    "symbol": "class Publicacion",
-    "highlight": [
-     31,
-     34,
-     36,
-     37
-    ],
-    "caption": "Pydantic con extra=\"forbid\": ningún campo fuera del contrato pasa. Los nombres (valueId, legacyId) son los del formato de publicación de Alephee para no traducir."
-   }
+   "minutes": 3
   },
   {
    "id": "s10",
@@ -460,392 +394,9 @@
     "say": "El proceso actual de Alephee es un workflow: dos llamadas fijas y un merge en código. Un agente se diferencia en que el modelo elige qué consultar y cuándo terminar; el programa le pone el límite. Multiagente es la última opción, no la primera: cada agente extra suma latencia, costo y puntos de fallo.",
     "ask": "¿El flujo de hoy es single prompt, workflow o agente?",
     "close": "Workflow: las llamadas y el merge están fijos en código.",
-    "transition": "Las tres versiones del día conviven en el mismo runner."
-   },
-   "minutes": 3
-  },
-  {
-   "id": "s13",
-   "section": "diseno",
-   "title": "Las tres versiones conviven en el mismo runner.",
-   "kind": "code",
-   "lead": "",
-   "label": "",
-   "items": [],
-   "question": "",
-   "options": [],
-   "answer": "",
-   "exercise": null,
-   "table": null,
-   "notes": {
-    "objective": "Mostrar que V1, V2 y V3 son intercambiables y comparables",
-    "say": "Lo único que cambia entre versiones es la clase. El runner, el dataset y el evaluador son los mismos: así la comparación de la tarde es justa. Sumar una V4 es registrar una clase más.",
-    "ask": "",
-    "close": "",
-    "transition": "Dónde vive cada pieza en el repositorio."
-   },
-   "minutes": 4,
-   "code": {
-    "file": "core/src/catalogo/correr.py",
-    "lines": "24-27",
-    "symbol": "_versiones",
-    "caption": "Cada versión es un Workflow que recibe MapeoStart y devuelve MapeoDone. Se comparan sobre el mismo dataset con el mismo evaluador."
-   }
-  },
-  {
-   "id": "s14",
-   "section": "diseno",
-   "title": "Dónde vive cada versión en el código.",
-   "kind": "diagram",
-   "lead": "",
-   "label": "",
-   "items": [],
-   "question": "",
-   "options": [],
-   "answer": "",
-   "exercise": null,
-   "table": null,
-   "notes": {
-    "objective": "Dar el mapa del repositorio antes de entrar en cada pieza",
-    "say": "Arriba, las dos entradas: el runner batch, que es como se usa hoy, y el servidor de AgentCore, que corre el chat del template. Al medio, las tres versiones, cada una en su archivo. Debajo, las capas que cada versión suma y la base común: el contrato, los eventos, el único módulo que sabe de Bedrock y la carga de datos. La flecha punteada es el pendiente: el chat todavía no llama al agente de catálogo.",
-    "ask": "¿Dónde pondrían el código en el repositorio de Alephee?",
-    "close": "",
     "transition": "Decisión 3."
    },
-   "minutes": 2,
-   "diagram": {
-    "w": 1200,
-    "h": 520,
-    "groups": [
-     {
-      "x": 16,
-      "y": 58,
-      "label": "Entradas"
-     },
-     {
-      "x": 16,
-      "y": 164,
-      "label": "Versiones"
-     },
-     {
-      "x": 16,
-      "y": 270,
-      "label": "Capas"
-     },
-     {
-      "x": 16,
-      "y": 376,
-      "label": "Base común"
-     },
-     {
-      "x": 16,
-      "y": 482,
-      "label": "Fuera del código"
-     }
-    ],
-    "nodes": [
-     {
-      "x": 190,
-      "y": 16,
-      "w": 670,
-      "h": 74,
-      "title": "Runner batch",
-      "sub": [
-       "scripts/correr.sh --version v1 | v2 | v3 | actual",
-       "core/src/catalogo/correr.py · evalúa y guarda en resultados/"
-      ],
-      "tone": "base"
-     },
-     {
-      "x": 880,
-      "y": 16,
-      "w": 304,
-      "h": 74,
-      "title": "Servidor AgentCore",
-      "sub": [
-       "core/server.py",
-       "/ping y /invocations"
-      ],
-      "tone": "aws"
-     },
-     {
-      "x": 190,
-      "y": 122,
-      "w": 213,
-      "h": 74,
-      "title": "V1 · MapeoV1",
-      "sub": [
-       "v1.py",
-       "una llamada, sin herramientas"
-      ],
-      "tone": "modelo"
-     },
-     {
-      "x": 419,
-      "y": 122,
-      "w": 213,
-      "h": 74,
-      "title": "V2 · MapeoV2",
-      "sub": [
-       "v2.py",
-       "loop de hasta 6 rondas"
-      ],
-      "tone": "modelo"
-     },
-     {
-      "x": 647,
-      "y": 122,
-      "w": 213,
-      "h": 74,
-      "title": "V3 · MapeoV3",
-      "sub": [
-       "v3.py",
-       "hereda de V2 y agrega control"
-      ],
-      "tone": "modelo"
-     },
-     {
-      "x": 880,
-      "y": 122,
-      "w": 304,
-      "h": 74,
-      "title": "Chat del template",
-      "sub": [
-       "core/src/agent · ChatWorkflow",
-       "falta mapear_producto(sku)"
-      ],
-      "tone": "pendiente"
-     },
-     {
-      "x": 190,
-      "y": 228,
-      "w": 156,
-      "h": 74,
-      "title": "Herramientas",
-      "sub": [
-       "herramientas.py",
-       "V2 y V3"
-      ],
-      "tone": "codigo"
-     },
-     {
-      "x": 362,
-      "y": 228,
-      "w": 156,
-      "h": 74,
-      "title": "Guardrails",
-      "sub": [
-       "guardrails.py",
-       "V3"
-      ],
-      "tone": "codigo"
-     },
-     {
-      "x": 533,
-      "y": 228,
-      "w": 156,
-      "h": 74,
-      "title": "Memoria y caché",
-      "sub": [
-       "memoria.py",
-       "V3"
-      ],
-      "tone": "codigo"
-     },
-     {
-      "x": 704,
-      "y": 228,
-      "w": 156,
-      "h": 74,
-      "title": "Evaluador",
-      "sub": [
-       "evaluacion.py",
-       "todas"
-      ],
-      "tone": "codigo"
-     },
-     {
-      "x": 880,
-      "y": 228,
-      "w": 304,
-      "h": 74,
-      "title": "Correcciones",
-      "sub": [
-       "scripts/corregir.sh",
-       "corregir.py → memoria/"
-      ],
-      "tone": "codigo"
-     },
-     {
-      "x": 190,
-      "y": 334,
-      "w": 156,
-      "h": 74,
-      "title": "Contrato",
-      "sub": [
-       "modelos.py",
-       "Publicacion"
-      ],
-      "tone": "base"
-     },
-     {
-      "x": 362,
-      "y": 334,
-      "w": 156,
-      "h": 74,
-      "title": "Eventos",
-      "sub": [
-       "eventos.py",
-       "MapeoStart / Done"
-      ],
-      "tone": "base"
-     },
-     {
-      "x": 533,
-      "y": 334,
-      "w": 156,
-      "h": 74,
-      "title": "LLM inyectado",
-      "sub": [
-       "llm.py",
-       "BedrockConverse"
-      ],
-      "tone": "base"
-     },
-     {
-      "x": 704,
-      "y": 334,
-      "w": 156,
-      "h": 74,
-      "title": "Datos",
-      "sub": [
-       "datos.py",
-       "DATA_DIR"
-      ],
-      "tone": "base"
-     },
-     {
-      "x": 880,
-      "y": 334,
-      "w": 304,
-      "h": 74,
-      "title": "Tests sin AWS",
-      "sub": [
-       "core/tests/test_catalogo_*.py",
-       "con dobles del LLM"
-      ],
-      "tone": "base"
-     },
-     {
-      "x": 190,
-      "y": 440,
-      "w": 327,
-      "h": 74,
-      "title": "Amazon Bedrock",
-      "sub": [
-       "us.anthropic.claude-sonnet-5",
-       "perfil SSO sandbox · us-east-1"
-      ],
-      "tone": "aws"
-     },
-     {
-      "x": 533,
-      "y": 440,
-      "w": 327,
-      "h": 74,
-      "title": "data/real · data/mock",
-      "sub": [
-       "tablas reference_*, esquema",
-       "y dataset con expected"
-      ],
-      "tone": "dato"
-     },
-     {
-      "x": 880,
-      "y": 440,
-      "w": 304,
-      "h": 74,
-      "title": "memoria/ y resultados/",
-      "sub": [
-       "JSON fuera de git"
-      ],
-      "tone": "dato"
-     }
-    ],
-    "edges": [
-     {
-      "points": [
-       [
-        300,
-        90
-       ],
-       [
-        300,
-        122
-       ]
-      ],
-      "label": "",
-      "dashed": false
-     },
-     {
-      "points": [
-       [
-        525,
-        90
-       ],
-       [
-        525,
-        122
-       ]
-      ],
-      "label": "",
-      "dashed": false
-     },
-     {
-      "points": [
-       [
-        749,
-        90
-       ],
-       [
-        749,
-        122
-       ]
-      ],
-      "label": "",
-      "dashed": false
-     },
-     {
-      "points": [
-       [
-        1032,
-        90
-       ],
-       [
-        1032,
-        122
-       ]
-      ],
-      "label": "",
-      "dashed": false
-     },
-     {
-      "points": [
-       [
-        880,
-        159
-       ],
-       [
-        860,
-        159
-       ]
-      ],
-      "label": "",
-      "dashed": true
-     }
-    ],
-    "caption": "Las tres versiones son Workflows que reciben MapeoStart y devuelven MapeoDone: el runner las intercambia y el evaluador las compara sobre el mismo dataset."
-   }
+   "minutes": 3
   },
   {
    "id": "s15",
@@ -904,42 +455,9 @@
     "say": "Las cinco partes sirven para leer el prompt actual y el nuevo. La quinta es la que casi siempre falta: qué hacer cuando no hay dato. Si el prompt no lo dice, el modelo elige por su cuenta, y lo que elige es completar.",
     "ask": "",
     "close": "",
-    "transition": "El prompt de la V1, parte por parte."
-   },
-   "minutes": 3
-  },
-  {
-   "id": "s17",
-   "section": "diseno",
-   "title": "El prompt de la V1.",
-   "kind": "code",
-   "lead": "",
-   "label": "",
-   "items": [],
-   "question": "",
-   "options": [],
-   "answer": "",
-   "exercise": null,
-   "table": null,
-   "notes": {
-    "objective": "Leer el prompt nuevo con el esqueleto de cinco partes",
-    "say": "Rol en la primera línea; tarea en la segunda; reglas en la lista; el formato no está en el texto porque lo impone la herramienta de entrega (siguiente decisión); y la quinta parte está en las dos reglas de missing y rejected. Las reglas resaltadas son las que el proceso actual no tiene escritas.",
-    "ask": "¿Qué regla agregarían con lo que saben del catálogo?",
-    "close": "",
     "transition": "Tres prácticas que cambian el resultado."
    },
-   "minutes": 4,
-   "code": {
-    "file": "core/src/catalogo/v1.py",
-    "lines": "22-39",
-    "symbol": "INSTRUCCIONES",
-    "highlight": [
-     28,
-     32,
-     34
-    ],
-    "caption": "Rol, tarea, reglas negativas explícitas (nunca inventes) y qué hacer cuando falta (missing con motivo). Comparar con el prompt actual de la lámina 5."
-   }
+   "minutes": 3
   },
   {
    "id": "s18",
@@ -963,40 +481,9 @@
     "say": "La primera tiene efecto directo en costo: Bedrock cachea el prefijo estable del prompt con cachePoint (F4, mínimo 1.024 tokens para Claude Sonnet 5) y OpenAI hace lo mismo de forma automática sobre el prefijo (F7). El prompt actual pone el producto antes de la lista de categorías: el prefijo cambia en cada llamada y no se cachea nada. Reordenarlo ya bajaría el costo sin cambiar de proveedor; hay que medirlo, no darlo por hecho. Fuentes en docs/warroom/fuentes.md.",
     "ask": "",
     "close": "",
-    "transition": "La segunda práctica, en código."
-   },
-   "minutes": 3
-  },
-  {
-   "id": "s19",
-   "section": "diseno",
-   "title": "La salida es una herramienta con esquema.",
-   "kind": "code",
-   "lead": "",
-   "label": "",
-   "items": [],
-   "question": "",
-   "options": [],
-   "answer": "",
-   "exercise": null,
-   "table": null,
-   "notes": {
-    "objective": "Mostrar cómo el formato pasa de regla del prompt a contrato",
-    "say": "En vez de pedir JSON válido en el texto, se le da al modelo una herramienta cuyo esquema es la clase Publicacion. El modelo entrega llamando a la herramienta; si lo que entrega no cumple el esquema, falla la validación y se informa el error en vez de publicar algo a medias.",
-    "ask": "",
-    "close": "",
     "transition": "Decisión 4."
    },
-   "minutes": 4,
-   "code": {
-    "file": "core/src/catalogo/v1.py",
-    "lines": "41-51",
-    "symbol": "HERRAMIENTA_SALIDA",
-    "highlight": [
-     50
-    ],
-    "caption": "fn_schema=Publicacion: el modelo solo puede entregar algo que cumpla el contrato. La función nunca se ejecuta; el resultado se lee de la llamada."
-   }
+   "minutes": 3
   },
   {
    "id": "s20",
@@ -1053,70 +540,9 @@
     "say": "AgentCore Runtime corre el contenedor del agente en una microVM por sesión y cobra por el CPU y la memoria que consume la sesión; el CPU baja a cero mientras espera al modelo (F3). Para un chat eso es ideal. Para un batch de miles de productos la pregunta es otra: ¿conviene una sesión larga en el Runtime o un proceso propio de Alephee que llame a Bedrock? No hay cifra pública de arranque en frío; se mide. Las dudas que no se resuelvan hoy van a Juan David.",
     "ask": "¿El batch de Alephee tiene horario fijo o corre continuo?",
     "close": "",
-    "transition": "El contrato con AgentCore son dos rutas HTTP."
-   },
-   "minutes": 3
-  },
-  {
-   "id": "s22",
-   "section": "diseno",
-   "title": "El contrato con AgentCore son dos rutas.",
-   "kind": "code",
-   "lead": "",
-   "label": "",
-   "items": [],
-   "question": "",
-   "options": [],
-   "answer": "",
-   "exercise": null,
-   "table": null,
-   "notes": {
-    "objective": "Mostrar que el contrato de despliegue es mínimo y está separado del agente",
-    "say": "Esto es todo lo que AgentCore exige del contenedor (F1): un GET de salud y un POST de invocación. Lo que se ve es el servidor del template, que hoy corre el ChatWorkflow del chat; el agente de catálogo corre por el runner batch y todavía no está conectado al chat. El punto: la lógica del agente vive en otro módulo y se prueba sin servidor; el contrato de despliegue no la condiciona.",
-    "ask": "",
-    "close": "",
-    "transition": "Y la infraestructura que lo declara."
-   },
-   "minutes": 4,
-   "code": {
-    "file": "core/server.py",
-    "lines": "194-199",
-    "symbol": "invocations",
-    "caption": "Las dos rutas que exige AgentCore (F1: puerto 8080, imagen ARM64). Hoy este servidor arma el chat del template; conectar el workflow de catálogo (mapear_producto) es un pendiente."
-   }
-  },
-  {
-   "id": "s23",
-   "section": "diseno",
-   "title": "La infraestructura declara el Runtime.",
-   "kind": "code",
-   "lead": "",
-   "label": "",
-   "items": [],
-   "question": "",
-   "options": [],
-   "answer": "",
-   "exercise": null,
-   "table": null,
-   "notes": {
-    "objective": "Ver que el despliegue es código y se repite",
-    "say": "Infraestructura como código: el Runtime, su imagen y su rol se declaran acá y se despliegan con un comando. El comentario sobre el digest es una lección aprendida: la validación acepta una referencia que la microVM después no puede resolver. Esto ya está probado en el template de Craftech; para Alephee cambia el slug y la cuenta.",
-    "ask": "",
-    "close": "",
     "transition": "La infraestructura completa, en un dibujo."
    },
-   "minutes": 4,
-   "code": {
-    "file": "infra/sst/runtime.ts",
-    "lines": "389-406",
-    "symbol": "bedrockagentcore.Runtime",
-    "highlight": [
-     402,
-     405,
-     406
-    ],
-    "caption": "Imagen ARM64 referenciada por digest, red pública y un rol propio. Se despliega con SST; el modelo llega por variable de entorno."
-   }
+   "minutes": 3
   },
   {
    "id": "s24",
@@ -1582,42 +1008,9 @@
     "say": "La tabla sale de la página oficial Models at a glance del 30/09 (F6). No es una recomendación de cada uno: es el menú. Lo que importa para elegir es la columna de la derecha y el criterio de la lámina anterior. La disponibilidad por región y la habilitación en la cuenta se verifican en la cuenta que usemos.",
     "ask": "",
     "close": "",
-    "transition": "El módulo que habla con Bedrock."
-   },
-   "minutes": 3
-  },
-  {
-   "id": "s28",
-   "section": "diseno",
-   "title": "El único módulo que sabe de Bedrock.",
-   "kind": "code",
-   "lead": "",
-   "label": "",
-   "items": [],
-   "question": "",
-   "options": [],
-   "answer": "",
-   "exercise": null,
-   "table": null,
-   "notes": {
-    "objective": "Mostrar dónde se elige el modelo y por qué el ID lleva prefijo",
-    "say": "El modelo se elige en un solo lugar y llega por variable de entorno. El prefijo us. es un inference profile: Bedrock enruta entre regiones de Estados Unidos y es obligatorio para algunos modelos (F5). Las dos banderas de caché activan los cachePoint en system y tools (F4). Cambiar de modelo es cambiar una variable y volver a correr el dataset.",
-    "ask": "",
-    "close": "",
     "transition": "Decisión 6."
    },
-   "minutes": 4,
-   "code": {
-    "file": "core/src/catalogo/llm.py",
-    "lines": "7-21",
-    "symbol": "crear_llm",
-    "highlight": [
-     9,
-     19,
-     20
-    ],
-    "caption": "Inference profile us.: sin prefijo, Bedrock responde ValidationException por falta de throughput on-demand (F5). Caché de system y tools activada en el cliente."
-   }
+   "minutes": 3
   },
   {
    "id": "s29",
@@ -1674,41 +1067,9 @@
     "say": "Dos cosas distintas: el stack con el que corre el agente (Python, LlamaIndex, Bedrock) y el harness con el que lo construimos hoy, un entorno de desarrollo asistido por un modelo que propone cambios. El harness no es el agente ni decide nada: cada cambio que propone pasa por revisión y por los tests. No depende de un proveedor concreto.",
     "ask": "¿Qué revisarían antes de aceptar un cambio propuesto por el harness?",
     "close": "Que resuelva la regla acordada, que pase los tests y que no toque datos reales.",
-    "transition": "Un Workflow de un paso, en código."
-   },
-   "minutes": 3
-  },
-  {
-   "id": "s31",
-   "section": "diseno",
-   "title": "Un Workflow de un paso.",
-   "kind": "code",
-   "lead": "",
-   "label": "",
-   "items": [],
-   "question": "",
-   "options": [],
-   "answer": "",
-   "exercise": null,
-   "table": null,
-   "notes": {
-    "objective": "Mostrar el patrón de inyección que hace testeable al agente",
-    "say": "La clase recibe el LLM por el constructor. Eso permite probar cada paso con un doble sin AWS y correr contra Bedrock cambiando una línea. Es el patrón que se repite en V2 y V3.",
-    "ask": "",
-    "close": "",
     "transition": "Decisión 7."
    },
-   "minutes": 4,
-   "code": {
-    "file": "core/src/catalogo/v1.py",
-    "lines": "76-83",
-    "symbol": "class MapeoV1",
-    "highlight": [
-     77,
-     82
-    ],
-    "caption": "El LLM se inyecta: en los tests es un doble, en producción es Bedrock. El workflow no sabe de proveedores."
-   }
+   "minutes": 3
   },
   {
    "id": "s32",
@@ -1765,42 +1126,9 @@
     "say": "La vara es estricta a propósito. Pero el expected es mock: se construyó a partir de la publicación actual limpia, así que hereda sus omisiones y castiga aciertos que hoy nadie mapea. Por eso los exactos van a ser bajos en todas las versiones y hay que leer también inválidos, duplicados y faltantes. El esquema oficial de Shopee y la validación con catálogo son pendientes.",
     "ask": "",
     "close": "",
-    "transition": "La métrica, en código."
-   },
-   "minutes": 3
-  },
-  {
-   "id": "s34",
-   "section": "diseno",
-   "title": "La métrica en código.",
-   "kind": "code",
-   "lead": "",
-   "label": "",
-   "items": [],
-   "question": "",
-   "options": [],
-   "answer": "",
-   "exercise": null,
-   "table": null,
-   "notes": {
-    "objective": "Mostrar que la métrica es código que todos pueden leer y discutir",
-    "say": "Siete condiciones en un and. Si alguien discute la vara, se discute acá y se vuelve a evaluar sin llamar al modelo (scripts/reevaluar.py). La evaluación no cambia para favorecer a una versión.",
-    "ask": "",
-    "close": "",
     "transition": "Decisiones 8 y 9."
    },
-   "minutes": 4,
-   "code": {
-    "file": "core/src/catalogo/evaluacion.py",
-    "lines": "24-34",
-    "symbol": "exacto",
-    "highlight": [
-     27,
-     30,
-     31
-    ],
-    "caption": "Un caso es exacto solo si todo se cumple a la vez. Es determinista: no llama a ningún modelo."
-   }
+   "minutes": 3
   },
   {
    "id": "s35",
@@ -1886,42 +1214,9 @@
     "say": "La V1 implementa las decisiones 1 a 9: single prompt, salida por herramienta con esquema, Claude Sonnet 5 por Converse, LlamaIndex Workflows, medida con el evaluador sobre los 30 reales. No usa las tablas de referencia a propósito: queremos ver qué resuelve el modelo solo. Recordar la regla del día: no se pasa al bloque siguiente con algo roto, pero un resultado de negocio incorrecto no es algo roto, es evidencia.",
     "ask": "",
     "close": "",
-    "transition": "El paso único de la V1."
-   },
-   "minutes": 1
-  },
-  {
-   "id": "s38",
-   "section": "v1",
-   "title": "Una llamada, una entrega.",
-   "kind": "code",
-   "lead": "",
-   "label": "",
-   "items": [],
-   "question": "",
-   "options": [],
-   "answer": "",
-   "exercise": null,
-   "table": null,
-   "notes": {
-    "objective": "Recorrer el paso completo: mensaje, llamada, tool call, validación",
-    "say": "Cuatro momentos: se arma el mensaje con el producto y el contexto del canal; una sola llamada al modelo con la herramienta de entrega obligatoria; se buscan las llamadas a entregar_publicacion; se valida contra Publicacion. Las dos salidas de error (no llamó, salida fuera de contrato) son resultados, no excepciones: el runner las cuenta. Lo que no está acá: ninguna tabla, ninguna consulta. Todo lo que el modelo sabe del canal viaja en el mensaje.",
-    "ask": "¿Qué pasa si el modelo responde con texto en vez de llamar a la herramienta?",
-    "close": "MapeoDone con error explícito. El caso cuenta como no entregado, no como publicado.",
     "transition": "Lo corremos sobre el caso guía."
    },
-   "minutes": 4,
-   "code": {
-    "file": "core/src/catalogo/v1.py",
-    "lines": "83-100",
-    "symbol": "async def mapear",
-    "highlight": [
-     88,
-     97,
-     99
-    ],
-    "caption": "tool_required=True: el modelo tiene que entregar por la herramienta. Si no la llama o la entrega no cumple el contrato, se informa el error; nunca se publica a medias."
-   }
+   "minutes": 1
   },
   {
    "id": "s39",
@@ -2050,75 +1345,9 @@
     "say": "El modelo no ejecuta nada: redacta un pedido con nombre y argumentos, el programa lo ejecuta y le devuelve el resultado como un mensaje más. Por eso la herramienta es determinista y el modelo no. Hay herramientas de lectura (consultar) y de acción (publicar); hoy todas las nuestras son de lectura. Que la herramienta exista no obliga al modelo a usarla ni a respetarla: la V3 revisa la entrega contra el esquema del canal, pero imponer por código lo que dice la tabla de atributos es un pendiente.",
     "ask": "",
     "close": "",
-    "transition": "La fuente se abstrae."
-   },
-   "minutes": 3
-  },
-  {
-   "id": "s43",
-   "section": "v2",
-   "title": "La fuente se abstrae; las herramientas no cambian.",
-   "kind": "code",
-   "lead": "",
-   "label": "",
-   "items": [],
-   "question": "",
-   "options": [],
-   "answer": "",
-   "exercise": null,
-   "table": null,
-   "notes": {
-    "objective": "Mostrar el punto de integración con Alephee",
-    "say": "Tres consultas: categoría destino por id legacy, destinos de un atributo legacy y esquema de una categoría del canal. Eso es todo lo que el agente necesita de Alephee. La API pública v2 alcanza para leer el producto (F8) pero no expone estas tablas: la integración real es una FuenteCatalogo nueva contra lo que Maximiliano exponga.",
-    "ask": "¿Dónde viven hoy estas tres consultas en la plataforma de Alephee?",
-    "close": "",
-    "transition": "Cómo se describe una herramienta."
-   },
-   "minutes": 4,
-   "code": {
-    "file": "core/src/catalogo/herramientas.py",
-    "lines": "17-34",
-    "symbol": "FuenteCatalogo",
-    "highlight": [
-     17,
-     25,
-     26
-    ],
-    "caption": "Hoy FuenteArchivos lee data/real; mañana una clase que llame a la base o a un endpoint interno de Alephee. Las herramientas y el agente no se tocan."
-   }
-  },
-  {
-   "id": "s44",
-   "section": "v2",
-   "title": "Una herramienta bien descrita.",
-   "kind": "code",
-   "lead": "",
-   "label": "",
-   "items": [],
-   "question": "",
-   "options": [],
-   "answer": "",
-   "exercise": null,
-   "table": null,
-   "notes": {
-    "objective": "Buenas prácticas de diseño de herramientas",
-    "say": "Tres reglas: nombre que diga qué hace, descripción con un ejemplo del argumento y salida negativa explícita con motivo. Una herramienta que devuelve null cuando no encuentra invita al modelo a inventar; una que devuelve encontrada: false con motivo le da algo que repetir en missing.",
-    "ask": "",
-    "close": "",
     "transition": "Decisión 10: qué decide la tabla y qué decide el agente."
    },
-   "minutes": 4,
-   "code": {
-    "file": "core/src/catalogo/herramientas.py",
-    "lines": "42-48",
-    "symbol": "buscar_categoria",
-    "highlight": [
-     44,
-     45,
-     48
-    ],
-    "caption": "El docstring es lo que lee el modelo: qué devuelve, con qué formato de entrada y qué pasa si no encuentra. La respuesta negativa es explícita, nunca vacía."
-   }
+   "minutes": 3
   },
   {
    "id": "s45",
@@ -2138,7 +1367,7 @@
     "say": "B es el error más común: dejar que el modelo mejore un mapeo que el equipo de catálogo mantiene a mano. Si la tabla está mal, se corrige la tabla. C ya se descartó en la decisión 3. Ser exacto sobre el estado: la V3 fija la categoría en código; los campos mapeados por tabla todavía dependen de que el modelo respete la herramienta, y el guardrail solo revisa el esquema. Si la sala quiere imponerlos por código, es un cambio acotado en _al_entregar y queda como pendiente.",
     "ask": "",
     "close": "",
-    "transition": "El loop del agente y su límite."
+    "transition": "Los números de la corrida del 28/09."
    },
    "minutes": 4,
    "decision": {
@@ -2151,71 +1380,6 @@
     ],
     "proposal": "A. La tabla manda (acuerdo del 25/08 con Juan David). Hoy la categoría se impone en código (V3) y la tabla de atributos la consulta el agente por herramienta, desambiguada por categoría en código; imponer también los campos por código es el siguiente paso. Lo que la tabla no cubre (valores de lista, atributos sin referencia) es lo único que decide el agente.",
     "file": "decisiones/10-tabla-vs-agente.md"
-   }
-  },
-  {
-   "id": "s46",
-   "section": "v2",
-   "title": "El loop tiene un límite y una salida garantizada.",
-   "kind": "code",
-   "lead": "",
-   "label": "",
-   "items": [],
-   "question": "",
-   "options": [],
-   "answer": "",
-   "exercise": null,
-   "table": null,
-   "notes": {
-    "objective": "Mostrar el control del loop agéntico",
-    "say": "Esto es lo que convierte un modelo con herramientas en un agente controlado: un límite de rondas y una última ronda forzada a entregar. Sin esto, un agente puede consultar para siempre o terminar sin respuesta. Seis no es una garantía de calidad: es una garantía de que termina. Lo que entrega todavía puede estar mal; eso es la V3.",
-    "ask": "",
-    "close": "",
-    "transition": "Dónde se paga el costo: la caché de prompt."
-   },
-   "minutes": 4,
-   "code": {
-    "file": "core/src/catalogo/v2.py",
-    "lines": "82-96",
-    "symbol": "MAX_RONDAS",
-    "highlight": [
-     84,
-     86,
-     90
-    ],
-    "caption": "Seis rondas como máximo. En la última solo queda la herramienta de entrega y se desactivan las llamadas en paralelo. Si aun así no entrega, el error es explícito."
-   }
-  },
-  {
-   "id": "s47",
-   "section": "v2",
-   "title": "Caché de prompt: lo estático se paga una vez.",
-   "kind": "code",
-   "lead": "",
-   "label": "",
-   "items": [],
-   "question": "",
-   "options": [],
-   "answer": "",
-   "exercise": null,
-   "table": null,
-   "notes": {
-    "objective": "Conectar la práctica 'estático primero' con el código y con el costo",
-    "say": "El orden del historial es la práctica de la mañana: system fijo, herramientas fijas, el producto y recién después el punto de caché. Bedrock procesa los checkpoints en orden tools → system → messages y cada ronda del loop lee ese prefijo de caché (F4). Mínimo 1.024 tokens para Sonnet 5, que acá se supera. Una ronda que cambia las herramientas invalida la caché: por eso la última ronda cuesta más.",
-    "ask": "",
-    "close": "",
-    "transition": "Los números de la corrida del 28/09."
-   },
-   "minutes": 4,
-   "code": {
-    "file": "core/src/catalogo/v2.py",
-    "lines": "70-80",
-    "symbol": "CachePoint",
-    "highlight": [
-     76,
-     77
-    ],
-    "caption": "Instrucciones, herramientas y producto quedan antes del punto de caché: las seis rondas del loop reutilizan ese prefijo en vez de volver a pagarlo (F4)."
    }
   },
   {
@@ -2727,76 +1891,9 @@
     "say": "Una regla en el prompt es un pedido; un guardrail es una comprobación que no depende de que el modelo obedezca. Dos pasos: primero se le devuelven los problemas al agente para que corrija (una ronda); lo que siga mal se descarta en código. Límite honesto: valida pertenencia al esquema y al dominio por ID; no verifica que el valor sea verdad respecto del producto.",
     "ask": "",
     "close": "",
-    "transition": "Qué mira el validador."
-   },
-   "minutes": 3
-  },
-  {
-   "id": "s54",
-   "section": "v3",
-   "title": "Qué mira el validador.",
-   "kind": "code",
-   "lead": "",
-   "label": "",
-   "items": [],
-   "question": "",
-   "options": [],
-   "answer": "",
-   "exercise": null,
-   "table": null,
-   "notes": {
-    "objective": "Leer las cuatro comprobaciones",
-    "say": "Recorrer las cuatro con el caso guía: ABS Plastic en Código OEM pasa la primera (el atributo existe) y la segunda (tiene dato). Shopee lo rechazó con 'value is not linked': el canal sí tiene una lista para ese atributo, pero nuestro esquema MOCK no la tiene, así que la tercera comprobación no puede detectarlo. Ese es el límite: el guardrail detecta lo que el esquema permite detectar. Por eso el esquema oficial de Shopee es un pendiente de primer orden.",
-    "ask": "¿Qué comprobación agregarían con lo que saben del canal?",
-    "close": "",
-    "transition": "La red final."
-   },
-   "minutes": 4,
-   "code": {
-    "file": "core/src/catalogo/guardrails.py",
-    "lines": "11-23",
-    "symbol": "_problema",
-    "highlight": [
-     13,
-     15,
-     18,
-     20
-    ],
-    "caption": "Cuatro comprobaciones por atributo: que exista en la categoría, que tenga dato, que el valueId esté en la lista del canal y que el nombre coincida con ese ID."
-   }
-  },
-  {
-   "id": "s55",
-   "section": "v3",
-   "title": "La red final no inventa: descarta y marca.",
-   "kind": "code",
-   "lead": "",
-   "label": "",
-   "items": [],
-   "question": "",
-   "options": [],
-   "answer": "",
-   "exercise": null,
-   "table": null,
-   "notes": {
-    "objective": "Mostrar que la salida final siempre cumple el contrato",
-    "say": "Después de esta función nunca sale un valor inválido, un duplicado ni un obligatorio sin informar. Lo descartado no desaparece: queda en rejected con el motivo, para que quien revise entienda por qué. Esto es lo que vale medir en la prueba de las 16:15: cero inválidos detectables.",
-    "ask": "",
-    "close": "",
     "transition": "Decisión 12."
    },
-   "minutes": 4,
-   "code": {
-    "file": "core/src/catalogo/guardrails.py",
-    "lines": "41-57",
-    "symbol": "def limpiar",
-    "highlight": [
-     46,
-     53,
-     56
-    ],
-    "caption": "Lo que no pasa va a rejected con el motivo del guardrail; lo obligatorio sin dato válido va a missing; sin categoría de referencia, se pide revisión."
-   }
+   "minutes": 3
   },
   {
    "id": "s56",
@@ -2853,76 +1950,9 @@
     "say": "Memoria acá no es que el agente aprende solo: es que reutiliza correcciones que una persona del equipo de catálogo cargó explícitamente. Se cargan con un comando; el agente las consulta por categoría. Límite honesto: la persistencia existe; que el modelo siempre las respete depende de que las consulte, por eso la instrucción lo exige y el guardrail revisa después.",
     "ask": "",
     "close": "",
-    "transition": "Una corrección también vacía la caché."
-   },
-   "minutes": 3
-  },
-  {
-   "id": "s58",
-   "section": "v3",
-   "title": "Una corrección vacía la caché.",
-   "kind": "code",
-   "lead": "",
-   "label": "",
-   "items": [],
-   "question": "",
-   "options": [],
-   "answer": "",
-   "exercise": null,
-   "table": null,
-   "notes": {
-    "objective": "Mostrar la relación entre memoria y caché",
-    "say": "Dos reglas simples: una corrección nueva reemplaza a la anterior para la misma categoría, atributo y valor; y toda corrección invalida la caché completa. Es la invalidación más simple posible; en producción conviene invalidar por categoría.",
-    "ask": "",
-    "close": "",
-    "transition": "Determinismo y caché por SKU."
-   },
-   "minutes": 4,
-   "code": {
-    "file": "core/src/catalogo/memoria.py",
-    "lines": "31-41",
-    "symbol": "def corregir",
-    "highlight": [
-     34,
-     35,
-     40
-    ],
-    "caption": "La corrección se guarda con autor y fecha y reemplaza a la anterior del mismo atributo. Como puede cambiar cualquier mapeo guardado, la caché de mapeos se vacía."
-   }
-  },
-  {
-   "id": "s59",
-   "section": "v3",
-   "title": "Mismo SKU, misma salida.",
-   "kind": "code",
-   "lead": "",
-   "label": "",
-   "items": [],
-   "question": "",
-   "options": [],
-   "answer": "",
-   "exercise": null,
-   "table": null,
-   "notes": {
-    "objective": "Recorrer el paso de la V3 completo",
-    "say": "Orden del paso: categoría desde la tabla (decisión 10 hecha código), salida temprana si no hay referencia o esquema, caché por SKU y categoría legacy revisada contra el esquema antes de reutilizarla, y recién después el loop de la V2 con guardrails en la entrega. 40 concesionarios venden el mismo SKU de GM: un solo mapeo. Límite: la clave no incluye versión de tablas ni cuenta; eso es la decisión 13.",
-    "ask": "",
-    "close": "",
     "transition": "Decisión 13."
    },
-   "minutes": 4,
-   "code": {
-    "file": "core/src/catalogo/v3.py",
-    "lines": "62-79",
-    "symbol": "en_cache",
-    "highlight": [
-     65,
-     66,
-     73,
-     74
-    ],
-    "caption": "La tabla fija la categoría antes de llamar al modelo; sin referencia o sin esquema, se devuelve el faltante sin invocarlo. Si hay caché válida para SKU + categoría legacy, el modelo tampoco se llama."
-   }
+   "minutes": 3
   },
   {
    "id": "s60",

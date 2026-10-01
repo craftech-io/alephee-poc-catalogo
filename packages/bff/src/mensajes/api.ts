@@ -7,7 +7,7 @@
 // tabla/cola concreta, igual que `guard`/`limites`) — este módulo no importa
 // ningún SDK de AWS.
 import { randomUUID } from "node:crypto";
-import { MENSAJES_GUARDRAIL } from "@alephee-catalogo/shared/mensajes";
+import { MENSAJES_GUARDRAIL } from "@craftech-ai-chat/shared/mensajes";
 import { AuthError, verifyUserToken } from "../auth/verify";
 import type { BffConfig } from "../config/index";
 import { runtimeSessionId } from "./conversacion";

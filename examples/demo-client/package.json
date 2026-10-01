@@ -1,0 +1,15 @@
+{
+  "name": "@craftech-ai-chat/demo-client",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "prestart": "npm --prefix ../../packages/widget run build",
+    "start": "node server.mjs",
+    "pretest": "npm --prefix ../../packages/widget run build",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "jose": "6.2.9",
+    "vitest": "4.1.11"
+  }
+}

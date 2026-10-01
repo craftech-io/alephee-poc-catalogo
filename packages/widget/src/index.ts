@@ -2,7 +2,7 @@
 // su stack. Toda la UI es DOM plano; los textos visibles viven en MENSAJES.
 import { SesionVencida, TokenSource } from "./token";
 import { renderMarkdown } from "./markdown";
-import { MENSAJES_LIMITE } from "@alephee-catalogo/shared/mensajes";
+import { MENSAJES_LIMITE } from "@craftech-ai-chat/shared/mensajes";
 
 // Registro de textos visibles: el producto es en español y los literales no se
 // dispersan por el código.

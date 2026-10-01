@@ -1,293 +1,315 @@
-# War Room Alephee × Craftech × AWS
+# Clonar este template para un cliente
 
-> Contexto de trabajo para construir, en un día, el agente que mapea categorías y atributos de un producto del catálogo de Alephee a una publicación de canal (Shopee).
-> Última actualización: 2026-09-30 (Gastón Zarate).
+Este repo es el **template** que Craftech vende: se clona una vez por cliente y se
+despliega en **la cuenta AWS del cliente** (BYOC). El template no es el entregable —
+el entregable es el clon. Todo lo específico de un cliente vive en
+`client.config.ts`; si algo específico aparece en otro archivo, es un bug del
+template.
 
-## Revisión aplicada del material y V3 (28/09)
+Lo que sigue es el procedimiento, en orden, con las trampas que ya nos costaron
+tiempo al menos una vez. Está escrito a partir del primer clon real (2026-09).
 
-- Presentación local: `docs/presentacion-warroom.html`, **65 diapositivas en 6 bloques** organizadas como una **cadena de 13 decisiones de diseño**, cada una con lámina de concepto, lámina de código leído del repo (tipo `code`: archivo + líneas + símbolo, el generador falla si no coinciden) y lámina de decisión (30/09). Fuente: `docs/warroom/diapositivas.json`; diseño en `docs/warroom/diseno-presentacion.md`; fuentes externas verificadas en `docs/warroom/fuentes.md`; generadores en `scripts/generar_presentacion.py` (tests en `scripts/test_generar_presentacion.py`) y `scripts/exportar_presentacion_pdf.py` (`uv run --with reportlab python …`). Los quizzes y consignas en parejas del 29/09 se quitaron; quedan tres demos y la prueba final.
-- Guion: `docs/guion-warroom-propuesto.md`; diagnóstico histórico y cambios: `docs/revision-warroom.md`.
-- V3 ahora fija la categoría desde la tabla por código y detiene el mapeo con faltante explícito cuando no hay referencia o esquema. Valida ID/nombre coherentes, quita faltantes ya resueltos y revisa las entradas de caché antes de reutilizarlas.
-- Los resultados de las secciones siguientes son **anteriores a estas correcciones**. No atribuirles una mejora nueva sin otra corrida. El esquema y el expected siguen siendo mock; el chat aún no integra el catálogo.
-- El deck original de Claude no estuvo disponible durante esta revisión. El HTML es una nueva versión local, no una edición de aquel artefacto.
+---
 
-## Datos del evento
+## La parte mecánica la hace un script
 
-**Dinámica (actualizada el 30/09):** Gastón conduce una cadena de 13 decisiones de diseño; cada tema tiene lámina de concepto, lámina de código leído del repo y lámina de decisión que se cierra en la sala antes de seguir. V1, V2 y V3 son los puntos donde lo decidido se compila y se corre. Sin quizzes ni consignas en parejas (se quitaron el 30/09); quedan tres demos conducidas y la prueba final. Guion en `docs/guion-warroom-propuesto.md`.
-
-| |
-|---|---|
-| **Fecha** | **Jueves 1 de octubre de 2026, 09:00–17:30** (confirmado en el calendario, en el sync del 16/09 y en el mail de Alephee del 24/09) |
-| **Lugar** | Oficinas de AWS (Buenos Aires), presencial, con sala con pizarra. Stream por Meet/Teams para quienes estén en Brasil |
-| **Formato** | Se construye en vivo. No es una capacitación. Cada bloque cierra con una versión que funciona y no se pasa a la capa siguiente con algo roto |
-| **Resultado esperado a las 17:00** | Agente funcionando en local con el código en el repo de Alephee, un método repetible y 5+ decisiones documentadas |
-| **Jira** | PREV-83 "Workshop Alephee - AI" (Pre-sales), asignado a Gastón |
-
-⚠️ El temario de Google Docs dice "Miércoles 14 de octubre", pero la fecha vigente es el **1/10**. Hay que corregir el encabezado del doc antes de volver a compartirlo.
-
-## Personas
-
-**Alephee** (cliente)
-- Ricardo "Rick" Flores (rflores@alephee.com): sponsor y contacto principal. Recibe el temario y valida.
-- Maximiliano Olivari (molivari@alephee.com): dueño técnico del flujo actual de IA (prompts, merge de las dos llamadas).
-- Hanss Becerra (hbecerra@alephee.com): dev.
-- Otros asistentes registrados: Agustin Wenner, Victoria Huxley, Jonas Gho, Federico Miguez, David Dellacha y, probablemente, Jonathan Saiegh.
-- Angel Bejarano estuvo en la reunión del 25/08. Falta confirmar si es de Alephee.
-
-**Craftech**
-- Jesus Liernur: Account Manager, lidera la iniciativa, logística y viajes.
-- Gastón Zarate: experto en IA, diseña la metodología y conduce la parte técnica.
-- Luciano Serra: experto en IA.
-
-**AWS**
-- Maria Alejandra "Mariale" Cotes (mcotes@amazon.com): Account Manager Startups. Sala y coordinación de accesos para la jornada.
-- Juan David Novoa (jdnovoa@amazon.com): SA de AWS. Propuso el flujo mixto determinista + agéntico y el whiteboarding de criterios de éxito.
-
-## Qué es Alephee
-Es una plataforma B2B para el **aftermarket automotriz**: repuestos, neumáticos y piezas de motos, camiones y vehículos pesados. Conecta marcas y fabricantes, distribuidores mayoristas y minoristas, y publica sus catálogos certificados en marketplaces (Mercado Libre, Amazon, Shopee). Opera en 8 países de Latinoamérica: Brasil, México, Argentina, Chile, Colombia, Perú, Ecuador y Uruguay ([alephee.com](https://www.alephee.com/)). En la transcripción, el sistema legacy aparece como "la B2". Casi seguro es **"la V2"**: la API pública es v2, vive en `api.alephcrm.com` (la marca anterior sería AlephCRM) y las imágenes del ejemplo están en `alephv2imgstorage`. Es una inferencia y hay que confirmarla con Alephee. En este documento se usa "legacy (V2)".
-
-Para Craftech ya es cliente (ver "Contexto comercial"). En este caso, su cliente más grande es **GM – Chevrolet Brasil**: la marca provee el catálogo y unos 40 concesionarios lo venden en modo solo lectura.
-
-## API pública de Alephee (v2)
-Documentación en [developers.alephee.com/v2](https://developers.alephee.com/v2), con el índice completo en [llms.txt](https://developers.alephee.com/v2/llms.txt) y el Swagger en [api.alephcrm.com/swagger](https://api.alephcrm.com/swagger/ui/index).
-
-- **Autenticación:** `API_KEY` y `accountId` como **parámetros de la URL**, no como headers ([docs](https://developers.alephee.com/v2/introduction/using-the-api/authentication)). Cuidado: la key queda en los logs de URLs. Nunca loguear la URL completa. La key se pide a soporte de Alephee.
-- **Límite de uso:** por `API_KEY`, en ventanas de 1 minuto, con respuesta 429 al excederlo; cada endpoint tiene su propio límite ([docs](https://developers.alephee.com/v2/usage-limiting/rate-limiting)).
-- **Endpoints relevantes** ([índice de métodos](https://developers.alephee.com/v2/introduction/overall-index-of-methods)):
-  - `GET /v2/products?SKU=...`: trae el producto. Los **atributos** (`Name`, `Value`, `ValueName`, `MeasurementUnit`), la `MELICategory` y la descripción vienen solo en la "sección PIM", que requiere licencia PIM ([docs](https://developers.alephee.com/v2/products/get-methods/page-1/response)). **Sirve como herramienta de lectura para el agente.**
-  - `GET /v2/productlistings/search`: publicaciones existentes, filtrables por SKU y marketplace.
-  - `PUT /v2/productlistings`: según las reglas de negocio documentadas, actualiza **precio, margen y valor fijo** de publicaciones activas, no atributos ni categorías ([docs](https://developers.alephee.com/v2/product-listings/put-methods/update-product-listings/business-rules)).
-- **Lo que la API pública NO tiene:** endpoints de categorías, de atributos por canal, de las tablas `reference_*` ni para crear publicaciones con atributos.
-- **Conclusión:** la API pública alcanza para **leer el producto**, pero no para escribir la publicación ni para leer las tablas. Además, el formato de la API (PascalCase, IDs numéricos) **no es el mismo** que el de los ejemplos del mail (Mongo, URNs, camelCase): el flujo de publicaciones vive en la plataforma nueva, que es interna. Para la integración real hace falta acceso interno. Hay que pedírselo a Maximiliano.
-
-## El problema
-
-Alephee migra catálogos desde su producto legacy (**V2**, que usa la taxonomía de categorías y atributos de **Mercado Libre**) y genera una **publicación** para cada canal conectado: Shopee, Magalu, Tienda Nube, etc. La publicación es el producto adaptado al canal, y lo que más importa adaptar es **la categoría y los atributos**.
-
-**Caso del war room:** un producto real del catálogo de **GM – Chevrolet Brasil** publicado en **Shopee**. Un canal y una familia de productos.
-
-### Cómo funciona hoy
-1. **Categoría:** se resuelve primero con la tabla `reference_category` (legacy → canal). Si no alcanza, el LLM elige a partir del nombre de la categoría del CRM y el nombre del producto. Según `index.ts` no usa la descripción, aunque en la reunión se dijo que sí. No se usan imágenes.
-2. **Atributos:** el LLM recibe los atributos del producto, los atributos que espera la categoría del canal y las reglas del canal por tipo de campo (texto libre, dropdown, combo box).
-3. Se hacen **dos llamadas en paralelo**, una con los atributos de referencia (`reference_attribute`) y otra sin ellos. Después un **merge por código** prioriza la lista que usó la referencia. El prompt único era demasiado largo y el modelo no lo resolvía.
-4. **Modelo:** OpenAI, con llamadas directas a la API y sin framework. En la transcripción aparece como "4o mini", "O4 mini" y "GPT-4.1". `index.ts` solo tiene los prompts, no el modelo ni los parámetros (seed, temperatura), así que **sigue sin confirmar**: hay que preguntárselo a Maximiliano.
-5. **Latencia:** es un proceso batch que no bloquea. Tarda 13 s en promedio y 20 s en el peor caso. La latencia no es una restricción.
-
-### Dolores conocidos
-- **Alucinación de atributos:** el modelo inventa valores con tal de responder.
-- **No determinismo:** el mismo producto (mismo SKU de GM, vendido por unos 40 concesionarios) devuelve atributos distintos en cada corrida. Se agregó un seed.
-- **Costo:** el presupuesto de OpenAI es de unos USD 350/mes, con recargas de USD 50 hasta un tope. **Cuando se agota, se publica sin atributos.**
-- **No hay caché:** el mismo SKU se reprocesa para cada seller aunque el catálogo lo provee la marca en modo solo lectura.
-- **Salida duplicada:** en el ejemplo, `Type of shell` sale dos veces con el mismo URN. Lo más probable es que el merge de las dos llamadas no deduplique por URN (hipótesis: el merge no está en `index.ts`). Ver `inputs/ejemplos/`.
-- **37 atributos de entrada, 7 de salida:** no es necesariamente un error. Las medidas del paquete van a `dimensions` y la categoría Calotas de Shopee probablemente pide pocos atributos. Para saberlo hace falta la lista de atributos de esa categoría en Shopee.
-- Si un atributo es obligatorio en el canal y no existe en el origen, alguien tiene que cargarlo a mano. El agente no puede inventarlo.
-
-### Tablas de referencia (las mantiene el equipo de catálogo de Alephee)
-- `reference_attribute`: ID de atributo legacy (V2/ML) → ID de atributo del canal. Mapea **campos, no valores**. La exportación real tiene **2.567 filas para Shopee sobre 930 ids legacy, y 306 ids legacy apuntan a más de un atributo de Shopee** (el atributo de destino depende de la categoría). En la reunión se habló de 735.
-- `reference_category`: categoría legacy → categoría del canal. La exportación real tiene **2.866 filas, una por id legacy**. El `legacyId` es el número pelado (`"1106872"`); en el producto la categoría viene como `urn:category:<número>`.
-- Hay una tabla de cada tipo por canal. El equipo de catálogo no participa del flujo en tiempo real: actualiza las tablas cada tanto.
-
-### Prompts actuales (`inputs/prompts-actuales/index.ts`)
-El archivo tiene 5 prompts en TypeScript. Los tres primeros son el alcance del war room:
-
-| Prompt | Qué hace | Observación |
-|---|---|---|
-| `categoryPrompt` | Elige una categoría del canal: primero por coincidencia exacta de nombre y, si no hay, por similitud semántica | Solo usa el **nombre de la categoría del CRM y el nombre del producto**, no la descripción (en la reunión se dijo otra cosa). Manda la lista completa de categorías en el prompt. `product.categories?.[0].name` rompe si `categories` viene vacío |
-| `attributeReferencePrompt` | Llamada "con referencia": cruza `legacyId` de la tabla con el URN del producto, copia el URN y el tipo, y elige el valor | **Casi todo es lógica determinista pedida al LLM:** join por ID, copiar URN, buscar tipo. Lo único que necesita modelo es elegir el valor de lista más cercano (por ejemplo, `"1"` → `Sim`) |
-| `attributePrompt` | Llamada "sin referencia": mapeo semántico libre de atributos del CRM a atributos del canal, con reglas de tipos de Shopee | Contradice al anterior en unidades: este dice "usar la unidad más cercana" y el de referencia dice "NEVER transform units" |
-| `brandPrompt` | Elige la marca del canal | Fuera de alcance |
-| `productInfoPrompt` | Genera título y descripción de marketing | Fuera de alcance. Es generación libre, no mapeo |
-
-**Implicancias para el diseño (para llevar a la decisión 3):**
-- `attributeReferencePrompt` se puede pasar **casi entero a código**. El agente solo intervendría para normalizar valores de lista y para los atributos que no están en la tabla. Eso elimina la doble llamada y el merge.
-- Los prompts ponen primero la parte variable (el producto) y después listas grandes (categorías, atributos). OpenAI aplica caché de prompts automáticamente sobre el **prefijo** idéntico de prompts de 1024 tokens o más ([docs de OpenAI](https://platform.openai.com/docs/guides/prompt-caching)). Reordenando el prompt para dejar primero lo estático, ya se reduciría el costo sin cambiar de proveedor. Esto hay que medirlo, no darlo por hecho.
-- Las salidas son JSON pedido "por favor" en el texto. Con salida estructurada (JSON schema o tool calling) se evitan los errores de formato.
-- El formato de valores del prompt (`id`/`name`) no coincide con el de la publicación guardada (`urn`/`name`/`unit`). La conversión se hace en un código que no tenemos.
-
-## Decisiones ya tomadas (antes del war room)
-1. Este proyecto es la **base arquitectónica**: el stack y la arquitectura agéntica se van a replicar en otros casos de uso de Alephee (25/08).
-2. **Flujo mixto:** lo que ya resuelven las tablas se hace con una capa determinista y **no pasa por el modelo**. El agente invoca esa capa como herramienta pero no razona sobre ella (25/08, a propuesta de Juan David).
-3. **Harness de desarrollo genérico** para conducir la construcción, sin proveedor obligatorio (actualizado por Gastón, 29/09). Verificar capacidades, accesos y presupuesto del entorno elegido; no asumir créditos ni licencias de un proveedor concreto.
-4. La solución se llama "agente" o "solución", no "bot", porque puede terminar siendo un flujo agéntico con más de un agente (16/09).
-5. La definición de la solución incluye whiteboarding de arquitectura, criterios de éxito y el dataset de prueba (16/09).
-6. **El agente corre sobre Amazon Bedrock con Claude Sonnet 5** (Gastón, 25/09).
-7. **Este directorio es el repo del agente** (Gastón, 25/09). Es un **clon del template `craftech-io/chatbot-demo`** con slug `alephee-catalogo` (Gastón, 28/09).
-8. **Mientras no lleguen los datos reales, se trabaja con mocks** en `data/mock/` (Gastón, 25/09).
-9. **Stack: Python + LlamaIndex Workflows + `BedrockConverse`**, el mismo del core del template (Gastón, 28/09).
-10. **Interfaz: chat y batch.** En la sala se muestra el chat del template (widget + BFF + AgentCore) y el mismo workflow corre en batch sobre el dataset, que es como lo usaría Alephee en producción (Gastón, 28/09).
-11. **Clon:** remoto en GitHub `craftech-io`, auth del chat por **HMAC** para la demo, trazas **solo en CloudWatch** (Gastón, 28/09).
-
-## Decisiones a tomar en la sala (13, repartidas en la jornada)
-Cada decisión se presenta con opciones y consecuencias, y se cierra antes de pasar a la siguiente. Se documentan en `decisiones/NN-titulo.md` (contexto, opciones, propuesta, decisión, razonamiento, responsable); los 13 archivos ya existen con la decisión en blanco.
-
-| N | Decisión | Bloque | Archivo |
-|---|---|---|---|
-| 1 | ¿Qué hace y qué no hace? (un canal, una familia) | 09:00 | `decisiones/01-alcance.md` |
-| 2 | ¿Qué recibe y qué entrega? (`missing` y `rejected` con motivo) | 09:00 | `decisiones/02-contrato.md` |
-| 3 | ¿Single prompt, workflow, agente o multiagente? | 09:30 | `decisiones/03-tipo-de-aplicacion.md` |
-| 4 | ¿Cómo se garantiza el formato? (tool + Pydantic) | 09:30 | `decisiones/04-salida-estructurada.md` |
-| 5 | ¿Dónde corre? (local hoy; chat en AgentCore; batch a medir) | 09:30 | `decisiones/05-donde-corre.md` |
-| 6 | ¿Qué modelo? (Sonnet 5; Haiku 4.5 a probar) | 09:30 | `decisiones/06-modelo.md` |
-| 7 | ¿Con qué stack? | 09:30 | `decisiones/07-stack.md` |
-| 8 | ¿Cuándo está bien hecho? (número acordado antes de la V1) | 09:30 | `decisiones/08-criterio-de-exito.md` |
-| 9 | ¿Con qué dataset? | 09:30 | `decisiones/09-dataset.md` |
-| 10 | ¿Qué decide la tabla y qué decide el agente? | V2 | `decisiones/10-tabla-vs-agente.md` |
-| 11 | ¿Cuánto puede costar? | V2 | `decisiones/11-costo.md` |
-| 12 | ¿Qué hace cuando no sabe? (reemplaza "publicar sin atributos") | V3 | `decisiones/12-cuando-no-sabe.md` |
-| 13 | ¿Cómo garantizamos determinismo? (caché por SKU + canal) | V3 | `decisiones/13-determinismo-y-cache.md` |
-
-Temas abiertos que no se deciden hoy: gobernanza, seguridad, política de revisión de `missing` e integración con Alephee (API pública para leer, acceso interno para escribir).
-
-## Agenda
-| Hora | Bloque |
-|---|---|
-| 09:00 | Arranque: qué tenemos a las 17:00 y repaso del caso (producto GM en Shopee) |
-| 09:30 | Definimos la solución (las 7 decisiones de arriba) con whiteboarding |
-| 10:30 | Cómo está hecho un agente por dentro, 30 min: instrucciones, herramientas, memoria y control |
-| 11:15 | **V1 · el agente responde:** solo instrucciones. Se espera que falle, y esos fallos justifican las capas siguientes |
-| 13:15 | **V2 · el agente se integra:** herramientas (lookup en las tablas de referencia, catálogo de atributos del canal) |
-| 15:00 | **V3 · el agente bajo control:** guardrails y memoria |
-| 16:15 | **La prueba:** agente nuevo contra el proceso actual sobre el mismo dataset y con el criterio de la mañana. Cierre: camino a producción, quién hace qué y para cuándo |
-
-## Estructura de este directorio
-Es el clon del template `chatbot-demo` (ver su `README.md` y `docs/`), más lo propio del war room:
-
-```
-CLAUDE.md                      este archivo (el playbook de clonado del template se borró, como corresponde)
-client.config.ts               config por cliente: slug alephee-catalogo, modelo, región, prompt, topes
-core/                          el agente (Python / LlamaIndex Workflows), contrato BYOC /ping y /invocations
-  src/agent/                   el chat del template: ChatWorkflow, adaptador BedrockConverse, tools, costo
-  src/catalogo/                LO NUESTRO: el agente de catálogo
-    modelos.py                 contrato de salida (Pydantic `Publicacion`)
-    eventos.py                 MapeoStart / MapeoDone
-    llm.py                     crea el BedrockConverse (único módulo que sabe de Bedrock)
-    v1.py                      V1 · solo instrucciones: Workflow de un paso, salida por tool `entregar_publicacion`
-    herramientas.py            V2 · buscar_categoria, atributos_del_canal, buscar_atributos_referencia + FuenteCatalogo
-    v2.py                      V2 · agente con herramientas (loop acotado, caché de prompt, entrega forzada en la última ronda)
-    guardrails.py              V3 · revisar (devolución al agente) y limpiar (red final)
-    memoria.py                 V3 · correcciones del equipo de catálogo + caché por SKU (memoria/, fuera de git)
-    v3.py                      V3 · V2 + guardrails con una ronda de corrección + memoria + caché
-    corregir.py                CLI para cargar una corrección (scripts/corregir.sh)
-    datos.py                   carga tablas y dataset (DATA_DIR, por defecto data/mock/)
-    evaluacion.py              compara contra `expected`: exactos, precisión, recall, inválidos, duplicados, faltantes
-    correr.py                  modo batch: corre una versión sobre el dataset y guarda en resultados/
-  tests/                       tests del template + test_catalogo_*.py (con dobles, sin AWS)
-packages/                      bff, worker, widget, shared (TypeScript)
-apps/web, apps/api             app web de demo (modo mock sin AWS) y stand-in de la API del cliente
-infra/sst/                     IaC (SST): Runtime, Gateway, Guardrail, Memory, tablas, colas
-data/mock/                     datos MOCK (10 casos con salida esperada inventada, salvo el 01)
-data/real/                     datos REALES de WarRoom.zip: 2 tablas + 30 productos con la publicación actual
-inputs/                        ejemplos, prompts actuales (index.ts) y WarRoom.zip + WarRoom/ crudo (ignorado por git)
-scripts/importar_warroom.py    WarRoom/ → data/real/ (saca relations e _id de Mongo)
-decisiones/                    una decisión por archivo, completada en la sala
-scripts/correr.sh              atajo del modo batch
-resultados/                    salidas de cada corrida (ignorado por git)
+```bash
+bash scripts/clonar-para-cliente.sh <slug-del-cliente>
 ```
 
-## Stack y cómo correr
-- **Python 3.13 + uv**, **LlamaIndex Workflows** y **`BedrockConverse`** (`llama-index-llms-bedrock-converse` 0.14.18, que ya lista `anthropic.claude-sonnet-5` con tool calling y caché de prompts). Front, BFF e IaC en TypeScript con **SST**.
-- **Modelo:** Claude Sonnet 5 en Bedrock, región `us-east-1`, perfil SSO `sandbox` en local. ID **`us.anthropic.claude-sonnet-5`** (verificado 28/09: Converse acepta `us.` y `global.`; sin prefijo da `ValidationException` por falta de throughput on-demand). Ya está en `client.config.ts`.
-- **Patrón del template que se respeta:** el workflow no conoce Bedrock (recibe el LLM inyectado), cada step se prueba con dobles, todo en español, comentarios escasos, y **toda capacidad nueva trae su modo mock**.
-- **Comandos:**
-  ```bash
-  aws sso login --profile sandbox          # si la sesión venció
-  uv sync && npm install
-  uv run pytest core/tests                 # Python, sin AWS
-  npm test && npm run typecheck            # TypeScript
-  npm run dev                              # chat en modo mock: http://localhost:3000
-  scripts/correr.sh --version v1           # batch contra Bedrock + evaluación (10 mock)
-  scripts/correr.sh --version v1 --datos real      # los 30 productos reales
-  scripts/correr.sh --version actual --datos real  # el proceso de hoy, sin modelo
-  uv run python scripts/importar_warroom.py && uv run python scripts/generar_mocks_reales.py  # regenerar data/real
-  scripts/correr.sh --version v1 --caso 03-valor-en-otro-idioma
-  ```
-- **Métrica de "La prueba":** un caso es **exacto** si la categoría es correcta, no sobra ni falta ningún atributo, no hay valores fuera de dominio ni duplicados, y los faltantes obligatorios coinciden con los esperados. Además se reportan precisión y recall de atributos, tokens y latencia. El umbral de éxito se acuerda en la sala (decisión 5).
-- **Resultado de la V1 sobre el dataset mock (28/09):** 6/10 exactos, precisión 0,92, recall 0,97, **0 valores inválidos**, 0 duplicados, ~5 s por producto, ~3.700 tokens de entrada y ~400 de salida por producto, sin caché. Los 4 que fallan:
-  - **09 (sin categoría):** el modelo **inventó la categoría** a partir del nombre ("Calota") aunque el producto no traía categoría de origen, y marcó como faltantes atributos que el caso no esperaba. Es el fallo que justifica la V2: sin categoría de origen, la respuesta tiene que ser determinista.
-  - **04 (booleano falso):** mapeó bien `Não`, pero descartó `Tipo de taza = Centro` en vez de llevarlo a `Parcial`. Es discutible: el `expected` mock puede ser demasiado generoso. Revisarlo con el equipo de catálogo.
-  - **07 (unidad) y 10 (dato en la descripción):** el modelo eligió la opción "generosa" (convirtió 390 g a 0,39 kg y sacó el color de la descripción). Son decisiones pendientes: si la sala las aprueba, pasan a ser correctas.
-- **V2 (hecha 28/09):** el agente consulta con herramientas la tabla de categorías, el esquema de la categoría y la tabla de atributos (filtrada por los atributos que tiene la categoría: resuelve los 306 destinos ambiguos). Las herramientas leen a través de `FuenteCatalogo`: hoy los archivos, mañana lo que Alephee exponga. La descripción se recorta a 1.500 caracteres (llegan a 19.000). Hay un punto de caché después del producto y caché de system y tools. En la última de 6 rondas solo queda la herramienta de entrega.
-- **V3 (hecha 28/09):** extiende la V2. Cada entrega pasa por `guardrails.revisar`: si hay problemas, el agente recibe la lista y tiene una ronda para corregir; después `guardrails.limpiar` descarta lo inválido y marca los obligatorios que faltan. Suma la herramienta `buscar_correcciones` (memoria del equipo de catálogo, manda sobre el modelo) y la caché por SKU + categoría legacy (`--cache` en el runner; cargar una corrección la vacía).
-- **Demo de memoria:** `scripts/corregir.sh --categoria <urn> --urn <atributo> --valor-producto <valor> --value-id <id> --value <nombre>` y volver a correr el caso.
-- **Reevaluar sin llamar al modelo:** `uv run python scripts/reevaluar.py resultados/<corrida>.json` (cuando cambia `expected`).
-- **Cómo sumar otra versión:** un Workflow en `core/src/catalogo/` que reciba `MapeoStart` y devuelva `MapeoDone`, registrado en `_versiones()` de `correr.py`.
-- **Cómo llega al chat (pendiente):** una `FunctionTool` `mapear_producto(sku)` en `core/server.py` que corre el workflow de catálogo; su texto mock va en `apps/web/mock.mjs`. El Dockerfile hoy copia solo `core/`: hay que sumar `data/`.
+Sobre el clon, **no sobre este repo** (tiene una guarda que lo verifica por el
+remoto). Hace los pasos 1 a 4 de acá abajo —estructura, slug, scope, workspaces,
+`.gitignore`, corpus de ejemplo, diagrama—, corre el grep de control y al final
+**imprime lo que queda para una persona**.
 
-### Datos reales (WarRoom.zip, recibido el 24/09, importado el 28/09)
-- **30 productos de 22 categorías de Shopee, ninguno de Calotas**: 20 publicados y 10 rechazados por Shopee. Cada caso trae el producto, la publicación que genera hoy el proceso (`actual`) y, si fue rechazado, el motivo (`actual.error`).
-- **Motivos de rechazo:** obligatorio faltante (Inmetro Certification, GTIN, Manufacturer, Auto-Part Number), "Attribute value is not linked to <atributo>" (valor fuera de la lista del canal) y "Only support to fill one value".
-- **Errores del proceso actual que Shopee acepta igual:** valores `-1` publicados como valores en 9 de 30, atributos duplicados en 4 (uno con 9 repetidos) y 2 publicaciones cuya categoría no es la de `reference_category`.
-- **Lo que no vino en el zip lo generamos nosotros, marcado como MOCK** (decisión de Gastón, 28/09: "es de prueba"), con `scripts/generar_mocks_reales.py`:
-  - `data/real/shopee_atributos_por_categoria.json`: atributos por categoría (tipo, obligatorio, valores válidos, `maxValues`). Sale de lo visto en las publicaciones, de los rechazos de Shopee (obligatorios y valores "not linked") y de alternativas inventadas para los dominios. Las 2 categorías de la tabla sin publicaciones heredan el esquema de la categoría donde se publicó.
-  - `expected` de cada caso: la publicación actual limpia (sin `-1`, sin duplicados, sin valores fuera de dominio, categoría de la tabla) más los obligatorios que faltan, completados desde el producto vía `reference_attribute` cuando hay dato. **Hereda omisiones del proceso actual:** un atributo que hoy no se mapea tampoco está en `expected`, así que el recall del proceso actual sale inflado. Hay que validarlo con catálogo.
-  - El importador normaliza los URN publicados sin `:vendor:shopee` (id ≥ 100000) y cuenta cuántos había en `actual.urnsSinVendor`.
-- **Bugs reales del proceso actual que sirven de demo:** 26306808 con URN sin sufijo y el id del atributo como valor; 88904447 con "Código OEM" = "ABS Plastic" (el material copiado a otro atributo); 24581199 con "Quantity" 10 veces; 98500020 con atributos legacy de ML publicados sin mapear; 98550368 con 14 de 15 URN sin sufijo.
-- **Línea de base del proceso actual sobre los 30 reales (28/09):** 7/30 exactos con el `expected` actual (la evaluación anterior daba 9), 28/30 categorías correctas, precisión 0,72, **47 valores inválidos** (`-1` o fuera de dominio) y 5 duplicados. Comando: `scripts/correr.sh --version actual --datos real`.
-- **Comparación sobre los 30 reales (28/09, contra el `expected` mock):**
+Como último paso **se borra a sí mismo, borra este CLAUDE.md y borra `.claude/`**:
+nada de eso va al repo del cliente. Son documentación y herramientas internas de
+Craftech, y hablan del proceso, no del producto.
 
-  | Métrica | Proceso de hoy | V1 | V2 | V3 |
-  |---|---|---|---|---|
-  | Casos exactos | 7 | 5 | 4 | 4 |
-  | Categoría correcta | 28 | 26 | 30 | 28 |
-  | Valores inválidos (`-1` o fuera de lista) | 47 | 19 | 9 | **0** |
-  | Duplicados | 5 | 0 | 0 | **0** |
-  | Obligatorios faltantes sin informar | 2 | 2 | 0 | **0** |
-  | Tokens de entrada sin caché por producto | — | ~22.000 | ~1.600 (+12.000 de caché) | ~3.100 (+15.000 de caché) |
-  | Segundos por producto | 13 (informado el 25/08) | 12,3 | 18,3 | 23,2 |
+En `.claude/skills/` hay dos skills. **`marca-del-cliente`** arma la identidad
+visual: saca la paleta del logo del cliente, verifica contraste WCAG y llena
+`marca.mjs`. Vale leerlo aunque no lo invoques — el color de marca de un cliente
+muchas veces NO se puede usar tal cual porque no llega al mínimo de contraste con
+el texto que va encima, y eso no se ve hasta que alguien no puede leer el chat.
 
-  Los "exactos" son bajos en todas las columnas porque la vara es estricta y el `expected` es mock: hereda omisiones del proceso actual (lo favorece) y cualquier atributo extra bien mapeado cuenta como error. La lectura que vale: la V3 nunca entrega un valor inválido, un duplicado ni un obligatorio sin informar. Resultados en `resultados/` (fuera de git). La sesión SSO de `sandbox` dura pocas horas: renovarla antes de cada tanda.
-- Los archivos crudos pesan ~15 MB, casi todo `relations` (compatibilidades con vehículos), que no hace falta para el mapeo.
+Y **`clonar-para-cliente`**, que **conduce** el clonado:
+hace la entrevista de las decisiones que ramifican (slug, remoto, IdP, de dónde
+salen los documentos, escalamiento, observabilidad), corre el script y cierra con
+los mensajes para pedirle al cliente lo que falte. Es el punto de entrada
+recomendado; este documento es su material de referencia.
 
-### Datos mock
-- Todo lo inventado está marcado con `_origen: "mock"`, con `(MOCK)` en el nombre o con SKU `MOCK-*`. Lo que sale del ejemplo real está marcado como tal. **Nunca presentar un dato mock como real.**
-- El dataset cubre: caso real, caso feliz, valor en otro idioma, booleano falso, valor fuera de dominio, obligatorio faltante, unidad distinta, categoría sin referencia, producto sin categoría y dato que solo está en la descripción.
-- Los casos 07, 08 y 10 tienen `decision_pendiente`: su salida esperada depende de decisiones que se toman en la sala.
-- `Material` (legacyId 1726) no está en `reference_attribute` a propósito, para probar el camino que sí necesita modelo.
-- Cuando llegue `WarRoom.zip`, se reemplazan las tablas y se suman los 30 productos reales. Los casos mock se pueden quedar como tests de borde.
+Lo que sigue es el detalle: lo que el script hace (para poder revisarlo) y lo que
+no puede hacer.
 
-## Reglas para trabajar en este repo
-- **La tabla de referencia manda.** Si `reference_attribute` o `reference_category` tienen el mapeo, se usa sin consultar al modelo. Nunca proponer que el LLM "mejore" un mapeo de la tabla.
-- **Nunca inventar valores de atributos.** Si el canal exige un valor que no existe en el origen, marcarlo como faltante con un motivo explícito. No rellenarlo.
-- **Los valores de lista deben pertenecer al dominio del canal** (por ejemplo, `Condição do Item` = `Novo` con URN `14703`). Todo valor fuera del dominio se rechaza.
-- **Determinismo:** el mismo SKU tiene que dar la misma salida. Preferir la caché por SKU y canal antes que recalcular.
-- **No hardcodear las API keys** de OpenAI, AWS ni Alephee. Van en variables de entorno o en un gestor de secretos, y el `.env` va en el `.gitignore`.
-- **Datos personales:** los DNI de los asistentes están en el hilo de mail de logística y **no** se copian a este repo.
-- Cada versión (V1, V2, V3) se commitea y se tagea antes de pasar a la siguiente, para poder comparar.
-- Los datos del catálogo son de Alephee y de sus clientes (GM, concesionarios). No se suben a servicios externos fuera de los acordados.
+---
 
-## Pendientes antes del 1/10
-| Qué | Quién | Estado |
-|---|---|---|
-| Corregir la fecha en el temario (dice 14/10) | Jesus / Gastón | Pendiente |
-| Instructivo y prueba del harness de desarrollo elegido | Craftech | **Verificar entorno y accesos antes de la jornada** |
-| Accesos y presupuesto del harness de desarrollo | Craftech / Alephee | Confirmar según el entorno elegido; sin proveedor obligatorio |
-| Tablas de referencia exportadas y 30 productos de ejemplo | Alephee | **Hecho.** Importados a `data/real/` el 28/09 |
-| Atributos por categoría de Shopee | Gastón | **Mock generado** (28/09). Reemplazar por los reales si Alephee los pasa |
-| Salida esperada de los 30 reales | Gastón | **Mock generado** (28/09). Validar con catálogo si hay tiempo |
-| Adaptar el evaluador a los datos reales | Gastón | **Hecho.** Línea de base del proceso actual: 7/30 exactos con el `expected` actual (9 en la evaluación anterior), 47 inválidos |
-| Correr V1, V2 y V3 sobre los 30 reales | Gastón | **Hecho** (28/09) |
-| Pedirle a Rick un repo de Alephee para dejar el código a las 17:00 | Gastón | Pendiente |
-| Pedir a Maximiliano: modelo y parámetros exactos, el código del merge y del lookup de `reference_category`, y la lista de atributos de Calotas en Shopee | Gastón | Pendiente |
-| Pedir acceso para integrar: `API_KEY` y `accountId` de prueba de la API v2 (con licencia PIM), y cómo se leen y escriben publicaciones y tablas `reference_*` en la plataforma nueva | Gastón → Maximiliano / Rick | Pendiente |
-| Cuenta AWS con Bedrock habilitado y acceso al modelo elegido, para el día del war room | Mariale / Juan David | Pendiente |
-| Preparar V1 base "masticada" para no arrancar de cero en la sala | Gastón / Luciano | **Hecho.** Corrida contra Bedrock el 28/09: 6/10 exactos, 0 inválidos |
-| Verificar el model ID de Sonnet 5 en Converse y actualizar `client.config.ts` | Gastón | **Hecho** (`us.anthropic.claude-sonnet-5`) |
-| Cerrar el clon: prosa que menciona el template (README, `docs/diseno.md`, `docs/notas-tecnicas.md`), secciones internas de `docs/diseno.md`, textos de `apps/web/mock.mjs`, `marca.mjs` (nombre y paleta de Alephee), `promptSistema` y topes en `client.config.ts` | Gastón | Pendiente |
-| Integrar el agente de catálogo al chat (`mapear_producto`) + mock | Gastón | Pendiente |
-| Crear el repo en `craftech-io` y primer commit | Gastón | Pendiente (esperando OK) |
-| Primer deploy a sandbox **desde local** (Docker buildx + ARM64), stage a definir | Gastón | Pendiente |
-| Preparar V2 y V3 | Gastón | **Hecho** (28/09), tag `v3` |
-| Presentación del war room | Gastón | **Rehecha** (30/09): 65 láminas, 13 decisiones, código del repo en pantalla; la tabla de la prueba se completa en vivo. Ensayar tiempos del bloque 2 |
-| Checkpoint Gastón / Jesus | Hoy 25/09, 10:30 | — |
+## 0. Decisiones antes de tocar nada
 
-## Contexto comercial (no es alcance del war room)
-- Alephee ya es cliente de Craftech: renovación, SOW "IW Build", propuesta de un equipo de arquitectura y desarrollo, y una PoC de Data Lake.
-- Alephee está migrando su base a Postgres. Cuando cierre la etapa 1, Rick comparte los esquemas para arrancar los cimientos del data lake.
-- AWS nominó a Juan David y a Rick como speakers en AI Experience (4 de noviembre) con esta metodología, si el war room sale bien.
+**El slug es irreversible.** Queda incrustado en el nombre físico de cada recurso
+(el repo ECR, las URLs, los log groups). Cambiarlo después obliga a recrear el stack
+entero. Tiene que ser kebab-case; `infra/sst/nombres.ts` lo valida en el synth.
 
-## Fuentes
-- Temario: [War Room Alephee × Craftech — Temario (validación AWS)](https://docs.google.com/document/d/1bZbFmeoRltffTDj9lr48_JAFz9lAlRVww5CunzLx-Vg/edit)
-- Borrador previo de Gastón: [War room … (14/10/2026)](https://docs.google.com/document/d/142WUJ5VZUFnG1h8cAmtV5Gegiy6BEKmHAS_EppAlKOg/edit)
-- Reunión 25/08 "Alephee — AI workshop": [notas y transcripción de Gemini](https://docs.google.com/document/d/1BS6eTnPPWyKIoVS1mglrca4Lq8bIgcoi4eR7f4vYJqY/edit)
-- Reunión 16/09 "Sync Alephee - War Room": [notas y transcripción de Gemini](https://docs.google.com/document/d/1_u7NyZG4pYwJuQ7wkHmAKKIoAi6AMIdg--SRiK63FCQ/edit)
-- Mails: "Prompts" y "Re: Prompts" (Maximiliano Olivari, 25/08), "War Room AI — 1/10" (logística, 17–24/09), "Archivos para la War Room Alephee" (Maximiliano Olivari, 24/09)
+**El stage se llama `production` o se pierden las protecciones.** `sst.config.ts`
+compara el string exacto:
+
+```ts
+removal: input?.stage === "production" ? "retain" : "remove",
+protect: input?.stage === "production",
+```
+
+Un stage llamado `prod`, `prd` o cualquier otra cosa queda con `removal: remove`: un
+`sst remove` se lleva las tablas con las conversaciones. El template usa `staging`
+a propósito (es el showcase interno); **un clon de cliente va a `production`**.
+
+**Con qué autentica el cliente a sus usuarios.** Definilo antes del primer deploy,
+porque sin emisor de tokens el BFF rechaza todos los mensajes. Tres caminos:
+JWKS de su IdP (lo correcto), HMAC (secreto compartido, sirve para arrancar), o un
+pool Cognito propio si no tienen IdP (ver §6).
+
+---
+
+## 1. Historia de git
+
+El clon arranca con **un commit inicial limpio**: la historia del template son ~200
+commits de construcción del producto, con decisiones internas y nombres de otros
+clientes. No es información del cliente.
+
+```bash
+rm -rf .git && git init && git branch -M main
+```
+
+**Identidad del repo.** Configurala **local al repo**, no global, si el remoto del
+cliente usa otra identidad que la de tu día a día:
+
+```bash
+git config user.email "<tu-email-del-remoto-del-cliente>"
+git config user.name "<tu nombre>"
+```
+
+Verificá con `git log --format=%ae -1` **antes** del primer push: reescribir autores
+después obliga a un force-push sobre el repo del cliente.
+
+---
+
+## 2. Renombrar: slug, scope y estructura
+
+Tres renombrados mecánicos. El grep de control es
+`git grep -l "craftech-ai-chat\|craftech-io\|chatbot-demo"` — al terminar tiene que
+dar **cero** archivos (excepto `package-lock.json`, que se regenera con `npm i`).
+
+**a) El slug** en `client.config.ts` (`slug: "<slug-del-cliente>"`).
+
+**b) El scope npm** `@craftech-ai-chat/*` → `@<slug>/*` en el `package.json` raíz,
+en `packages/*/package.json` y en cada import que lo use. Después `npm install` para
+regenerar el lock.
+
+**c) `examples/` → apps reales.** En el template son piezas de ejemplo; en el clon
+son las apps del cliente:
+
+| Template | Clon |
+|---|---|
+| `examples/demo-client` | `apps/web` |
+| `examples/api-cliente` | `apps/api` |
+| `examples/documentos` | `documentos/` (a la raíz) |
+
+**No te olvides del `.gitignore`**: la línea `examples/*/sst-env.d.ts` tiene que
+pasar a `apps/*/sst-env.d.ts`, o los tipos generados de las apps se commitean.
+
+Y los handlers en `infra/sst/*.ts` referencian esas rutas (`apps/api/handler.handler`,
+`packages/bff/src/chat/lambda.handler`): el typecheck de infra no los valida, así que
+un path viejo se descubre en el deploy.
+
+---
+
+## 3. Sacar todo lo que es del template y no del cliente
+
+**El corpus de ejemplo.** `documentos/` trae documentos de una empresa inventada.
+Borralos: si alguien corre una ingesta, el chatbot del cliente contesta sobre una
+tienda que no existe. El `README.md` de ese directorio sí se queda — documenta el
+formato de los sidecars `.metadata.json`, que es el mismo que escribe el ingestor de
+Confluence.
+
+**El texto del modo mockeado.** `apps/web/mock.mjs` tiene strings **visibles al
+usuario** que citan el corpus de ejemplo. Si quedan, alguien del cliente levanta el
+modo local y el chat le habla de otra empresa.
+
+**Las secciones internas del spec.** `docs/diseno.md` tiene el plan de fases de
+entrega y los riesgos comerciales del producto ("validar la cobertura antes de
+prometerle el sabor Terraform a un cliente"). Eso es planificación de Craftech y no
+va al repo del cliente. Las secciones de arquitectura sí se quedan: son la referencia
+que se le explica al cliente con el diagrama.
+
+**Los nombres de archivos de credenciales.** `.cognito-demo.local` y
+`.secreto-demo.local` son del showcase; en el clon van con el nombre del stage
+(`.cognito-production.local`). Están cubiertos por `*.local` en el `.gitignore` —
+verificalo con `git check-ignore`, **nunca se commitean**.
+
+---
+
+## 4. El diagrama
+
+Es generado y determinístico, así que se rehace con el slug del cliente:
+
+```bash
+node docs/arquitectura.mjs docs/arquitectura.excalidraw <slug> cliente
+```
+
+El tercer argumento es el sabor: `generico` nombra las cajas "App web" y "API del
+cliente" (el template); `cliente` las nombra `apps/web` y `apps/api` (rutas reales
+del clon). Regenerar da byte por byte el mismo archivo, así el diff se lee.
+
+Revisá que las cajas describan lo que el cliente **realmente** va a tener. La del
+emisor de tokens es la que más cambia: si le creaste un Cognito provisorio, decirle
+"IdP del cliente" da a entender que es el suyo.
+
+---
+
+## 5. El CI
+
+El template usa **GitHub Actions** (`.github/workflows/`). Si el cliente usa otro
+remoto, hay que portarlo. Lo que aprendimos portándolo a Bitbucket Pipelines está en
+`docs/notas-tecnicas.md`, "Portar el CI a Bitbucket Pipelines" — leelo antes, son
+tres puntos duros que cuestan una corrida cada uno.
+
+Dos cosas valen para **cualquier** CI:
+
+**`sst install` necesita `--stage`** en el runner de Bitbucket. `.sst/stage` es
+gitignoreado y ahí no existe. En GitHub Actions no hace falta, pero pasalo igual: es
+una línea y saca la inferencia del medio.
+
+**`sst-env.d.ts` de la raíz está trackeado y tiene que tener contenido.** Declara el
+tipo `Resource` y **solo lo generan `sst deploy` y `sst dev`** — ni `sst install` ni
+`sst diff`. En una cuenta sin desplegar queda con `Resource {}` vacío y el typecheck
+del CI falla con ~20 errores `TS2339`. Por eso el **primer deploy va desde local**
+(§7) y su `sst-env.d.ts` se commitea.
+
+Y actualizá el README: su sección de CI describe el estado del template, no el del
+clon.
+
+---
+
+## 6. Prerequisitos de la cuenta del cliente
+
+Los tres primeros son bloqueantes y **ninguno lo hace el stack**. El detalle está en
+`docs/adopcion.md` §0; acá va lo que importa recordar: **los tres fallan en silencio**
+—el deploy sale verde— así que verificalos con los comandos, no con la consola.
+
+| Prerequisito | Verificación que vale |
+|---|---|
+| Formulario de caso de uso de **Anthropic** | Un `converse` real. `list-foundation-models` da falso positivo, y una primera invocación puede pasar antes de que se exija el formulario |
+| **Transaction Search** de X-Ray | `aws xray get-trace-segment-destination` ⇒ `CloudWatchLogs`. Si falta, no hay trazas y no se recuperan retroactivamente |
+| **Rol de deploy con OIDC** | `aws iam get-role`. Con Bitbucket, la trust policy solo puede condicionar por `aud` y `sub` — ver las notas técnicas |
+| Región | Coincide con `region` de `client.config.ts` |
+
+**Si el cliente no tiene IdP**, creale un pool Cognito **fuera del IaC**: no hay
+recurso Cognito en `infra/` porque el diseño supone que el emisor es externo (spec
+§6). Consecuencias a tener claras: un `sst remove` no lo toca, un deploy en otra
+cuenta no lo recrea, y varias propiedades del pool son inmutables en CloudFormation
+—`UsernameAttributes` entre ellas—, así que tenerlo en el IaC arriesgaría reemplazarlo
+y perder los usuarios. El procedimiento está en `docs/adopcion.md`.
+
+---
+
+## 7. El primer deploy va desde local
+
+Dos razones, las dos verificadas:
+
+1. Genera el `sst-env.d.ts` que el CI necesita (§5).
+2. Los primeros deploys fallan por **propagación de IAM** y conviene verlo: el
+   servicio valida el rol antes de que IAM lo haya propagado. Lo sufren la Knowledge
+   Base y el GatewayTarget de `documentos`. **Reintentar el mismo comando lo
+   resuelve** — no es un bug. La firma que lo delata: el target que no necesita
+   credencial se crea igual y el que sí la necesita falla con un `InternalFailure`
+   genérico.
+
+Hace falta Docker con **buildx y emulación ARM64** (la imagen del core es `linux/arm64`
+por AgentCore):
+
+```bash
+docker run --rm --privileged tonistiigi/binfmt --install arm64
+docker buildx create --use --driver docker-container --name multiarch
+```
+
+**Deploy verde ≠ funciona.** Después de cada deploy, verificá el estado real:
+`get-agent-runtime` tiene que decir `READY` (AgentCore no lo marca así sin pasarle su
+propio health check a `/ping`), los targets del Gateway `READY`, y la KB `ACTIVE`.
+Y después, un turno real: el chat puede desplegar perfecto y rechazar todos los
+mensajes por un secreto sin setear.
+
+---
+
+## 8. Secretos y configuración
+
+`client.config.ts` es el único archivo de config por cliente. Repasá **todos** sus
+campos, no solo el slug: el prompt del sistema, los topes de uso (el cliente paga su
+propio Bedrock), `origenesCors` (viene en `["*"]`), la retención del historial, las
+regex de PII según el país.
+
+Los secretos van con `sst secret set` por stage. El inventario está en
+`docs/adopcion.md` §4. Tres trampas verificadas:
+
+**Al migrar entre modos de auth hay que vaciar el otro explícitamente.** Si HMAC y
+JWKS quedan los dos seteados **gana HMAC**, el chat sigue andando y parece que
+migraste. Verificá en las dos direcciones: el token viejo tiene que dar **401**.
+
+**`sst secret set` con un nombre que ningún `sst.Secret` declara no falla.** Crea un
+secreto que nada lee. Es cómo un typo en el nombre deja JSM sin configurar y el
+escalamiento cayéndose al webhook sin un solo error visible.
+
+**`sst secret list` imprime los valores en claro.** Para verificar que están seteados,
+usá `| cut -d= -f1`.
+
+---
+
+## 9. Lo que el cliente reemplaza, y hay que decírselo
+
+- **`apps/api`** es un stand-in de la API que el cliente ya tiene. Mientras siga ahí,
+  el agente ofrece "consultar tus pedidos" y "ver el catálogo" contra datos de
+  ejemplo. En una demo eso se nota: decilo antes de que lo pregunten.
+- **El corpus de la Knowledge Base.** Con la KB vacía el agente contesta "no lo
+  tengo" a todo lo sustantivo. Eso es la regla anti-invención funcionando, no una
+  falla — pero hay que enmarcarlo así.
+- **El prompt del sistema**, que describe un negocio genérico.
+
+---
+
+## 10. Trampas que ya nos costaron tiempo
+
+**El sufijo del log group no se deduce del nombre de la función.** SST crea la función
+y su log group como recursos separados, cada uno con su autoname. Buscá el log group
+por prefijo (`describe-log-groups --log-group-name-prefix`), nunca lo armes a mano.
+
+**`Latency` y `Duration` del Runtime miden el invoke, no el turno.** Dan ~1 s cuando
+el turno percibido son 12-14 s. De esos, ~6 s son la ventana de debounce de la cola
+(deliberada) y el resto la generación, que es la duración de la Lambda del worker. El
+widget del dashboard que las grafica se titula "latencia del turno completo" y ese
+título engaña.
+
+**El costo por turno lo escribe el core**, en el log group del Runtime
+(`/aws/bedrock-agentcore/runtimes/<id>-DEFAULT`), no el worker.
+
+**`OTEL_EXPORTER_OTLP_TRACES_HEADERS` exige el valor URL-encodeado.** Va
+`Basic%20<base64>`: un espacio literal hace que el SDK descarte el header entero y
+exporte sin auth, con 401 en un log que nadie mira. El synth lo valida y corta.
+
+**`destino: "otlp"` reemplaza X-Ray para la traza del agente, no se suma.** Las
+Lambdas siguen en CloudWatch, así que la traza queda partida en dos herramientas.
+
+**El BFF recibe el token en el header `Authorization: Bearer`,** no en el body. La
+ruta es `/mensajes`; `/` devuelve 404 y no significa que esté roto.
+
+---
+
+## Reglas de trabajo en este repo
+
+- **Comentarios escasos**: solo lo que no se deduce del código — una restricción de la
+  plataforma, un modo de falla silencioso, el porqué de una decisión contraintuitiva.
+  Los porqués largos van a `docs/`.
+- Todo en **español**, incluidos código, comentarios y tests.
+- **Toda capacidad nueva incluye su modo local/mockeado**, para poder probar la UI/UX
+  sin cuenta de AWS. Si cambiás lo que hace una tool, cambiá también su texto en
+  `apps/web/mock.mjs` — mock y realidad cuentan la misma historia, y hay tests que lo
+  pinean.
+- **Verificá contra la API antes de escribir, y otra vez en un deploy real.** Varias
+  de las trampas de arriba aparecieron porque algo que la documentación sugería no era
+  lo que el servicio hacía.

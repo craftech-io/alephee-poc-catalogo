@@ -11,13 +11,7 @@ dist/
 wt/
 sst.pyi
 packages/*/sst-env.d.ts
-apps/*/sst-env.d.ts
+examples/*/sst-env.d.ts
 
-# War room
-.env.*
-!.env.example
-.DS_Store
-resultados/
-inputs/warroom-zip/*.zip
-inputs/warroom-zip/WarRoom/
-memoria/
+# Código anterior al reinicio del 1/10 (respaldo en la rama backup/pre-reinicio)
+/old/

@@ -1,6 +1,6 @@
 # Guion del warroom · por diapositiva
 
-Versión del 30/09/2026 · 68 diapositivas · 6 bloques · 13 decisiones. Diseño en `warroom/diseno-presentacion.md`; fuentes externas en `warroom/fuentes.md`. Fuente única: `docs/warroom/diapositivas.json`. Se regenera con `python3 scripts/generar_presentacion.py`.
+Versión del 30/09/2026 · 48 diapositivas · 6 bloques · 13 decisiones. Diseño en `warroom/diseno-presentacion.md`; fuentes externas en `warroom/fuentes.md`. Fuente única: `docs/warroom/diapositivas.json`. Se regenera con `python3 scripts/generar_presentacion.py`.
 
 [Presentación interactiva](presentacion-warroom.html) · [PDF estático](presentacion-warroom.pdf)
 
@@ -14,12 +14,12 @@ Los fragmentos de código se leen del repositorio al generar el deck: si el cód
 
 | Sección | Horario | Diapositivas | Resultado |
 |---|---|---|---|
-| 01 · Punto de partida | 09:00–09:30 | 1–10 | Ver el error de hoy y acordar qué construimos |
-| 02 · Diseñar el agente | 09:30–11:15 | 11–36 | Tomar las decisiones que definen la V1 |
-| 03 · V1 · el agente responde | 11:15–12:30 | 37–40 | Construir, correr y leer la primera versión |
-| 04 · V2 · herramientas | 13:15–14:45 | 41–50 | Decidir qué resuelve la tabla y conectarla |
-| 05 · V3 · control | 15:00–16:15 | 51–61 | Decidir qué pasa cuando el agente no sabe |
-| 06 · La prueba y el camino | 16:15–17:00 | 62–68 | Medir contra el criterio y repartir lo que sigue |
+| 01 · Punto de partida | 09:00–09:30 | 1–8 | Ver el error de hoy y acordar qué construimos |
+| 02 · Diseñar el agente | 09:30–11:15 | 9–25 | Tomar las decisiones que definen la V1 |
+| 03 · V1 · el agente responde | 11:15–12:30 | 26–28 | Construir, correr y leer la primera versión |
+| 04 · V2 · herramientas | 13:15–14:45 | 29–34 | Decidir qué resuelve la tabla y conectarla |
+| 05 · V3 · control | 15:00–16:15 | 35–41 | Decidir qué pasa cuando el agente no sabe |
+| 06 · La prueba y el camino | 16:15–17:00 | 42–48 | Medir contra el criterio y repartir lo que sigue |
 
 Pausa 11:00–11:15; almuerzo 12:30–13:15; pausa 14:45–15:00. El bloque V3 incluye preparación de comparación 16:00–16:15. Margen de preguntas 17:00–17:30 sujeto a confirmación logística.
 
@@ -29,11 +29,11 @@ Los minutos por diapositiva son una pauta. Preservar la hora de cierre. Si el bl
 
 | Bloque | Diapositivas y demos | Trabajo reservado | Total |
 |---|---:|---|---:|
-| 01 · Punto de partida | 28 min | Dolores del equipo y preguntas: 2 min | 30 min |
-| 02 · Diseñar el agente | 89 min | Pizarra: dudas de AgentCore para Juan David: 5 min; Pausa 11:00: 15 min | 109 min |
-| 03 · V1 · el agente responde | 13 min | Corridas sobre otros casos: 25 min | 38 min |
-| 04 · V2 · herramientas | 36 min | Corrida del lote y lectura: 25 min | 61 min |
-| 05 · V3 · control | 39 min | Corrida del lote con V3: 20 min | 59 min |
+| 01 · Punto de partida | 22 min | Dolores del equipo y preguntas: 2 min | 24 min |
+| 02 · Diseñar el agente | 55 min | Pizarra: dudas de AgentCore para Juan David: 5 min; Pausa 11:00: 15 min | 75 min |
+| 03 · V1 · el agente responde | 9 min | Corridas sobre otros casos: 25 min | 34 min |
+| 04 · V2 · herramientas | 20 min | Corrida del lote y lectura: 25 min | 45 min |
+| 05 · V3 · control | 23 min | Corrida del lote con V3: 20 min | 43 min |
 | 06 · La prueba y el camino | 17 min | Documentar decisiones y responsables: 15 min | 32 min |
 
 Las reservas son para pizarra, corridas del lote y preguntas dentro del bloque. Son pautas ajustables de esta jornada.
@@ -122,48 +122,9 @@ Las reservas son para pizarra, corridas del lote y preguntas dentro del bloque. 
 
 **Devolución esperada:** Anotar las respuestas en la pizarra: se retoman en la prueba final.
 
-**Transición:** Veamos cómo se le pide hoy la categoría al modelo.
-
-### 05 · Así se pide hoy la categoría.
-
-**Sección:** 01 · Punto de partida · **Pauta:** 3 min · **Tipo:** code
-
-**Objetivo:** Leer juntos el prompt actual y separar lo que se conserva de lo que se cambia
-
-**En pantalla:**
-
-- Prompt actual de Alephee · inputs/prompts-actuales/index.ts
-
-**Temas para hablar:** Leer las reglas resaltadas: son buenas y se conservan. Señalar tres cosas que vamos a decidir distinto a lo largo del día: la salida es JSON pedido por favor en el texto (decisión 4), la lista completa de categorías viaja en cada llamada y después del producto (decisión sobre caché, bloque V2), y solo usa el nombre de la categoría y del producto, no la descripción. No es una crítica al equipo: es el punto de partida.
-
 **Transición:** Qué pasó con esas publicaciones en Shopee.
 
-**Código:** `inputs/prompts-actuales/index.ts` líneas 4–21
-
-```ts
-export const categoryPrompt = (product: CatalogItem, categories: any, language: string): string => `
-You are an assistant that must identify the single best matching marketplace category
-for a given CRM product.
-
-Follow these steps carefully:
-
-1️⃣ Step 1 — Exact Match:
-- Compare the CRM category name with each marketplace category name.
-- If you find an **exact or nearly identical** match (ignoring case, accents, plural/singular),
-  return that category immediately.
-
-2️⃣ Step 2 — Semantic Match:
-- Only if no exact match exists, choose the category whose meaning is most related
-  to both the CRM category name and the product name.
-
-3️⃣ Rules:
-- Never invent, merge, or rename categories.
-- Never modify the URN. You must copy it **exactly as shown** in the list below, including the full prefix like "urn:category:..."
-```
-
-Reglas correctas (no inventar, copiar el URN exacto). Lo que se va a revisar: el JSON se pide en el texto y la lista completa de categorías viaja en cada llamada.
-
-### 06 · Lo que Shopee rechazó y lo que aceptó mal.
+### 05 · Lo que Shopee rechazó y lo que aceptó mal.
 
 **Sección:** 01 · Punto de partida · **Pauta:** 3 min · **Tipo:** table
 
@@ -184,7 +145,7 @@ Reglas correctas (no inventar, copiar el URN exacto). Lo que se va a revisar: el
 
 **Transición:** Cómo vamos a trabajar hoy.
 
-### 07 · ¿Qué hace y qué no hace?
+### 06 · ¿Qué hace y qué no hace?
 
 **Sección:** 01 · Punto de partida · **Pauta:** 3 min · **Tipo:** decision
 
@@ -211,7 +172,7 @@ Reglas correctas (no inventar, copiar el URN exacto). Lo que se va a revisar: el
 
 **Archivo:** `decisiones/01-alcance.md`
 
-### 08 · Entra un producto. Sale una propuesta de publicación.
+### 07 · Entra un producto. Sale una propuesta de publicación.
 
 **Sección:** 01 · Punto de partida · **Pauta:** 3 min · **Tipo:** cards
 
@@ -225,46 +186,9 @@ Reglas correctas (no inventar, copiar el URN exacto). Lo que se va a revisar: el
 
 **Temas para hablar:** La salida no es la publicación final: es una propuesta de mapeo. Lo que hoy no existe son las dos listas: qué obligatorio quedó sin dato y por qué, y qué atributo del producto se descartó y por qué. Eso es lo que reemplaza al publicar sin atributos.
 
-**Transición:** El mismo contrato, en código.
-
-### 09 · El contrato, en código.
-
-**Sección:** 01 · Punto de partida · **Pauta:** 3 min · **Tipo:** code
-
-**Objetivo:** Mostrar que el contrato es código que se valida, no un acuerdo verbal
-
-**En pantalla:**
-
-
-**Temas para hablar:** Recorrer las cuatro partes: category puede ser null si no se resuelve; attributes lleva URN, valueId y value; missing y rejected llevan el motivo. extra=forbid significa que si el modelo agrega un campo que no existe, la salida se rechaza. Este archivo es lo primero que se escribió y lo último que debería cambiar.
-
 **Transición:** Decisión 2: cómo se informa lo que no se pudo mapear.
 
-**Código:** `core/src/catalogo/modelos.py` líneas 21–37
-
-```py
-class Faltante(_Estricto):
-    urn: str = Field(description="URN del atributo obligatorio del canal (o 'category').")
-    reason: str
-
-
-class Descartado(_Estricto):
-    legacyId: str = Field(description="id del atributo del producto (sin el prefijo urn:attribute:).")
-    reason: str
-
-
-class Publicacion(_Estricto):
-    """Resultado del mapeo de un producto a la publicación del canal."""
-
-    category: str | None = Field(description="URN de la categoría del canal, copiado exacto. null si no se puede resolver.")
-    attributes: list[AtributoMapeado]
-    missing: list[Faltante] = Field(description="Obligatorios del canal (o la categoría) que no se pudieron completar.")
-    rejected: list[Descartado] = Field(description="Atributos del producto que se descartan, con el motivo.")
-```
-
-Pydantic con extra="forbid": ningún campo fuera del contrato pasa. Los nombres (valueId, legacyId) son los del formato de publicación de Alephee para no traducir.
-
-### 10 · ¿Qué recibe y qué entrega?
+### 08 · ¿Qué recibe y qué entrega?
 
 **Sección:** 01 · Punto de partida · **Pauta:** 3 min · **Tipo:** decision
 
@@ -287,7 +211,7 @@ Pydantic con extra="forbid": ningún campo fuera del contrato pasa. Los nombres 
 
 **Archivo:** `decisiones/02-contrato.md`
 
-### 11 · Diseñar antes de escribir.
+### 09 · Diseñar antes de escribir.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 1 min · **Tipo:** divider
 
@@ -301,7 +225,7 @@ Pydantic con extra="forbid": ningún campo fuera del contrato pasa. Los nombres 
 
 **Transición:** Primero, qué tipos de aplicación existen.
 
-### 12 · Cuatro formas de usar un modelo.
+### 10 · Cuatro formas de usar un modelo.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 3 min · **Tipo:** compare
 
@@ -320,72 +244,9 @@ Pydantic con extra="forbid": ningún campo fuera del contrato pasa. Los nombres 
 
 **Devolución esperada:** Workflow: las llamadas y el merge están fijos en código.
 
-**Transición:** Las tres versiones del día conviven en el mismo runner.
-
-### 13 · Las tres versiones conviven en el mismo runner.
-
-**Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** code
-
-**Objetivo:** Mostrar que V1, V2 y V3 son intercambiables y comparables
-
-**En pantalla:**
-
-
-**Temas para hablar:** Lo único que cambia entre versiones es la clase. El runner, el dataset y el evaluador son los mismos: así la comparación de la tarde es justa. Sumar una V4 es registrar una clase más.
-
-**Transición:** Dónde vive cada pieza en el repositorio.
-
-**Código:** `core/src/catalogo/correr.py` líneas 24–27
-
-```py
-def _versiones() -> dict:
-    from . import v1, v2, v3
-
-    return {"v1": v1.MapeoV1, "v2": v2.MapeoV2, "v3": v3.MapeoV3}
-```
-
-Cada versión es un Workflow que recibe MapeoStart y devuelve MapeoDone. Se comparan sobre el mismo dataset con el mismo evaluador.
-
-### 14 · Dónde vive cada versión en el código.
-
-**Sección:** 02 · Diseñar el agente · **Pauta:** 2 min · **Tipo:** diagram
-
-**Objetivo:** Dar el mapa del repositorio antes de entrar en cada pieza
-
-**En pantalla:**
-
-
-**Temas para hablar:** Arriba, las dos entradas: el runner batch, que es como se usa hoy, y el servidor de AgentCore, que corre el chat del template. Al medio, las tres versiones, cada una en su archivo. Debajo, las capas que cada versión suma y la base común: el contrato, los eventos, el único módulo que sabe de Bedrock y la carga de datos. La flecha punteada es el pendiente: el chat todavía no llama al agente de catálogo.
-
-**Pregunta / participación:** ¿Dónde pondrían el código en el repositorio de Alephee?
-
 **Transición:** Decisión 3.
 
-**Diagrama (cajas):**
-
-- Runner batch: scripts/correr.sh --version v1 | v2 | v3 | actual · core/src/catalogo/correr.py · evalúa y guarda en resultados/
-- Servidor AgentCore: core/server.py · /ping y /invocations
-- V1 · MapeoV1: v1.py · una llamada, sin herramientas
-- V2 · MapeoV2: v2.py · loop de hasta 6 rondas
-- V3 · MapeoV3: v3.py · hereda de V2 y agrega control
-- Chat del template: core/src/agent · ChatWorkflow · falta mapear_producto(sku)
-- Herramientas: herramientas.py · V2 y V3
-- Guardrails: guardrails.py · V3
-- Memoria y caché: memoria.py · V3
-- Evaluador: evaluacion.py · todas
-- Correcciones: scripts/corregir.sh · corregir.py → memoria/
-- Contrato: modelos.py · Publicacion
-- Eventos: eventos.py · MapeoStart / Done
-- LLM inyectado: llm.py · BedrockConverse
-- Datos: datos.py · DATA_DIR
-- Tests sin AWS: core/tests/test_catalogo_*.py · con dobles del LLM
-- Amazon Bedrock: us.anthropic.claude-sonnet-5 · perfil SSO sandbox · us-east-1
-- data/real · data/mock: tablas reference_*, esquema · y dataset con expected
-- memoria/ y resultados/: JSON fuera de git
-
-Las tres versiones son Workflows que reciben MapeoStart y devuelven MapeoDone: el runner las intercambia y el evaluador las compara sobre el mismo dataset.
-
-### 15 · ¿Single prompt o agente?
+### 11 · ¿Single prompt o agente?
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** decision
 
@@ -409,7 +270,7 @@ Las tres versiones son Workflows que reciben MapeoStart y devuelven MapeoDone: e
 
 **Archivo:** `decisiones/03-tipo-de-aplicacion.md`
 
-### 16 · Un prompt tiene cinco partes.
+### 12 · Un prompt tiene cinco partes.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 3 min · **Tipo:** flow
 
@@ -425,49 +286,9 @@ Las tres versiones son Workflows que reciben MapeoStart y devuelven MapeoDone: e
 
 **Temas para hablar:** Las cinco partes sirven para leer el prompt actual y el nuevo. La quinta es la que casi siempre falta: qué hacer cuando no hay dato. Si el prompt no lo dice, el modelo elige por su cuenta, y lo que elige es completar.
 
-**Transición:** El prompt de la V1, parte por parte.
-
-### 17 · El prompt de la V1.
-
-**Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** code
-
-**Objetivo:** Leer el prompt nuevo con el esqueleto de cinco partes
-
-**En pantalla:**
-
-
-**Temas para hablar:** Rol en la primera línea; tarea en la segunda; reglas en la lista; el formato no está en el texto porque lo impone la herramienta de entrega (siguiente decisión); y la quinta parte está en las dos reglas de missing y rejected. Las reglas resaltadas son las que el proceso actual no tiene escritas.
-
-**Pregunta / participación:** ¿Qué regla agregarían con lo que saben del catálogo?
-
 **Transición:** Tres prácticas que cambian el resultado.
 
-**Código:** `core/src/catalogo/v1.py` líneas 22–39
-
-```py
-INSTRUCCIONES = """\
-Eres un especialista en catalogación de autopartes para marketplaces. Recibes un producto del \
-catálogo de Alephee (taxonomía de Mercado Libre) y debes adaptarlo a Shopee: elegir la \
-categoría de Shopee y mapear los atributos del producto a los atributos que esa categoría espera.
-
-Reglas:
-- La categoría y los URN de atributos se copian exactos de las listas que recibes. Nunca inventes un URN.
-- Si el atributo del canal tiene una lista de valores, elige el valor equivalente de esa lista y usa su id. \
-Si ningún valor es equivalente, no lo completes.
-- Si el atributo del canal es de texto libre, usa valueId "0" y el valor del producto tal cual.
-- Nunca inventes valores. Solo usas datos presentes en los atributos del producto.
-- Los valores "-1", "N/A" o vacíos significan que no hay dato.
-- Si un atributo obligatorio del canal no se puede completar, agrégalo a "missing" con el motivo.
-- Si un atributo del producto no se puede usar, agrégalo a "rejected" con el motivo.
-- Cada atributo del canal aparece una sola vez.
-
-Entrega el resultado llamando a la herramienta entregar_publicacion."""
-
-```
-
-Rol, tarea, reglas negativas explícitas (nunca inventes) y qué hacer cuando falta (missing con motivo). Comparar con el prompt actual de la lámina 5.
-
-### 18 · Buenas prácticas que cambian el resultado.
+### 13 · Buenas prácticas que cambian el resultado.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 3 min · **Tipo:** cards
 
@@ -481,40 +302,9 @@ Rol, tarea, reglas negativas explícitas (nunca inventes) y qué hacer cuando fa
 
 **Temas para hablar:** La primera tiene efecto directo en costo: Bedrock cachea el prefijo estable del prompt con cachePoint (F4, mínimo 1.024 tokens para Claude Sonnet 5) y OpenAI hace lo mismo de forma automática sobre el prefijo (F7). El prompt actual pone el producto antes de la lista de categorías: el prefijo cambia en cada llamada y no se cachea nada. Reordenarlo ya bajaría el costo sin cambiar de proveedor; hay que medirlo, no darlo por hecho. Fuentes en docs/warroom/fuentes.md.
 
-**Transición:** La segunda práctica, en código.
-
-### 19 · La salida es una herramienta con esquema.
-
-**Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** code
-
-**Objetivo:** Mostrar cómo el formato pasa de regla del prompt a contrato
-
-**En pantalla:**
-
-
-**Temas para hablar:** En vez de pedir JSON válido en el texto, se le da al modelo una herramienta cuyo esquema es la clase Publicacion. El modelo entrega llamando a la herramienta; si lo que entrega no cumple el esquema, falla la validación y se informa el error en vez de publicar algo a medias.
-
 **Transición:** Decisión 4.
 
-**Código:** `core/src/catalogo/v1.py` líneas 41–51
-
-```py
-def _entregar(**publicacion) -> str:
-    # El resultado se lee de la tool call; la herramienta nunca se ejecuta.
-    return "ok"
-
-
-HERRAMIENTA_SALIDA = FunctionTool.from_defaults(
-    fn=_entregar,
-    name=NOMBRE_SALIDA,
-    description="Entrega el resultado final del mapeo del producto a la publicación del canal.",
-    fn_schema=Publicacion,
-)
-```
-
-fn_schema=Publicacion: el modelo solo puede entregar algo que cumpla el contrato. La función nunca se ejecuta; el resultado se lee de la llamada.
-
-### 20 · ¿Cómo garantizamos el formato?
+### 14 · ¿Cómo garantizamos el formato?
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** decision
 
@@ -538,7 +328,7 @@ fn_schema=Publicacion: el modelo solo puede entregar algo que cumpla el contrato
 
 **Archivo:** `decisiones/04-salida-estructurada.md`
 
-### 21 · Dónde corre: AgentCore o contenedor propio.
+### 15 · Dónde corre: AgentCore o contenedor propio.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 3 min · **Tipo:** compare
 
@@ -555,73 +345,9 @@ fn_schema=Publicacion: el modelo solo puede entregar algo que cumpla el contrato
 
 **Pregunta / participación:** ¿El batch de Alephee tiene horario fijo o corre continuo?
 
-**Transición:** El contrato con AgentCore son dos rutas HTTP.
-
-### 22 · El contrato con AgentCore son dos rutas.
-
-**Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** code
-
-**Objetivo:** Mostrar que el contrato de despliegue es mínimo y está separado del agente
-
-**En pantalla:**
-
-
-**Temas para hablar:** Esto es todo lo que AgentCore exige del contenedor (F1): un GET de salud y un POST de invocación. Lo que se ve es el servidor del template, que hoy corre el ChatWorkflow del chat; el agente de catálogo corre por el runner batch y todavía no está conectado al chat. El punto: la lógica del agente vive en otro módulo y se prueba sin servidor; el contrato de despliegue no la condiciona.
-
-**Transición:** Y la infraestructura que lo declara.
-
-**Código:** `core/server.py` líneas 194–199
-
-```py
-    async def ping(_: Request) -> JSONResponse:
-        return JSONResponse({"status": "Healthy"})
-
-    async def invocations(request: Request):
-        payload = await request.json()
-        message = payload.get("message")
-```
-
-Las dos rutas que exige AgentCore (F1: puerto 8080, imagen ARM64). Hoy este servidor arma el chat del template; conectar el workflow de catálogo (mapear_producto) es un pendiente.
-
-### 23 · La infraestructura declara el Runtime.
-
-**Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** code
-
-**Objetivo:** Ver que el despliegue es código y se repite
-
-**En pantalla:**
-
-
-**Temas para hablar:** Infraestructura como código: el Runtime, su imagen y su rol se declaran acá y se despliegan con un comando. El comentario sobre el digest es una lección aprendida: la validación acepta una referencia que la microVM después no puede resolver. Esto ya está probado en el template de Craftech; para Alephee cambia el slug y la cuenta.
-
 **Transición:** La infraestructura completa, en un dibujo.
 
-**Código:** `infra/sst/runtime.ts` líneas 389–406
-
-```ts
-export const runtime = new awsnative.bedrockagentcore.Runtime("AgentRuntime", {
-  // El recurso exige `[a-zA-Z][a-zA-Z0-9_]*`: stages con guion (p.ej. `pr-123`)
-  // lo violarían, así que se sanitiza cualquier carácter fuera de ese alfabeto.
-  // El prefijo es el slug del cliente en camelCase (infra/sst/nombres.ts): ese
-  // alfabeto no acepta `-`.
-  agentRuntimeName: $interpolate`${slugCamel}${$app.stage.replace(/[^a-zA-Z0-9_]/g, "_")}`,
-  agentRuntimeArtifact: {
-    containerConfiguration: {
-      // Digest PURO (repo@sha256:...): el ref canónico de docker-build combina
-      // tag y digest (repo:latest@sha256:...) — la validación de CreateRuntime
-      // lo acepta, pero el pull real de la microVM no lo resuelve y el
-      // contenedor jamás arranca (health check timeout con logs vacíos).
-      // El digest cambia por build, así que los updates siguen disparando.
-      containerUri: image.ref.apply((r) => r.replace(/:[^@]+@/, "@")),
-    },
-  },
-  networkConfiguration: { networkMode: "PUBLIC" },
-  roleArn: role.arn,
-```
-
-Imagen ARM64 referenciada por digest, red pública y un rol propio. Se despliega con SST; el modelo llega por variable de entorno.
-
-### 24 · La infraestructura, de punta a punta.
+### 16 · La infraestructura, de punta a punta.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 2 min · **Tipo:** diagram
 
@@ -636,25 +362,7 @@ Imagen ARM64 referenciada por digest, red pública y un rol propio. Se despliega
 
 **Transición:** Decisión 5.
 
-**Diagrama (cajas):**
-
-- Widget de chat: apps/web · packages/widget
-- BFF · Lambda: auth HMAC · topes · guardrail de entrada
-- SQS FIFO: MensajesCola · con DLQ
-- Worker · Lambda: InvokeAgentRuntime · timeout 3 min
-- AgentCore Runtime: contenedor ARM64 desde ECR · core/server.py · /invocations · ChatWorkflow (catálogo pendiente)
-- DynamoDB: Messages · Sessions · Limits
-- AgentCore Gateway: tools MCP · SigV4
-- Amazon Bedrock: Claude Sonnet 5 · us-east-1 · guardrail de salida
-- API del cliente: target OpenAPI (demo)
-- Knowledge Base: S3 Vectors · ToolDocumentos
-- Escalamiento: ToolEscalamiento
-- Batch de catálogo · hoy local: scripts/correr.sh → V1 / V2 / V3 · Converse directo, perfil SSO sandbox · producción: a decidir (decisión 5)
-- Observabilidad · CloudWatch y X-Ray: logs de Lambdas y Runtime · traza BFF → cola → worker → Runtime · dashboard AWS/Bedrock-AgentCore · muestreo 5 %
-
-Es la infraestructura del template en infra/sst, desplegable con SST. Para Alephee todavía no está desplegada: en la cuenta sandbox solo hay otro Runtime. AgentCore Memory se sacó del stack.
-
-### 25 · ¿Dónde corre?
+### 17 · ¿Dónde corre?
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** decision
 
@@ -677,7 +385,7 @@ Es la infraestructura del template en infra/sst, desplegable con SST. Para Aleph
 
 **Archivo:** `decisiones/05-donde-corre.md`
 
-### 26 · Elegir el modelo: qué pesa en este caso.
+### 18 · Elegir el modelo: qué pesa en este caso.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 3 min · **Tipo:** cards
 
@@ -694,7 +402,7 @@ Es la infraestructura del template en infra/sst, desplegable con SST. Para Aleph
 
 **Transición:** Qué hay disponible en Bedrock.
 
-### 27 · Qué hay en Bedrock.
+### 19 · Qué hay en Bedrock.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 3 min · **Tipo:** table
 
@@ -711,44 +419,9 @@ Es la infraestructura del template en infra/sst, desplegable con SST. Para Aleph
 
 **Temas para hablar:** La tabla sale de la página oficial Models at a glance del 30/09 (F6). No es una recomendación de cada uno: es el menú. Lo que importa para elegir es la columna de la derecha y el criterio de la lámina anterior. La disponibilidad por región y la habilitación en la cuenta se verifican en la cuenta que usemos.
 
-**Transición:** El módulo que habla con Bedrock.
-
-### 28 · El único módulo que sabe de Bedrock.
-
-**Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** code
-
-**Objetivo:** Mostrar dónde se elige el modelo y por qué el ID lleva prefijo
-
-**En pantalla:**
-
-
-**Temas para hablar:** El modelo se elige en un solo lugar y llega por variable de entorno. El prefijo us. es un inference profile: Bedrock enruta entre regiones de Estados Unidos y es obligatorio para algunos modelos (F5). Las dos banderas de caché activan los cachePoint en system y tools (F4). Cambiar de modelo es cambiar una variable y volver a correr el dataset.
-
 **Transición:** Decisión 6.
 
-**Código:** `core/src/catalogo/llm.py` líneas 7–21
-
-```py
-# Converse acepta `us.` y `global.` (verificado 28/09); sin prefijo no hay throughput
-# on-demand. `us.` es el que contempla la policy del RuntimeRole.
-MODEL_ID_POR_DEFECTO = "us.anthropic.claude-sonnet-5"
-
-
-def crear_llm(env=os.environ) -> BedrockConverse:
-    return BedrockConverse(
-        model=env.get("MODEL_ID", MODEL_ID_POR_DEFECTO),
-        region_name=env.get("AWS_REGION", "us-east-1"),
-        # En local se usa el perfil SSO; en el Runtime no hay perfil y boto3 toma el rol.
-        profile_name=env.get("AWS_PROFILE") or None,
-        max_tokens=16000,
-        system_prompt_caching=True,
-        tool_caching=True,
-    )
-```
-
-Inference profile us.: sin prefijo, Bedrock responde ValidationException por falta de throughput on-demand (F5). Caché de system y tools activada en el cliente.
-
-### 29 · ¿Qué modelo?
+### 20 · ¿Qué modelo?
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** decision
 
@@ -772,7 +445,7 @@ Inference profile us.: sin prefijo, Bedrock responde ValidationException por fal
 
 **Archivo:** `decisiones/06-modelo.md`
 
-### 30 · Stack y harness.
+### 21 · Stack y harness.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 3 min · **Tipo:** cards
 
@@ -790,37 +463,9 @@ Inference profile us.: sin prefijo, Bedrock responde ValidationException por fal
 
 **Devolución esperada:** Que resuelva la regla acordada, que pase los tests y que no toque datos reales.
 
-**Transición:** Un Workflow de un paso, en código.
-
-### 31 · Un Workflow de un paso.
-
-**Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** code
-
-**Objetivo:** Mostrar el patrón de inyección que hace testeable al agente
-
-**En pantalla:**
-
-
-**Temas para hablar:** La clase recibe el LLM por el constructor. Eso permite probar cada paso con un doble sin AWS y correr contra Bedrock cambiando una línea. Es el patrón que se repite en V2 y V3.
-
 **Transición:** Decisión 7.
 
-**Código:** `core/src/catalogo/v1.py` líneas 76–83
-
-```py
-class MapeoV1(Workflow):
-    def __init__(self, llm, **kwargs):
-        # `llm` es un BedrockConverse (catalogo/llm.py) o un doble en los tests.
-        super().__init__(**kwargs)
-        self.llm = llm
-
-    @step
-    async def mapear(self, ev: MapeoStart) -> MapeoDone:
-```
-
-El LLM se inyecta: en los tests es un doble, en producción es Bedrock. El workflow no sabe de proveedores.
-
-### 32 · ¿Con qué lo construimos?
+### 22 · ¿Con qué lo construimos?
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** decision
 
@@ -844,7 +489,7 @@ El LLM se inyecta: en los tests es un doble, en producción es Bedrock. El workf
 
 **Archivo:** `decisiones/07-stack.md`
 
-### 33 · ¿Cuándo está bien hecho?
+### 23 · ¿Cuándo está bien hecho?
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 3 min · **Tipo:** cards
 
@@ -859,40 +504,9 @@ El LLM se inyecta: en los tests es un doble, en producción es Bedrock. El workf
 
 **Temas para hablar:** La vara es estricta a propósito. Pero el expected es mock: se construyó a partir de la publicación actual limpia, así que hereda sus omisiones y castiga aciertos que hoy nadie mapea. Por eso los exactos van a ser bajos en todas las versiones y hay que leer también inválidos, duplicados y faltantes. El esquema oficial de Shopee y la validación con catálogo son pendientes.
 
-**Transición:** La métrica, en código.
-
-### 34 · La métrica en código.
-
-**Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** code
-
-**Objetivo:** Mostrar que la métrica es código que todos pueden leer y discutir
-
-**En pantalla:**
-
-
-**Temas para hablar:** Siete condiciones en un and. Si alguien discute la vara, se discute acá y se vuelve a evaluar sin llamar al modelo (scripts/reevaluar.py). La evaluación no cambia para favorecer a una versión.
-
 **Transición:** Decisiones 8 y 9.
 
-**Código:** `core/src/catalogo/evaluacion.py` líneas 24–34
-
-```py
-    @property
-    def exacto(self) -> bool:
-        return (
-            self.categoria_ok
-            and self.fp == 0
-            and self.fn == 0
-            and not self.invalidos
-            and not self.duplicados
-            and not self.faltantes_no_detectados
-            and not self.faltantes_de_mas
-        )
-```
-
-Un caso es exacto solo si todo se cumple a la vez. Es determinista: no llama a ningún modelo.
-
-### 35 · ¿Cuál es el número que aceptamos?
+### 24 · ¿Cuál es el número que aceptamos?
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** decision
 
@@ -915,7 +529,7 @@ Un caso es exacto solo si todo se cumple a la vez. Es determinista: no llama a n
 
 **Archivo:** `decisiones/08-criterio-de-exito.md`
 
-### 36 · ¿Con qué dataset?
+### 25 · ¿Con qué dataset?
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** decision
 
@@ -938,7 +552,7 @@ Un caso es exacto solo si todo se cumple a la vez. Es determinista: no llama a n
 
 **Archivo:** `decisiones/09-dataset.md`
 
-### 37 · V1 · el agente responde.
+### 26 · V1 · el agente responde.
 
 **Sección:** 03 · V1 · el agente responde · **Pauta:** 1 min · **Tipo:** divider
 
@@ -950,51 +564,9 @@ Un caso es exacto solo si todo se cumple a la vez. Es determinista: no llama a n
 
 **Temas para hablar:** La V1 implementa las decisiones 1 a 9: single prompt, salida por herramienta con esquema, Claude Sonnet 5 por Converse, LlamaIndex Workflows, medida con el evaluador sobre los 30 reales. No usa las tablas de referencia a propósito: queremos ver qué resuelve el modelo solo. Recordar la regla del día: no se pasa al bloque siguiente con algo roto, pero un resultado de negocio incorrecto no es algo roto, es evidencia.
 
-**Transición:** El paso único de la V1.
-
-### 38 · Una llamada, una entrega.
-
-**Sección:** 03 · V1 · el agente responde · **Pauta:** 4 min · **Tipo:** code
-
-**Objetivo:** Recorrer el paso completo: mensaje, llamada, tool call, validación
-
-**En pantalla:**
-
-
-**Temas para hablar:** Cuatro momentos: se arma el mensaje con el producto y el contexto del canal; una sola llamada al modelo con la herramienta de entrega obligatoria; se buscan las llamadas a entregar_publicacion; se valida contra Publicacion. Las dos salidas de error (no llamó, salida fuera de contrato) son resultados, no excepciones: el runner las cuenta. Lo que no está acá: ninguna tabla, ninguna consulta. Todo lo que el modelo sabe del canal viaja en el mensaje.
-
-**Pregunta / participación:** ¿Qué pasa si el modelo responde con texto en vez de llamar a la herramienta?
-
-**Devolución esperada:** MapeoDone con error explícito. El caso cuenta como no entregado, no como publicado.
-
 **Transición:** Lo corremos sobre el caso guía.
 
-**Código:** `core/src/catalogo/v1.py` líneas 83–100
-
-```py
-    async def mapear(self, ev: MapeoStart) -> MapeoDone:
-        respuesta = await self.llm.achat_with_tools(
-            tools=[HERRAMIENTA_SALIDA],
-            user_msg=mensaje_producto(ev.producto),
-            chat_history=[ChatMessage(role="system", content=INSTRUCCIONES)],
-            tool_required=True,
-        )
-        uso = uso_de(respuesta)
-        llamadas = [
-            ll
-            for ll in self.llm.get_tool_calls_from_response(respuesta, error_on_no_tool_call=False)
-            if ll.tool_name == NOMBRE_SALIDA
-        ]
-        if not llamadas:
-            return MapeoDone(publicacion=None, uso=uso, error=f"El modelo no llamó a {NOMBRE_SALIDA}")
-        try:
-            publicacion = Publicacion.model_validate(llamadas[0].tool_kwargs)
-        except ValidationError as exc:
-```
-
-tool_required=True: el modelo tiene que entregar por la herramienta. Si no la llama o la entrega no cumple el contrato, se informa el error; nunca se publica a medias.
-
-### 39 · Demo · un caso real por V1.
+### 27 · Demo · un caso real por V1.
 
 **Sección:** 03 · V1 · el agente responde · **Pauta:** 5 min · **Tipo:** demo
 
@@ -1020,7 +592,7 @@ scripts/correr.sh --version v1 --datos real --caso error-88904447
 
 **Respaldo:** resultados/v1-real-20260928-173758.json (corrida del 28/09, anterior a las correcciones)
 
-### 40 · Qué falló en V1 y qué capa lo resuelve.
+### 28 · Qué falló en V1 y qué capa lo resuelve.
 
 **Sección:** 03 · V1 · el agente responde · **Pauta:** 3 min · **Tipo:** table
 
@@ -1041,7 +613,7 @@ scripts/correr.sh --version v1 --datos real --caso error-88904447
 
 **Transición:** Almuerzo. A las 13:15, herramientas.
 
-### 41 · V2 · herramientas.
+### 29 · V2 · herramientas.
 
 **Sección:** 04 · V2 · herramientas · **Pauta:** 1 min · **Tipo:** divider
 
@@ -1055,7 +627,7 @@ scripts/correr.sh --version v1 --datos real --caso error-88904447
 
 **Transición:** Qué es una herramienta.
 
-### 42 · Una herramienta es una función que el modelo pide y el código ejecuta.
+### 30 · Una herramienta es una función que el modelo pide y el código ejecuta.
 
 **Sección:** 04 · V2 · herramientas · **Pauta:** 3 min · **Tipo:** flow
 
@@ -1070,76 +642,9 @@ scripts/correr.sh --version v1 --datos real --caso error-88904447
 
 **Temas para hablar:** El modelo no ejecuta nada: redacta un pedido con nombre y argumentos, el programa lo ejecuta y le devuelve el resultado como un mensaje más. Por eso la herramienta es determinista y el modelo no. Hay herramientas de lectura (consultar) y de acción (publicar); hoy todas las nuestras son de lectura. Que la herramienta exista no obliga al modelo a usarla ni a respetarla: la V3 revisa la entrega contra el esquema del canal, pero imponer por código lo que dice la tabla de atributos es un pendiente.
 
-**Transición:** La fuente se abstrae.
-
-### 43 · La fuente se abstrae; las herramientas no cambian.
-
-**Sección:** 04 · V2 · herramientas · **Pauta:** 4 min · **Tipo:** code
-
-**Objetivo:** Mostrar el punto de integración con Alephee
-
-**En pantalla:**
-
-
-**Temas para hablar:** Tres consultas: categoría destino por id legacy, destinos de un atributo legacy y esquema de una categoría del canal. Eso es todo lo que el agente necesita de Alephee. La API pública v2 alcanza para leer el producto (F8) pero no expone estas tablas: la integración real es una FuenteCatalogo nueva contra lo que Maximiliano exponga.
-
-**Pregunta / participación:** ¿Dónde viven hoy estas tres consultas en la plataforma de Alephee?
-
-**Transición:** Cómo se describe una herramienta.
-
-**Código:** `core/src/catalogo/herramientas.py` líneas 17–34
-
-```py
-class FuenteCatalogo(Protocol):
-    def categoria_destino(self, id_legacy: str) -> dict | None: ...
-
-    def destinos_atributo(self, id_legacy: str) -> list[dict]: ...
-
-    def esquema(self, categoria_urn: str) -> dict | None: ...
-
-
-class FuenteArchivos:
-    """Lee data/mock o data/real (según DATA_DIR). Hace de API interna de Alephee."""
-
-    def categoria_destino(self, id_legacy: str) -> dict | None:
-        return datos.cargar_referencia_categorias().get(datos.id_categoria(id_legacy))
-
-    def destinos_atributo(self, id_legacy: str) -> list[dict]:
-        return datos.cargar_referencia_atributos().get(datos.id_legacy(id_legacy), [])
-
-    def esquema(self, categoria_urn: str) -> dict | None:
-```
-
-Hoy FuenteArchivos lee data/real; mañana una clase que llame a la base o a un endpoint interno de Alephee. Las herramientas y el agente no se tocan.
-
-### 44 · Una herramienta bien descrita.
-
-**Sección:** 04 · V2 · herramientas · **Pauta:** 4 min · **Tipo:** code
-
-**Objetivo:** Buenas prácticas de diseño de herramientas
-
-**En pantalla:**
-
-
-**Temas para hablar:** Tres reglas: nombre que diga qué hace, descripción con un ejemplo del argumento y salida negativa explícita con motivo. Una herramienta que devuelve null cuando no encuentra invita al modelo a inventar; una que devuelve encontrada: false con motivo le da algo que repetir en missing.
-
 **Transición:** Decisión 10: qué decide la tabla y qué decide el agente.
 
-**Código:** `core/src/catalogo/herramientas.py` líneas 42–48
-
-```py
-def crear_herramientas(fuente: FuenteCatalogo) -> list[FunctionTool]:
-    def buscar_categoria(categoria_legacy: str) -> str:
-        """Devuelve la categoría de Shopee que la tabla reference_category asigna a la categoría
-        legacy del producto (por ejemplo 'urn:category:734701'). Si la tabla no la tiene, lo dice."""
-        fila = fuente.categoria_destino(categoria_legacy)
-        if fila is None:
-            return _json({"encontrada": False, "motivo": "la categoría legacy no está en reference_category"})
-```
-
-El docstring es lo que lee el modelo: qué devuelve, con qué formato de entrada y qué pasa si no encuentra. La respuesta negativa es explícita, nunca vacía.
-
-### 45 · ¿Qué decide la tabla y qué decide el agente?
+### 31 · ¿Qué decide la tabla y qué decide el agente?
 
 **Sección:** 04 · V2 · herramientas · **Pauta:** 4 min · **Tipo:** decision
 
@@ -1151,7 +656,7 @@ El docstring es lo que lee el modelo: qué devuelve, con qué formato de entrada
 
 **Temas para hablar:** B es el error más común: dejar que el modelo mejore un mapeo que el equipo de catálogo mantiene a mano. Si la tabla está mal, se corrige la tabla. C ya se descartó en la decisión 3. Ser exacto sobre el estado: la V3 fija la categoría en código; los campos mapeados por tabla todavía dependen de que el modelo respete la herramienta, y el guardrail solo revisa el esquema. Si la sala quiere imponerlos por código, es un cambio acotado en _al_entregar y queda como pendiente.
 
-**Transición:** El loop del agente y su límite.
+**Transición:** Los números de la corrida del 28/09.
 
 **Decisión 10:** ¿Qué decide la tabla y qué decide el agente?
 
@@ -1163,73 +668,7 @@ El docstring es lo que lee el modelo: qué devuelve, con qué formato de entrada
 
 **Archivo:** `decisiones/10-tabla-vs-agente.md`
 
-### 46 · El loop tiene un límite y una salida garantizada.
-
-**Sección:** 04 · V2 · herramientas · **Pauta:** 4 min · **Tipo:** code
-
-**Objetivo:** Mostrar el control del loop agéntico
-
-**En pantalla:**
-
-
-**Temas para hablar:** Esto es lo que convierte un modelo con herramientas en un agente controlado: un límite de rondas y una última ronda forzada a entregar. Sin esto, un agente puede consultar para siempre o terminar sin respuesta. Seis no es una garantía de calidad: es una garantía de que termina. Lo que entrega todavía puede estar mal; eso es la V3.
-
-**Transición:** Dónde se paga el costo: la caché de prompt.
-
-**Código:** `core/src/catalogo/v2.py` líneas 82–96
-
-```py
-        for ronda in range(MAX_RONDAS):
-            # En la última ronda solo queda la herramienta de entrega: nunca termina sin respuesta.
-            ultima = self._ultima_ronda = ronda == MAX_RONDAS - 1
-            respuesta = await self.llm.achat_with_tools(
-                tools=[HERRAMIENTA_SALIDA] if ultima else [*self.herramientas, HERRAMIENTA_SALIDA],
-                user_msg=None,
-                chat_history=historial,
-                tool_required=True, **({"tool_choice": NOMBRE_SALIDA} if ultima else {}),  # "any" no alcanza
-                allow_parallel_tool_calls=not ultima,
-            )
-            for clave, valor in uso_de(respuesta).items():
-                uso[clave] = uso.get(clave, 0) + valor
-            llamadas = self.llm.get_tool_calls_from_response(respuesta, error_on_no_tool_call=False)
-            usadas += [ll.tool_name for ll in llamadas]
-            if not llamadas:
-```
-
-Seis rondas como máximo. En la última solo queda la herramienta de entrega y se desactivan las llamadas en paralelo. Si aun así no entrega, el error es explícito.
-
-### 47 · Caché de prompt: lo estático se paga una vez.
-
-**Sección:** 04 · V2 · herramientas · **Pauta:** 4 min · **Tipo:** code
-
-**Objetivo:** Conectar la práctica 'estático primero' con el código y con el costo
-
-**En pantalla:**
-
-
-**Temas para hablar:** El orden del historial es la práctica de la mañana: system fijo, herramientas fijas, el producto y recién después el punto de caché. Bedrock procesa los checkpoints en orden tools → system → messages y cada ronda del loop lee ese prefijo de caché (F4). Mínimo 1.024 tokens para Sonnet 5, que acá se supera. Una ronda que cambia las herramientas invalida la caché: por eso la última ronda cuesta más.
-
-**Transición:** Los números de la corrida del 28/09.
-
-**Código:** `core/src/catalogo/v2.py` líneas 70–80
-
-```py
-    async def mapear(self, ev: MapeoStart) -> MapeoDone:
-        por_nombre = {t.metadata.name: t for t in self.herramientas}
-        # El punto de caché después del producto hace que cada ronda del loop reuse
-        # instrucciones + herramientas + producto en vez de volver a pagarlos.
-        historial = [
-            ChatMessage(role="system", content=self.instrucciones),
-            ChatMessage(role="user", blocks=[TextBlock(text=mensaje_producto(ev.producto)),
-                                             CachePoint(cache_control=CacheControl(type="default"))]),
-        ]
-        uso: dict = {}
-        usadas: list[str] = []
-```
-
-Instrucciones, herramientas y producto quedan antes del punto de caché: las seis rondas del loop reutilizan ese prefijo en vez de volver a pagarlo (F4).
-
-### 48 · Costo por producto, medido.
+### 32 · Costo por producto, medido.
 
 **Sección:** 04 · V2 · herramientas · **Pauta:** 3 min · **Tipo:** table
 
@@ -1246,7 +685,7 @@ Instrucciones, herramientas y producto quedan antes del punto de caché: las sei
 
 **Transición:** Decisión 11: el costo.
 
-### 49 · ¿Cuánto puede costar?
+### 33 · ¿Cuánto puede costar?
 
 **Sección:** 04 · V2 · herramientas · **Pauta:** 4 min · **Tipo:** decision
 
@@ -1270,7 +709,7 @@ Instrucciones, herramientas y producto quedan antes del punto de caché: las sei
 
 **Archivo:** `decisiones/11-costo.md`
 
-### 50 · Demo · el mismo caso por V2.
+### 34 · Demo · el mismo caso por V2.
 
 **Sección:** 04 · V2 · herramientas · **Pauta:** 5 min · **Tipo:** demo
 
@@ -1296,7 +735,7 @@ scripts/correr.sh --version v2 --datos real --caso error-88904447
 
 **Respaldo:** resultados/v2-real-20260928-181509.json (corrida del 28/09, anterior a las correcciones)
 
-### 51 · V3 · control.
+### 35 · V3 · control.
 
 **Sección:** 05 · V3 · control · **Pauta:** 1 min · **Tipo:** divider
 
@@ -1310,7 +749,7 @@ scripts/correr.sh --version v2 --datos real --caso error-88904447
 
 **Transición:** El agente completo, en un dibujo.
 
-### 52 · El agente por dentro: código y modelo.
+### 36 · El agente por dentro: código y modelo.
 
 **Sección:** 05 · V3 · control · **Pauta:** 3 min · **Tipo:** diagram
 
@@ -1325,23 +764,7 @@ scripts/correr.sh --version v2 --datos real --caso error-88904447
 
 **Transición:** Qué es un guardrail acá.
 
-**Diagrama (cajas):**
-
-- Herramientas · código: buscar_categoria · atributos_del_canal · buscar_atributos_referencia · buscar_correcciones (V3)
-- FuenteCatalogo: hoy: archivos de data/ · mañana: lo que exponga Alephee
-- Producto: MapeoStart · SKU + categoría
-- Categoría por tabla: reference_category · en código (V3)
-- Caché (V3): SKU + categoría · legacy
-- Claude Sonnet 5: decide qué consultar · hasta 6 rondas · la última: solo entregar
-- Guardrail (V3): revisar: dominio, · duplicados, obligatorios
-- Red final (V3): limpiar: descarta · y marca missing
-- Sin referencia: missing: category · fin, sin modelo
-- Guardada: sale sin llamar · al modelo
-- Publicación: MapeoDone · se guarda en caché
-
-V1 es solo la caja del modelo con la herramienta entregar_publicacion. V2 suma el loop y las herramientas. V3 suma la categoría por tabla, la caché, las correcciones y los guardrails.
-
-### 53 · Guardrail: una comprobación en código, no otra instrucción.
+### 37 · Guardrail: una comprobación en código, no otra instrucción.
 
 **Sección:** 05 · V3 · control · **Pauta:** 3 min · **Tipo:** compare
 
@@ -1355,81 +778,9 @@ V1 es solo la caja del modelo con la herramienta entregar_publicacion. V2 suma e
 
 **Temas para hablar:** Una regla en el prompt es un pedido; un guardrail es una comprobación que no depende de que el modelo obedezca. Dos pasos: primero se le devuelven los problemas al agente para que corrija (una ronda); lo que siga mal se descarta en código. Límite honesto: valida pertenencia al esquema y al dominio por ID; no verifica que el valor sea verdad respecto del producto.
 
-**Transición:** Qué mira el validador.
-
-### 54 · Qué mira el validador.
-
-**Sección:** 05 · V3 · control · **Pauta:** 4 min · **Tipo:** code
-
-**Objetivo:** Leer las cuatro comprobaciones
-
-**En pantalla:**
-
-
-**Temas para hablar:** Recorrer las cuatro con el caso guía: ABS Plastic en Código OEM pasa la primera (el atributo existe) y la segunda (tiene dato). Shopee lo rechazó con 'value is not linked': el canal sí tiene una lista para ese atributo, pero nuestro esquema MOCK no la tiene, así que la tercera comprobación no puede detectarlo. Ese es el límite: el guardrail detecta lo que el esquema permite detectar. Por eso el esquema oficial de Shopee es un pendiente de primer orden.
-
-**Pregunta / participación:** ¿Qué comprobación agregarían con lo que saben del canal?
-
-**Transición:** La red final.
-
-**Código:** `core/src/catalogo/guardrails.py` líneas 11–23
-
-```py
-def _problema(attr: dict, esquema: dict[str, dict]) -> str | None:
-    definicion = esquema.get(attr["urn"])
-    if definicion is None:
-        return f"{attr['urn']} no es un atributo de esta categoría"
-    if str(attr.get("value", "")).strip() in SIN_DATO:
-        return f"{attr['urn']} tiene un valor sin dato ('{attr.get('value')}'); no se publica"
-    dominio = {v["id"]: v["name"] for v in definicion.get("values", [])}
-    if dominio and str(attr.get("valueId")) not in dominio:
-        return f"{attr['urn']}: el valor '{attr.get('value')}' no está en la lista del canal"
-    if dominio and attr.get("value") != dominio[str(attr.get("valueId"))]:
-        return f"{attr['urn']}: el nombre del valor no coincide con su ID en el canal"
-    return None
-
-```
-
-Cuatro comprobaciones por atributo: que exista en la categoría, que tenga dato, que el valueId esté en la lista del canal y que el nombre coincida con ese ID.
-
-### 55 · La red final no inventa: descarta y marca.
-
-**Sección:** 05 · V3 · control · **Pauta:** 4 min · **Tipo:** code
-
-**Objetivo:** Mostrar que la salida final siempre cumple el contrato
-
-**En pantalla:**
-
-
-**Temas para hablar:** Después de esta función nunca sale un valor inválido, un duplicado ni un obligatorio sin informar. Lo descartado no desaparece: queda en rejected con el motivo, para que quien revise entienda por qué. Esto es lo que vale medir en la prueba de las 16:15: cero inválidos detectables.
-
 **Transición:** Decisión 12.
 
-**Código:** `core/src/catalogo/guardrails.py` líneas 41–57
-
-```py
-def limpiar(publicacion: dict, esquema: dict[str, dict]) -> dict:
-    atributos, descartados, vistos = [], list(publicacion["rejected"]), set()
-    for a in publicacion["attributes"]:
-        motivo = _problema(a, esquema) or (f"{a['urn']} duplicado" if a["urn"] in vistos else None)
-        if motivo:
-            descartados.append({"legacyId": a["urn"], "reason": f"guardrail: {motivo}"})
-            continue
-        vistos.add(a["urn"])
-        atributos.append(a)
-    faltantes = [m for m in publicacion["missing"]
-                 if m["urn"] not in vistos and not (m["urn"] == "category" and publicacion["category"])]
-    ya = {m["urn"] for m in faltantes}
-    faltantes += [{"urn": u, "reason": "obligatorio sin dato válido (guardrail)"}
-                  for u, d in esquema.items() if d.get("mandatory") and u not in vistos and u not in ya]
-    if not publicacion["category"] and "category" not in ya:
-        faltantes.append({"urn": "category", "reason": "sin categoría de referencia; requiere revisión"})
-    return {**publicacion, "attributes": atributos, "missing": faltantes, "rejected": descartados}
-```
-
-Lo que no pasa va a rejected con el motivo del guardrail; lo obligatorio sin dato válido va a missing; sin categoría de referencia, se pide revisión.
-
-### 56 · ¿Qué hace cuando no sabe?
+### 38 · ¿Qué hace cuando no sabe?
 
 **Sección:** 05 · V3 · control · **Pauta:** 4 min · **Tipo:** decision
 
@@ -1453,7 +804,7 @@ Lo que no pasa va a rejected con el motivo del guardrail; lo obligatorio sin dat
 
 **Archivo:** `decisiones/12-cuando-no-sabe.md`
 
-### 57 · Memoria: correcciones del equipo de catálogo.
+### 39 · Memoria: correcciones del equipo de catálogo.
 
 **Sección:** 05 · V3 · control · **Pauta:** 3 min · **Tipo:** cards
 
@@ -1467,78 +818,9 @@ Lo que no pasa va a rejected con el motivo del guardrail; lo obligatorio sin dat
 
 **Temas para hablar:** Memoria acá no es que el agente aprende solo: es que reutiliza correcciones que una persona del equipo de catálogo cargó explícitamente. Se cargan con un comando; el agente las consulta por categoría. Límite honesto: la persistencia existe; que el modelo siempre las respete depende de que las consulte, por eso la instrucción lo exige y el guardrail revisa después.
 
-**Transición:** Una corrección también vacía la caché.
-
-### 58 · Una corrección vacía la caché.
-
-**Sección:** 05 · V3 · control · **Pauta:** 4 min · **Tipo:** code
-
-**Objetivo:** Mostrar la relación entre memoria y caché
-
-**En pantalla:**
-
-
-**Temas para hablar:** Dos reglas simples: una corrección nueva reemplaza a la anterior para la misma categoría, atributo y valor; y toda corrección invalida la caché completa. Es la invalidación más simple posible; en producción conviene invalidar por categoría.
-
-**Transición:** Determinismo y caché por SKU.
-
-**Código:** `core/src/catalogo/memoria.py` líneas 31–41
-
-```py
-    def corregir(self, categoria: str, urn: str, valor_producto: str, value_id: str, value: str,
-                 autor: str = "catálogo") -> dict:
-        """Guarda que, en esa categoría, el valor del producto `valor_producto` va a `urn` = `value`."""
-        correccion = {"categoria": categoria, "urn": urn, "valorProducto": valor_producto,
-                      "valueId": value_id, "value": value, "autor": autor, "fecha": date.today().isoformat()}
-        todas = [c for c in self._leer(self.correcciones_archivo)
-                 if not (c["categoria"] == categoria and c["urn"] == urn and c["valorProducto"] == valor_producto)]
-        self._escribir(self.correcciones_archivo, [*todas, correccion])
-        # Una corrección puede cambiar cualquier mapeo guardado: la caché se vacía.
-        self._escribir(self.cache_archivo, {})
-        return correccion
-```
-
-La corrección se guarda con autor y fecha y reemplaza a la anterior del mismo atributo. Como puede cambiar cualquier mapeo guardado, la caché de mapeos se vacía.
-
-### 59 · Mismo SKU, misma salida.
-
-**Sección:** 05 · V3 · control · **Pauta:** 4 min · **Tipo:** code
-
-**Objetivo:** Recorrer el paso de la V3 completo
-
-**En pantalla:**
-
-
-**Temas para hablar:** Orden del paso: categoría desde la tabla (decisión 10 hecha código), salida temprana si no hay referencia o esquema, caché por SKU y categoría legacy revisada contra el esquema antes de reutilizarla, y recién después el loop de la V2 con guardrails en la entrega. 40 concesionarios venden el mismo SKU de GM: un solo mapeo. Límite: la clave no incluye versión de tablas ni cuenta; eso es la decisión 13.
-
 **Transición:** Decisión 13.
 
-**Código:** `core/src/catalogo/v3.py` líneas 62–79
-
-```py
-    async def mapear(self, ev: MapeoStart) -> MapeoDone:
-        cats = ev.producto.get("categories") or []
-        clave = (ev.producto.get("sku"), id_categoria(cats[0]["urn"]) if cats else "")
-        referencia = self.fuente.categoria_destino(clave[1]) if clave[1] else None
-        self.categoria_referencia = referencia["urn"] if referencia else None
-        self.reintentos = 1
-        if not self.categoria_referencia or self.fuente.esquema(self.categoria_referencia) is None:
-            return MapeoDone(publicacion={
-                "category": self.categoria_referencia, "attributes": [], "rejected": [],
-                "missing": [{"urn": "category", "reason": "No hay referencia o esquema de categoría disponible; requiere revisión"}],
-            }, herramientas_usadas=["referencia_categoria"])
-        if self.usar_cache and (guardado := self.memoria.en_cache(*clave)):
-            if guardado["category"] == self.categoria_referencia and not guardrails.revisar(guardado, self._esquema(guardado)):
-                return MapeoDone(publicacion=guardrails.limpiar(guardado, self._esquema(guardado)), herramientas_usadas=["cache"])
-        done = await MapeoV2.mapear(self, ev)
-        if self.usar_cache and done.publicacion is not None:
-            self.memoria.guardar_cache(*clave, done.publicacion)
-        return done
-```
-
-La tabla fija la categoría antes de llamar al modelo; sin referencia o sin esquema, se devuelve el faltante sin invocarlo. Si hay caché válida para SKU + categoría legacy, el modelo tampoco se llama.
-
-### 60 · ¿Cómo garantizamos determinismo?
+### 40 · ¿Cómo garantizamos determinismo?
 
 **Sección:** 05 · V3 · control · **Pauta:** 4 min · **Tipo:** decision
 
@@ -1562,7 +844,7 @@ La tabla fija la categoría antes de llamar al modelo; sin referencia o sin esqu
 
 **Archivo:** `decisiones/13-determinismo-y-cache.md`
 
-### 61 · Demo · corregir y repetir.
+### 41 · Demo · corregir y repetir.
 
 **Sección:** 05 · V3 · control · **Pauta:** 5 min · **Tipo:** demo
 
@@ -1589,7 +871,7 @@ scripts/correr.sh --version v3 --datos real --caso error-88904447 --cache
 
 **Respaldo:** resultados/v3-real-20260928-180524.json (corrida del 28/09, anterior a las correcciones)
 
-### 62 · La prueba.
+### 42 · La prueba.
 
 **Sección:** 06 · La prueba y el camino · **Pauta:** 1 min · **Tipo:** divider
 
@@ -1603,7 +885,7 @@ scripts/correr.sh --version v3 --datos real --caso error-88904447 --cache
 
 **Transición:** Los resultados.
 
-### 63 · Resultados (se completan en vivo).
+### 43 · Resultados (se completan en vivo).
 
 **Sección:** 06 · La prueba y el camino · **Pauta:** 3 min · **Tipo:** table
 
@@ -1623,7 +905,7 @@ scripts/correr.sh --version v3 --datos real --caso error-88904447 --cache
 
 **Transición:** Cómo leer la tabla.
 
-### 64 · Cómo leer la tabla.
+### 44 · Cómo leer la tabla.
 
 **Sección:** 06 · La prueba y el camino · **Pauta:** 3 min · **Tipo:** cards
 
@@ -1641,7 +923,7 @@ scripts/correr.sh --version v3 --datos real --caso error-88904447 --cache
 
 **Transición:** El camino a producción.
 
-### 65 · Camino a producción.
+### 45 · Camino a producción.
 
 **Sección:** 06 · La prueba y el camino · **Pauta:** 3 min · **Tipo:** flow
 
@@ -1658,7 +940,7 @@ scripts/correr.sh --version v3 --datos real --caso error-88904447 --cache
 
 **Transición:** Las trece decisiones.
 
-### 66 · Las 13 decisiones (1 a 7).
+### 46 · Las 13 decisiones (1 a 7).
 
 **Sección:** 06 · La prueba y el camino · **Pauta:** 3 min · **Tipo:** table
 
@@ -1679,7 +961,7 @@ scripts/correr.sh --version v3 --datos real --caso error-88904447 --cache
 
 **Transición:** Las de la tarde.
 
-### 67 · Las 13 decisiones (8 a 13).
+### 47 · Las 13 decisiones (8 a 13).
 
 **Sección:** 06 · La prueba y el camino · **Pauta:** 3 min · **Tipo:** table
 
@@ -1699,7 +981,7 @@ scripts/correr.sh --version v3 --datos real --caso error-88904447 --cache
 
 **Transición:** Quién hace qué.
 
-### 68 · Quién hace qué, para cuándo.
+### 48 · Quién hace qué, para cuándo.
 
 **Sección:** 06 · La prueba y el camino · **Pauta:** 1 min · **Tipo:** divider
 

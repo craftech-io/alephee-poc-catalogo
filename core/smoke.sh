@@ -3,8 +3,8 @@
 # Usa FAKE_LLM=1 para no pegarle a Bedrock.
 set -euo pipefail
 
-docker build --platform linux/arm64 -f core/Dockerfile -t alephee-catalogo-core:dev .
-cid=$(docker run -d -p 8080:8080 -e MODEL_ID=fake -e FAKE_LLM=1 alephee-catalogo-core:dev)
+docker build --platform linux/arm64 -f core/Dockerfile -t craftech-ai-chat-core:dev .
+cid=$(docker run -d -p 8080:8080 -e MODEL_ID=fake -e FAKE_LLM=1 craftech-ai-chat-core:dev)
 trap 'docker rm -f "$cid" >/dev/null' EXIT
 
 # Presupuesto generoso: bajo QEMU (build multi-arch en x86) el arranque tarda

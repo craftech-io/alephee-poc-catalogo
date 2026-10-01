@@ -6,7 +6,7 @@
 // no se puede usar tal cual.
 //
 // Es `.mjs` y no parte de `client.config.ts` a propósito: lo consume
-// `apps/web/server.mjs`, que es JavaScript plano sin build. Un `.ts` obligaría a
+// `examples/demo-client/server.mjs`, que es JavaScript plano sin build. Un `.ts` obligaría a
 // type stripping (experimental en Node < 22.18) o a un paso de compilación solo
 // para leer cuatro colores. `client.config.ts` lo importa y lo expone como
 // `cliente.marca`, así que sigue habiendo un solo lugar por tema.
@@ -21,7 +21,7 @@ export const marca = {
   nombre: "Asistente",   // ← el nombre que ve el usuario del cliente
 
   /**
-   * Logo. Ruta servida por la app (`apps/web/public/…`) o un data URI.
+   * Logo. Ruta servida por la app (`examples/demo-client/public/…`) o un data URI.
    * Vacío ⇒ solo se muestra el nombre, sin hueco ni imagen rota.
    *
    */

@@ -19,7 +19,7 @@
 // una respuesta del assistant, nunca dejando al usuario sin respuesta ni
 // tumbando el batch.
 import { randomUUID } from "node:crypto";
-import { MENSAJES_WORKER } from "@alephee-catalogo/shared/mensajes";
+import { MENSAJES_WORKER } from "@craftech-ai-chat/shared/mensajes";
 // Import relativo al paquete bff: el store de MessagesTable vive ahí y
 // packages/bff/package.json no expone un `exports` map (a diferencia de
 // packages/shared, que sí expone "./mensajes"), así que no hay forma de

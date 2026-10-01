@@ -3,7 +3,7 @@
 // memoria en vez de un DynamoDBClient.
 import { describe, expect, it, vi } from "vitest";
 import { SignJWT } from "jose";
-import { MENSAJES_GUARDRAIL } from "@alephee-catalogo/shared/mensajes";
+import { MENSAJES_GUARDRAIL } from "@craftech-ai-chat/shared/mensajes";
 import { getMensajes, postMensaje } from "./api";
 import type { Mensaje } from "./store";
 

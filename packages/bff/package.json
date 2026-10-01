@@ -1,5 +1,5 @@
 {
-  "name": "@alephee-catalogo/bff",
+  "name": "@craftech-ai-chat/bff",
   "version": "1.0.0",
   "type": "module",
   "main": "index.js",
@@ -16,7 +16,7 @@
     "@aws-sdk/client-dynamodb": "3.1116.0",
     "@aws-sdk/client-s3": "3.1116.0",
     "@aws-sdk/client-sqs": "3.1116.0",
-    "@alephee-catalogo/shared": "*",
+    "@craftech-ai-chat/shared": "*",
     "jose": "6.2.9"
   },
   "devDependencies": {
