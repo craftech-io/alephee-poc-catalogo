@@ -1,5 +1,7 @@
 """Events of the mapping workflows."""
 
+from typing import Literal
+
 from llama_index.core.base.llms.types import ChatMessage
 from workflows.events import Event, StartEvent, StopEvent
 
@@ -20,8 +22,9 @@ class MappingCompleted(StopEvent):
 
     listing: Listing | None
     error: str | None = None
-    # Where the listing came from: "model" (V1), "cache", "tables" or "agent" (V2).
-    source: str = "model"
+    # Where the listing came from: "model" (V1, the default), or "cache", "tables" or
+    # "agent" (V2 — see `source=` in v2.py for where each one is emitted).
+    source: Literal["model", "cache", "tables", "agent"] = "model"
 
 
 class CacheMissed(Event):
