@@ -1,6 +1,6 @@
 # Guion del warroom · por diapositiva
 
-Versión del 29/09/2026 · 33 diapositivas · 7 secciones. Fuente única: `docs/warroom/diapositivas.json`. Se regenera con `python3 scripts/generar_presentacion.py`.
+Versión del 29/09/2026 · 37 diapositivas · 7 secciones. Fuente única: `docs/warroom/diapositivas.json`. Se regenera con `python3 scripts/generar_presentacion.py`.
 
 [Presentación interactiva](presentacion-warroom.html) · [PDF estático](presentacion-warroom.pdf) · [Ficha de participantes](warroom/ficha-participantes.md)
 
@@ -16,6 +16,7 @@ Las selecciones, respuestas revelables y temporizadores son ayudas locales de fa
 |---|---|---|---|
 | 01 · Punto de partida | 09:00–09:30 | 1–9 | Ver el error de hoy y acordar qué construimos |
 | 02 · Diseñar el agente | 09:30–11:15 | 10–33 | Tomar las decisiones que definen la V1 |
+| 03 · V1 · el agente responde | 11:15–12:30 | 34–37 | Construir, correr y leer la primera versión |
 
 Pausa 11:00–11:15; almuerzo 12:30–13:15; pausa 14:45–15:00. El bloque V3 incluye preparación de comparación 16:00–16:15. Margen de preguntas 17:00–17:30 sujeto a confirmación logística.
 
@@ -27,7 +28,7 @@ Los minutos por diapositiva son una pauta para explicaciones y consignas, no un 
 |---|---:|---|---:|
 | 01 · Punto de partida | 29 min | Dolores del equipo y preguntas: 10 min | 39 min |
 | 02 · Diseñar el agente | 85 min | Pizarra: tipos de aplicación y dónde corre: 15 min; Pausa 11:00: 15 min | 115 min |
-| 03 · V1 · el agente responde | 0 min | Corridas sobre otros casos: 25 min | 25 min |
+| 03 · V1 · el agente responde | 13 min | Corridas sobre otros casos: 25 min | 38 min |
 | 04 · V2 · herramientas | 0 min | Corrida del lote y lectura: 25 min | 25 min |
 | 05 · V3 · control | 0 min | Corrida del lote con V3: 20 min | 20 min |
 | 06 · La prueba y el camino | 0 min | Documentar decisiones y responsables: 15 min | 15 min |
@@ -836,6 +837,109 @@ Un caso es exacto solo si todo se cumple a la vez. Es determinista: no llama a n
 **Propuesta:** A. Son productos reales con publicaciones reales y rechazos reales de Shopee. Lo simulado queda rotulado y se valida con catálogo después. Los 10 mock quedan como tests de borde.
 
 **Archivo:** `decisiones/09-dataset.md`
+
+### 34 · V1 · el agente responde.
+
+**Sección:** 03 · V1 · el agente responde · **Pauta:** 1 min · **Tipo:** divider
+
+**Objetivo:** Abrir la V1 con la expectativa correcta
+
+**En pantalla:**
+
+- Solo instrucciones. Se espera que falle, y esos fallos justifican lo que sigue.
+
+**Temas para hablar:** La V1 implementa las decisiones 1 a 9: single prompt, salida por herramienta con esquema, Claude Sonnet 5 por Converse, LlamaIndex Workflows, medida con el evaluador sobre los 30 reales. No usa las tablas de referencia a propósito: queremos ver qué resuelve el modelo solo. Recordar la regla del día: no se pasa al bloque siguiente con algo roto, pero un resultado de negocio incorrecto no es algo roto, es evidencia.
+
+**Transición:** El paso único de la V1.
+
+### 35 · Una llamada, una entrega.
+
+**Sección:** 03 · V1 · el agente responde · **Pauta:** 4 min · **Tipo:** code
+
+**Objetivo:** Recorrer el paso completo: mensaje, llamada, tool call, validación
+
+**En pantalla:**
+
+
+**Temas para hablar:** Cuatro momentos: se arma el mensaje con el producto y el contexto del canal; una sola llamada al modelo con la herramienta de entrega obligatoria; se buscan las llamadas a entregar_publicacion; se valida contra Publicacion. Las dos salidas de error (no llamó, salida fuera de contrato) son resultados, no excepciones: el runner las cuenta. Lo que no está acá: ninguna tabla, ninguna consulta. Todo lo que el modelo sabe del canal viaja en el mensaje.
+
+**Pregunta / participación:** ¿Qué pasa si el modelo responde con texto en vez de llamar a la herramienta?
+
+**Devolución esperada:** MapeoDone con error explícito. El caso cuenta como no entregado, no como publicado.
+
+**Transición:** Lo corremos sobre el caso guía.
+
+**Código:** `core/src/catalogo/v1.py` líneas 83–100
+
+```py
+    async def mapear(self, ev: MapeoStart) -> MapeoDone:
+        respuesta = await self.llm.achat_with_tools(
+            tools=[HERRAMIENTA_SALIDA],
+            user_msg=mensaje_producto(ev.producto),
+            chat_history=[ChatMessage(role="system", content=INSTRUCCIONES)],
+            tool_required=True,
+        )
+        uso = uso_de(respuesta)
+        llamadas = [
+            ll
+            for ll in self.llm.get_tool_calls_from_response(respuesta, error_on_no_tool_call=False)
+            if ll.tool_name == NOMBRE_SALIDA
+        ]
+        if not llamadas:
+            return MapeoDone(publicacion=None, uso=uso, error=f"El modelo no llamó a {NOMBRE_SALIDA}")
+        try:
+            publicacion = Publicacion.model_validate(llamadas[0].tool_kwargs)
+        except ValidationError as exc:
+```
+
+tool_required=True: el modelo tiene que entregar por la herramienta. Si no la llama o la entrega no cumple el contrato, se informa el error; nunca se publica a medias.
+
+### 36 · Demo · un caso real por V1.
+
+**Sección:** 03 · V1 · el agente responde · **Pauta:** 5 min · **Tipo:** demo
+
+**Objetivo:** Ver una salida real y leerla con el contrato en la mano
+
+**En pantalla:**
+
+
+**Temas para hablar:** Antes de correr, pedir una predicción: ¿qué va a poner en Código OEM? Correr y leer la salida en el orden de la lista. Si Bedrock no responde (sesión SSO vencida, throttling), abrir la corrida guardada y decirlo: es una corrida vieja, anterior a las correcciones del 28/09. Después, el lote completo corre en segundo plano mientras seguimos.
+
+**Transición:** Qué falló y qué capa lo resuelve.
+
+```bash
+scripts/correr.sh --version v1 --datos real --caso error-88904447
+```
+
+**Mirar:**
+
+- La categoría elegida frente a la de reference_category
+- Cada atributo: ¿de dónde salió el valor? ¿Está en la lista del canal?
+- missing y rejected: ¿informa lo que no pudo o completó igual?
+- Tokens de entrada: todo el contexto del canal viaja en cada llamada
+
+**Respaldo:** resultados/v1-real-20260928-173758.json (corrida del 28/09, anterior a las correcciones)
+
+### 37 · Qué falló en V1 y qué capa lo resuelve.
+
+**Sección:** 03 · V1 · el agente responde · **Pauta:** 3 min · **Tipo:** table
+
+**Objetivo:** Convertir cada fallo de la V1 en la justificación de una capa
+
+**En pantalla:**
+
+- Corrida del 28/09 sobre los 30 reales · anterior a las correcciones · expected MOCK
+- Fallo / Dónde se vio / Capa que lo resuelve
+- Categoría inventada cuando no hay referencia / Caso mock 09 (sin categoría de origen) / V2 · la tabla por herramienta
+- Valor fuera de la lista del canal / 19 valores en los 30 reales / V3 · guardrail
+- Obligatorio sin informar en missing / 2 casos en los 30 reales / V3 · guardrail
+- ~22.000 tokens de entrada por producto / Todos los casos / V2 · herramientas + caché de prompt
+
+**Temas para hablar:** Esto es lo que la V1 compra: evidencia. La categoría inventada es el fallo que justifica la V2: sin referencia, la respuesta tiene que ser determinista, no creativa. Los valores fuera de lista y los obligatorios sin informar justifican la V3: una regla escrita en el prompt no garantiza que se cumpla; hace falta comprobarla en código. Y los 22.000 tokens por producto son el costo de mandar todo el canal en cada llamada. Comparar con la columna Hoy: 47 inválidos.
+
+**Pregunta / participación:** ¿Alguno de estos fallos les sorprende? ¿Cuál esperaban?
+
+**Transición:** Almuerzo. A las 13:15, herramientas.
 
 ## Fundamento editorial y revisión
 

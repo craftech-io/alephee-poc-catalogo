@@ -1104,6 +1104,143 @@
     "proposal": "A. Son productos reales con publicaciones reales y rechazos reales de Shopee. Lo simulado queda rotulado y se valida con catálogo después. Los 10 mock quedan como tests de borde.",
     "file": "decisiones/09-dataset.md"
    }
+  },
+  {
+   "id": "s34",
+   "section": "v1",
+   "title": "V1 · el agente responde.",
+   "kind": "divider",
+   "lead": "Solo instrucciones. Se espera que falle, y esos fallos justifican lo que sigue.",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Abrir la V1 con la expectativa correcta",
+    "say": "La V1 implementa las decisiones 1 a 9: single prompt, salida por herramienta con esquema, Claude Sonnet 5 por Converse, LlamaIndex Workflows, medida con el evaluador sobre los 30 reales. No usa las tablas de referencia a propósito: queremos ver qué resuelve el modelo solo. Recordar la regla del día: no se pasa al bloque siguiente con algo roto, pero un resultado de negocio incorrecto no es algo roto, es evidencia.",
+    "ask": "",
+    "close": "",
+    "transition": "El paso único de la V1."
+   },
+   "minutes": 1
+  },
+  {
+   "id": "s35",
+   "section": "v1",
+   "title": "Una llamada, una entrega.",
+   "kind": "code",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Recorrer el paso completo: mensaje, llamada, tool call, validación",
+    "say": "Cuatro momentos: se arma el mensaje con el producto y el contexto del canal; una sola llamada al modelo con la herramienta de entrega obligatoria; se buscan las llamadas a entregar_publicacion; se valida contra Publicacion. Las dos salidas de error (no llamó, salida fuera de contrato) son resultados, no excepciones: el runner las cuenta. Lo que no está acá: ninguna tabla, ninguna consulta. Todo lo que el modelo sabe del canal viaja en el mensaje.",
+    "ask": "¿Qué pasa si el modelo responde con texto en vez de llamar a la herramienta?",
+    "close": "MapeoDone con error explícito. El caso cuenta como no entregado, no como publicado.",
+    "transition": "Lo corremos sobre el caso guía."
+   },
+   "minutes": 4,
+   "code": {
+    "file": "core/src/catalogo/v1.py",
+    "lines": "83-100",
+    "symbol": "async def mapear",
+    "highlight": [
+     88,
+     97,
+     99
+    ],
+    "caption": "tool_required=True: el modelo tiene que entregar por la herramienta. Si no la llama o la entrega no cumple el contrato, se informa el error; nunca se publica a medias."
+   }
+  },
+  {
+   "id": "s36",
+   "section": "v1",
+   "title": "Demo · un caso real por V1.",
+   "kind": "demo",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Ver una salida real y leerla con el contrato en la mano",
+    "say": "Antes de correr, pedir una predicción: ¿qué va a poner en Código OEM? Correr y leer la salida en el orden de la lista. Si Bedrock no responde (sesión SSO vencida, throttling), abrir la corrida guardada y decirlo: es una corrida vieja, anterior a las correcciones del 28/09. Después, el lote completo corre en segundo plano mientras seguimos.",
+    "ask": "",
+    "close": "",
+    "transition": "Qué falló y qué capa lo resuelve."
+   },
+   "minutes": 5,
+   "demo": {
+    "command": "scripts/correr.sh --version v1 --datos real --caso error-88904447",
+    "watch": [
+     "La categoría elegida frente a la de reference_category",
+     "Cada atributo: ¿de dónde salió el valor? ¿Está en la lista del canal?",
+     "missing y rejected: ¿informa lo que no pudo o completó igual?",
+     "Tokens de entrada: todo el contexto del canal viaja en cada llamada"
+    ],
+    "fallback": "resultados/v1-real-20260928-173758.json (corrida del 28/09, anterior a las correcciones)"
+   }
+  },
+  {
+   "id": "s37",
+   "section": "v1",
+   "title": "Qué falló en V1 y qué capa lo resuelve.",
+   "kind": "table",
+   "lead": "",
+   "label": "Corrida del 28/09 sobre los 30 reales · anterior a las correcciones · expected MOCK",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": {
+    "headers": [
+     "Fallo",
+     "Dónde se vio",
+     "Capa que lo resuelve"
+    ],
+    "rows": [
+     [
+      "Categoría inventada cuando no hay referencia",
+      "Caso mock 09 (sin categoría de origen)",
+      "V2 · la tabla por herramienta"
+     ],
+     [
+      "Valor fuera de la lista del canal",
+      "19 valores en los 30 reales",
+      "V3 · guardrail"
+     ],
+     [
+      "Obligatorio sin informar en missing",
+      "2 casos en los 30 reales",
+      "V3 · guardrail"
+     ],
+     [
+      "~22.000 tokens de entrada por producto",
+      "Todos los casos",
+      "V2 · herramientas + caché de prompt"
+     ]
+    ]
+   },
+   "notes": {
+    "objective": "Convertir cada fallo de la V1 en la justificación de una capa",
+    "say": "Esto es lo que la V1 compra: evidencia. La categoría inventada es el fallo que justifica la V2: sin referencia, la respuesta tiene que ser determinista, no creativa. Los valores fuera de lista y los obligatorios sin informar justifican la V3: una regla escrita en el prompt no garantiza que se cumpla; hace falta comprobarla en código. Y los 22.000 tokens por producto son el costo de mandar todo el canal en cada llamada. Comparar con la columna Hoy: 47 inválidos.",
+    "ask": "¿Alguno de estos fallos les sorprende? ¿Cuál esperaban?",
+    "close": "",
+    "transition": "Almuerzo. A las 13:15, herramientas."
+   },
+   "minutes": 3
   }
  ]
 }
