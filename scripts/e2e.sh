@@ -3,7 +3,7 @@
 #
 # API_URL must point to the deployed BFF (the `Chat` output printed by `sst deploy`):
 # `.sst/outputs.json` from this deploy has no `Chat` key, so pass it explicitly, e.g.:
-#   API_URL=https://nwqduzci2clbsshvxn4mtqki3i0xjtfo.lambda-url.us-east-1.on.aws scripts/e2e.sh
+#   API_URL=<Function URL del BFF (salida Chat de sst deploy)> scripts/e2e.sh
 # CHAT_HMAC_SECRET comes from .env through `uv run --env-file .env`.
 set -euo pipefail
 cd "$(dirname "$0")/.."
