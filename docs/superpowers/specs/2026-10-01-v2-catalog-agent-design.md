@@ -24,6 +24,8 @@ La V2 está terminada cuando:
 2. corrieron `v2-mock` y `v2-real` en Langfuse, al lado de `current` y `v1`;
 3. sobre los 30 reales: cero valores inválidos, cero duplicados y cero obligatorios sin informar, con más recall que la V1;
 4. el chat desplegado (stage `warroom`) responde con `map_product_v2`, y una corrección cargada con `scripts/correct.sh` cambia el resultado del mismo SKU.
+5. los tests e2e pasan contra los servicios reales de la cuenta sandbox y contra el chat desplegado;
+6. las láminas del deck describen solo lo que existe: arquitectura, comandos, pruebas y números de V1 y V2.
 
 ## Decisiones tomadas en el brainstorming
 
@@ -36,6 +38,8 @@ La V2 está terminada cuando:
 | Correcciones y caché | DynamoDB en la cuenta sandbox, dos tablas nuevas en el stack de SST |
 | Chat | Dos herramientas: `map_product_v1` y `map_product_v2` |
 | Código | En inglés, como la V1 |
+| Tests e2e | Dos niveles: el agente contra Bedrock y DynamoDB, y el chat desplegado contra el BFF |
+| Presentación | La V2 incluye revisar las 58 láminas y adaptarlas a la arquitectura, las pruebas y los números reales |
 
 ## Componentes
 
@@ -143,6 +147,42 @@ Con pytest, sin AWS ni Langfuse, antes del código:
 - `experiment`: `--version v2`.
 - Humo real con un caso contra Bedrock antes del experimento completo.
 
+## Tests e2e
+
+Corren contra servicios reales, fuera de la suite normal. Se marcan con `@pytest.mark.e2e` y se saltean salvo con `RUN_E2E=1`. Se lanzan con `scripts/e2e.sh`, que carga el `.env` y usa el perfil `sandbox`. Usan solo el dataset mock: no suben datos reales.
+
+**Nivel 1 · el agente contra Bedrock y DynamoDB** (`core/tests/e2e/test_e2e_mapping.py`):
+
+- V1 sobre `01-real-calota-aro14`: devuelve `MappingCompleted` con un `Listing` tipado y la categoría Calotas.
+- V2 sobre los 10 casos mock: todo `Listing` con categoría pasa `validate()` sin problemas (cero inválidos, cero duplicados, obligatorios informados); `09-sin-categoria` sale con `source="tables"` y `missing: category`, sin llamar al modelo.
+- Caché: una segunda corrida del mismo SKU sale con `source="cache"`. Usa las tablas DynamoDB del stage `warroom` si están configuradas; si no, el almacén en memoria del mismo proceso.
+- Correcciones: el test carga una corrección propia en DynamoDB para un caso, corre la V2, verifica que el valor corregido aparece en el `Listing` y borra la corrección y la caché de esa categoría al terminar, pase o falle.
+- Se saltea con un motivo claro si no hay credenciales de AWS.
+
+**Nivel 2 · el chat desplegado** (`core/tests/e2e/test_e2e_chat.py`):
+
+- Toma la URL del BFF de `.sst/outputs.json` (o de `API_URL`) y el secreto de `CHAT_HMAC_SECRET` del `.env`.
+- Firma un token igual que `apps/web/sign.mjs`, manda "Mapea el SKU 94701411 con la V2" con el mismo contrato que usa `apps/web` (`POST` y `GET /mensajes`) y espera la respuesta, con un tope de 120 segundos.
+- Verifica que la respuesta nombra la categoría Calotas y que no es un error.
+- Se saltea con un motivo claro si no hay URL del BFF o secreto.
+
+Los tests e2e nunca imprimen secretos ni el token.
+
+## Presentación
+
+La V2 incluye adaptar el deck (`docs/warroom/diapositivas.json`, generado con `old/deck-tools/regenerar_deck.py` y `old/deck-tools/exportar_pdf.py`) para que cada lámina diga solo lo que existe.
+
+- **Revisión completa:** las 58 láminas, una por una, contra el código, la infraestructura desplegada y los resultados de Langfuse. Cada comando que aparece tiene que existir y funcionar; cada número tiene que venir de una corrida identificada; cada decisión tiene que coincidir con lo construido.
+- **Bloques:** los bloques "04 · V2 · herramientas" y "05 · V3 · control" se fusionan en "04 · V2 · tablas y control" (13:15 a 16:15), y la agenda de la lámina 2 pasa a cinco bloques.
+- **Arquitectura:** el diagrama "El agente por dentro" se reemplaza por "La V2 por dentro" (steps `check_cache`, `resolve`, `run_agent` y `finalize`, las dos herramientas, DynamoDB y Langfuse). El diagrama de infraestructura suma las tablas `corrections` y `mapping_cache` y las herramientas `map_product_v1` y `map_product_v2`.
+- **Código:** láminas que leen el código real de la V2: la worklist, `submit_listing`, `validate`, la clave de la caché, los steps del Workflow y un test e2e.
+- **Pruebas:** una lámina "Cómo lo probamos" con los tres niveles: tests unitarios, experimentos en Langfuse y tests e2e, con sus comandos.
+- **Demos:** la demo de la V2 y la de "corregir y repetir" usan `scripts/experiment.sh --version v2` y `scripts/correct.sh`; la demo del chat usa `map_product_v2`.
+- **Números:** la tabla de resultados completa las columnas Hoy y V1 con las corridas del 1/10 y la columna V2 con su experimento; la lámina de costo usa los tokens de las trazas.
+- **Decisiones:** las decisiones 10 a 13 y las tablas finales describen la V2 tal como quedó.
+- **Texto:** el texto nuevo pasa por la skill humanizer: frases cortas, sin rayas, sin construcciones del tipo "no es X, es Y".
+- **Verificación:** regenerar HTML, guion y PDF, y revisar en el navegador cada diagrama y cada lámina nueva.
+
 ## Fuera de alcance
 
 Integración con la API de Alephee, esquema oficial de Shopee, política de revisión de `missing`, bloqueo de la publicación, más de un canal.
@@ -153,3 +193,5 @@ Integración con la API de Alephee, esquema oficial de Shopee, política de revi
 - El doble del LLM para `FunctionAgent` tiene que ser una subclase de `FunctionCallingLLM` (el campo `llm` del agente es Pydantic).
 - La salida esperada y el esquema de Shopee siguen siendo MOCK.
 - Las tablas DynamoDB suman recursos al stage `warroom`; se borran con `npx sst remove --stage warroom`.
+- Las herramientas del deck viven fuera de git (`old/deck-tools/`): si se pierden, se recuperan de la rama `backup/pre-reinicio`.
+- Los tests e2e de nivel 2 dependen de que el deploy del stage `warroom` esté completo.
