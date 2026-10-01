@@ -1,6 +1,6 @@
 # Guion del warroom · por diapositiva
 
-Versión del 29/09/2026 · 47 diapositivas · 7 secciones. Fuente única: `docs/warroom/diapositivas.json`. Se regenera con `python3 scripts/generar_presentacion.py`.
+Versión del 29/09/2026 · 63 diapositivas · 7 secciones. Fuente única: `docs/warroom/diapositivas.json`. Se regenera con `python3 scripts/generar_presentacion.py`.
 
 [Presentación interactiva](presentacion-warroom.html) · [PDF estático](presentacion-warroom.pdf) · [Ficha de participantes](warroom/ficha-participantes.md)
 
@@ -18,6 +18,8 @@ Las selecciones, respuestas revelables y temporizadores son ayudas locales de fa
 | 02 · Diseñar el agente | 09:30–11:15 | 10–33 | Tomar las decisiones que definen la V1 |
 | 03 · V1 · el agente responde | 11:15–12:30 | 34–37 | Construir, correr y leer la primera versión |
 | 04 · V2 · herramientas | 13:15–14:45 | 38–47 | Decidir qué resuelve la tabla y conectarla |
+| 05 · V3 · control | 15:00–16:15 | 48–57 | Decidir qué pasa cuando el agente no sabe |
+| 06 · La prueba y el camino | 16:15–17:00 | 58–63 | Medir contra el criterio y repartir lo que sigue |
 
 Pausa 11:00–11:15; almuerzo 12:30–13:15; pausa 14:45–15:00. El bloque V3 incluye preparación de comparación 16:00–16:15. Margen de preguntas 17:00–17:30 sujeto a confirmación logística.
 
@@ -31,8 +33,8 @@ Los minutos por diapositiva son una pauta para explicaciones y consignas, no un 
 | 02 · Diseñar el agente | 85 min | Pizarra: tipos de aplicación y dónde corre: 15 min; Pausa 11:00: 15 min | 115 min |
 | 03 · V1 · el agente responde | 13 min | Corridas sobre otros casos: 25 min | 38 min |
 | 04 · V2 · herramientas | 36 min | Corrida del lote y lectura: 25 min | 61 min |
-| 05 · V3 · control | 0 min | Corrida del lote con V3: 20 min | 20 min |
-| 06 · La prueba y el camino | 0 min | Documentar decisiones y responsables: 15 min | 15 min |
+| 05 · V3 · control | 36 min | Corrida del lote con V3: 20 min | 56 min |
+| 06 · La prueba y el camino | 14 min | Documentar decisiones y responsables: 15 min | 29 min |
 
 Las consignas y puestas en común ya están incluidas en los minutos de sus diapositivas. Las reservas son para trabajo adicional dentro del bloque; no duplican la demo indicada en una diapositiva. Son pautas ajustables de esta jornada, no reglas prescritas por los libros.
 
@@ -1194,6 +1196,376 @@ scripts/correr.sh --version v2 --datos real --caso error-88904447
 - Tokens leídos de caché frente a los nuevos
 
 **Respaldo:** resultados/v2-real-20260928-181509.json (corrida del 28/09, anterior a las correcciones)
+
+### 48 · V3 · control.
+
+**Sección:** 05 · V3 · control · **Pauta:** 1 min · **Tipo:** divider
+
+**Objetivo:** Abrir la V3
+
+**En pantalla:**
+
+- Qué pasa cuando el agente no sabe.
+
+**Temas para hablar:** La V2 consulta pero no está obligada a respetar lo que consulta. La V3 agrega tres cosas: guardrails en código que revisan cada entrega, memoria de correcciones del equipo de catálogo y caché por SKU para que el mismo producto no se mapee dos veces. Es la versión que reemplaza el publicar sin atributos.
+
+**Transición:** Qué es un guardrail acá.
+
+### 49 · Guardrail: una comprobación en código, no otra instrucción.
+
+**Sección:** 05 · V3 · control · **Pauta:** 3 min · **Tipo:** compare
+
+**Objetivo:** Diferenciar guardrail de regla del prompt
+
+**En pantalla:**
+
+- REVISAR | Lista los problemas en lenguaje claro y se los devuelve al agente, que tiene una ronda para corregir
+- LIMPIAR | Red final: descarta lo inválido con motivo y marca los obligatorios que faltan
+- NUNCA | Inventa un valor, publica un -1 ni deja pasar un duplicado
+
+**Temas para hablar:** Una regla en el prompt es un pedido; un guardrail es una comprobación que no depende de que el modelo obedezca. Dos pasos: primero se le devuelven los problemas al agente para que corrija (una ronda); lo que siga mal se descarta en código. Límite honesto: valida pertenencia al esquema y al dominio por ID; no verifica que el valor sea verdad respecto del producto.
+
+**Transición:** Qué mira el validador.
+
+### 50 · Qué mira el validador.
+
+**Sección:** 05 · V3 · control · **Pauta:** 4 min · **Tipo:** code
+
+**Objetivo:** Leer las cuatro comprobaciones
+
+**En pantalla:**
+
+
+**Temas para hablar:** Recorrer las cuatro con el caso guía: ABS Plastic en Código OEM pasa la primera (el atributo existe) y la segunda (tiene dato); si Código OEM es texto libre no tiene lista y pasa también. Eso muestra el límite: el guardrail detecta lo que el esquema permite detectar. Por eso el esquema oficial de Shopee es un pendiente de primer orden.
+
+**Pregunta / participación:** ¿Qué comprobación agregarían con lo que saben del canal?
+
+**Transición:** La red final.
+
+**Código:** `core/src/catalogo/guardrails.py` líneas 11–23
+
+```py
+def _problema(attr: dict, esquema: dict[str, dict]) -> str | None:
+    definicion = esquema.get(attr["urn"])
+    if definicion is None:
+        return f"{attr['urn']} no es un atributo de esta categoría"
+    if str(attr.get("value", "")).strip() in SIN_DATO:
+        return f"{attr['urn']} tiene un valor sin dato ('{attr.get('value')}'); no se publica"
+    dominio = {v["id"]: v["name"] for v in definicion.get("values", [])}
+    if dominio and str(attr.get("valueId")) not in dominio:
+        return f"{attr['urn']}: el valor '{attr.get('value')}' no está en la lista del canal"
+    if dominio and attr.get("value") != dominio[str(attr.get("valueId"))]:
+        return f"{attr['urn']}: el nombre del valor no coincide con su ID en el canal"
+    return None
+
+```
+
+Cuatro comprobaciones por atributo: que exista en la categoría, que tenga dato, que el valueId esté en la lista del canal y que el nombre coincida con ese ID.
+
+### 51 · La red final no inventa: descarta y marca.
+
+**Sección:** 05 · V3 · control · **Pauta:** 4 min · **Tipo:** code
+
+**Objetivo:** Mostrar que la salida final siempre cumple el contrato
+
+**En pantalla:**
+
+
+**Temas para hablar:** Después de esta función nunca sale un valor inválido, un duplicado ni un obligatorio sin informar. Lo descartado no desaparece: queda en rejected con el motivo, para que quien revise entienda por qué. Esto es lo que vale medir en la prueba de las 16:15: cero inválidos detectables.
+
+**Transición:** Decisión 12.
+
+**Código:** `core/src/catalogo/guardrails.py` líneas 41–57
+
+```py
+def limpiar(publicacion: dict, esquema: dict[str, dict]) -> dict:
+    atributos, descartados, vistos = [], list(publicacion["rejected"]), set()
+    for a in publicacion["attributes"]:
+        motivo = _problema(a, esquema) or (f"{a['urn']} duplicado" if a["urn"] in vistos else None)
+        if motivo:
+            descartados.append({"legacyId": a["urn"], "reason": f"guardrail: {motivo}"})
+            continue
+        vistos.add(a["urn"])
+        atributos.append(a)
+    faltantes = [m for m in publicacion["missing"]
+                 if m["urn"] not in vistos and not (m["urn"] == "category" and publicacion["category"])]
+    ya = {m["urn"] for m in faltantes}
+    faltantes += [{"urn": u, "reason": "obligatorio sin dato válido (guardrail)"}
+                  for u, d in esquema.items() if d.get("mandatory") and u not in vistos and u not in ya]
+    if not publicacion["category"] and "category" not in ya:
+        faltantes.append({"urn": "category", "reason": "sin categoría de referencia; requiere revisión"})
+    return {**publicacion, "attributes": atributos, "missing": faltantes, "rejected": descartados}
+```
+
+Lo que no pasa va a rejected con el motivo del guardrail; lo obligatorio sin dato válido va a missing; sin categoría de referencia, se pide revisión.
+
+### 52 · ¿Qué hace cuando no sabe?
+
+**Sección:** 05 · V3 · control · **Pauta:** 4 min · **Tipo:** decision
+
+**Objetivo:** Cerrar la decisión 12 y dejar la política de revisión como pendiente
+
+**En pantalla:**
+
+
+**Temas para hablar:** Marcar missing no crea solo un circuito de revisión: hoy es una lista en la salida. Quién la mira, dónde y con qué herramienta es una decisión de producto de Alephee, no del agente. Anotar dueño.
+
+**Transición:** Memoria.
+
+**Decisión 12:** ¿Qué hace el agente cuando no puede completar un atributo obligatorio?
+
+1. A · Publicar sin el atributo (hoy)
+2. B · Faltante explícito con motivo: la publicación sale con missing y alguien decide
+3. C · Bloquear la publicación hasta revisión humana
+
+**Propuesta:** B. Reemplaza el publicar sin atributos. Quién recibe missing y si bloquea o no la publicación es la integración con la plataforma de Alephee: pendiente con dueño. C es una política válida que se puede construir sobre B.
+
+**Archivo:** `decisiones/12-cuando-no-sabe.md`
+
+### 53 · Memoria: correcciones del equipo de catálogo.
+
+**Sección:** 05 · V3 · control · **Pauta:** 3 min · **Tipo:** cards
+
+**Objetivo:** Definir memoria para este agente sin prometer aprendizaje automático
+
+**En pantalla:**
+
+- Una corrección dice: en esta categoría, este valor del producto va a este atributo con este valor del canal
+- El agente la consulta como una herramienta más y manda sobre su criterio
+- Hoy es un archivo JSON local; en producción, AgentCore Memory o una tabla de Alephee
+
+**Temas para hablar:** Memoria acá no es que el agente aprende solo: es que reutiliza correcciones que una persona del equipo de catálogo cargó explícitamente. Se cargan con un comando; el agente las consulta por categoría. Límite honesto: la persistencia existe; que el modelo siempre las respete depende de que las consulte, por eso la instrucción lo exige y el guardrail revisa después.
+
+**Transición:** Una corrección también vacía la caché.
+
+### 54 · Una corrección vacía la caché.
+
+**Sección:** 05 · V3 · control · **Pauta:** 4 min · **Tipo:** code
+
+**Objetivo:** Mostrar la relación entre memoria y caché
+
+**En pantalla:**
+
+
+**Temas para hablar:** Dos reglas simples: una corrección nueva reemplaza a la anterior para la misma categoría, atributo y valor; y toda corrección invalida la caché completa. Es la invalidación más simple posible; en producción conviene invalidar por categoría.
+
+**Transición:** Determinismo y caché por SKU.
+
+**Código:** `core/src/catalogo/memoria.py` líneas 31–41
+
+```py
+    def corregir(self, categoria: str, urn: str, valor_producto: str, value_id: str, value: str,
+                 autor: str = "catálogo") -> dict:
+        """Guarda que, en esa categoría, el valor del producto `valor_producto` va a `urn` = `value`."""
+        correccion = {"categoria": categoria, "urn": urn, "valorProducto": valor_producto,
+                      "valueId": value_id, "value": value, "autor": autor, "fecha": date.today().isoformat()}
+        todas = [c for c in self._leer(self.correcciones_archivo)
+                 if not (c["categoria"] == categoria and c["urn"] == urn and c["valorProducto"] == valor_producto)]
+        self._escribir(self.correcciones_archivo, [*todas, correccion])
+        # Una corrección puede cambiar cualquier mapeo guardado: la caché se vacía.
+        self._escribir(self.cache_archivo, {})
+        return correccion
+```
+
+La corrección se guarda con autor y fecha y reemplaza a la anterior del mismo atributo. Como puede cambiar cualquier mapeo guardado, la caché de mapeos se vacía.
+
+### 55 · Mismo SKU, misma salida.
+
+**Sección:** 05 · V3 · control · **Pauta:** 4 min · **Tipo:** code
+
+**Objetivo:** Recorrer el paso de la V3 completo
+
+**En pantalla:**
+
+
+**Temas para hablar:** Orden del paso: categoría desde la tabla (decisión 10 hecha código), salida temprana si no hay referencia o esquema, caché por SKU y categoría legacy revisada contra el esquema antes de reutilizarla, y recién después el loop de la V2 con guardrails en la entrega. 40 concesionarios venden el mismo SKU de GM: un solo mapeo. Límite: la clave no incluye versión de tablas ni cuenta; eso es la decisión 13.
+
+**Transición:** Decisión 13.
+
+**Código:** `core/src/catalogo/v3.py` líneas 62–79
+
+```py
+    async def mapear(self, ev: MapeoStart) -> MapeoDone:
+        cats = ev.producto.get("categories") or []
+        clave = (ev.producto.get("sku"), id_categoria(cats[0]["urn"]) if cats else "")
+        referencia = self.fuente.categoria_destino(clave[1]) if clave[1] else None
+        self.categoria_referencia = referencia["urn"] if referencia else None
+        self.reintentos = 1
+        if not self.categoria_referencia or self.fuente.esquema(self.categoria_referencia) is None:
+            return MapeoDone(publicacion={
+                "category": self.categoria_referencia, "attributes": [], "rejected": [],
+                "missing": [{"urn": "category", "reason": "No hay referencia o esquema de categoría disponible; requiere revisión"}],
+            }, herramientas_usadas=["referencia_categoria"])
+        if self.usar_cache and (guardado := self.memoria.en_cache(*clave)):
+            if guardado["category"] == self.categoria_referencia and not guardrails.revisar(guardado, self._esquema(guardado)):
+                return MapeoDone(publicacion=guardrails.limpiar(guardado, self._esquema(guardado)), herramientas_usadas=["cache"])
+        done = await MapeoV2.mapear(self, ev)
+        if self.usar_cache and done.publicacion is not None:
+            self.memoria.guardar_cache(*clave, done.publicacion)
+        return done
+```
+
+La tabla fija la categoría antes de llamar al modelo; sin referencia o sin esquema, se devuelve el faltante sin invocarlo. Si hay caché válida para SKU + categoría legacy, el modelo tampoco se llama.
+
+### 56 · ¿Cómo garantizamos determinismo?
+
+**Sección:** 05 · V3 · control · **Pauta:** 4 min · **Tipo:** decision
+
+**Objetivo:** Cerrar la decisión 13 con las extensiones de la clave como pendiente
+
+**En pantalla:**
+
+
+**Temas para hablar:** Preguntar al grupo qué cambios deberían invalidar la caché: cambio en el producto, en las tablas, en el esquema del canal. Anotar la lista: es la especificación de la clave de producción.
+
+**Transición:** Demo: corregir y repetir.
+
+**Decisión 13:** ¿Cómo garantizamos que el mismo SKU dé la misma salida?
+
+1. A · Caché por SKU + canal; se invalida al corregir o al cambiar las tablas
+2. B · Seed y temperatura 0 (lo que se intentó hoy)
+3. C · Recalcular siempre y aceptar variación
+
+**Propuesta:** A. Un mapeo por SKU y canal. B reduce la variación pero no la elimina y sigue pagando cada corrida. La clave actual es SKU + categoría legacy; falta sumar versión de las tablas y aislamiento por cuenta antes de producción.
+
+**Archivo:** `decisiones/13-determinismo-y-cache.md`
+
+### 57 · Demo · corregir y repetir.
+
+**Sección:** 05 · V3 · control · **Pauta:** 5 min · **Tipo:** demo
+
+**Objetivo:** Ver memoria, guardrails y caché en una sola secuencia
+
+**En pantalla:**
+
+
+**Temas para hablar:** Elegir con el grupo la corrección a cargar sobre el caso guía (un valor de lista que el modelo eligió mal). Cargarla, correr, leer. Correr de nuevo: debe salir de caché. Si algo falla, abrir la corrida guardada y decir que es vieja.
+
+**Transición:** A las 16:15, la prueba.
+
+```bash
+scripts/corregir.sh --categoria <urn-categoria> --urn <urn-atributo> --valor-producto <valor> --value-id <id> --value <nombre>
+scripts/correr.sh --version v3 --datos real --caso error-88904447 --cache
+```
+
+**Mirar:**
+
+- buscar_correcciones aparece en herramientas_usadas
+- El valor corregido sale tal cual lo cargó catálogo
+- rejected explica cada descarte del guardrail
+- Segunda corrida del mismo caso: herramientas_usadas = [cache] y cero tokens
+
+**Respaldo:** resultados/v3-real-20260928-180524.json (corrida del 28/09, anterior a las correcciones)
+
+### 58 · La prueba.
+
+**Sección:** 06 · La prueba y el camino · **Pauta:** 1 min · **Tipo:** divider
+
+**Objetivo:** Abrir la prueba con el criterio acordado a la vista
+
+**En pantalla:**
+
+- Hoy contra V1, V2 y V3, sobre los 30, con el criterio de la decisión 8.
+
+**Temas para hablar:** Volver a la pizarra: el número de la decisión 8. Las corridas del lote se lanzaron durante los bloques; acá se leen. Si alguna no terminó, se usa la del 28/09 y se dice.
+
+**Transición:** Los resultados.
+
+### 59 · Resultados (se completan en vivo).
+
+**Sección:** 06 · La prueba y el camino · **Pauta:** 3 min · **Tipo:** table
+
+**Objetivo:** Leer los resultados contra el criterio, sin maquillar
+
+**En pantalla:**
+
+- Columna Hoy: publicaciones exportadas, expected MOCK. Las demás se llenan con la corrida del día
+- Métrica / Hoy / V1 / V2 / V3
+- Casos exactos / 7 / · / · / ·
+- Categoría correcta / 28 / · / · / ·
+- Valores inválidos (-1 o fuera de lista) / 47 / · / · / ·
+- Duplicados / 5 / · / · / ·
+- Obligatorios sin informar / 2 / · / · / ·
+
+**Temas para hablar:** Completar las columnas con la corrida del día. Referencia del 28/09, anterior a las correcciones: V1 5 exactos, 19 inválidos; V2 4 exactos, 30 categorías, 9 inválidos; V3 4 exactos, 28 categorías, 0 inválidos, 0 duplicados, 0 obligatorios sin informar. Si los exactos siguen bajos en todas las columnas, decirlo y explicar por qué en la lámina siguiente.
+
+**Transición:** Cómo leer la tabla.
+
+### 60 · Cómo leer la tabla.
+
+**Sección:** 06 · La prueba y el camino · **Pauta:** 3 min · **Tipo:** cards
+
+**Objetivo:** Dar la lectura honesta de los resultados
+
+**En pantalla:**
+
+- Exactos bajos en todas las columnas: el expected hereda las omisiones del proceso actual y castiga aciertos que hoy nadie mapea
+- Inválidos y duplicados sí son errores seguros: la V3 no entrega ninguno detectable por este evaluador (28/09)
+- Categoría: la V3 dio 28/30 en la corrida vieja; la corrección del 28/09 la fija desde la tabla y hay que volver a medir
+
+**Temas para hablar:** Conclusión defendible: en este ensayo la V3 elimina los errores que estos controles detectan, pero todavía no demuestra mejor exactitud global contra un expected que es mock. Tenemos evidencia de qué controles ayudan y una lista clara de lo que falta para validar con el canal. Un control puede reducir errores quitando información: mirar control y cobertura juntos.
+
+**Pregunta / participación:** ¿Qué evidencia pedirían antes de un piloto con un concesionario?
+
+**Transición:** El camino a producción.
+
+### 61 · Camino a producción.
+
+**Sección:** 06 · La prueba y el camino · **Pauta:** 3 min · **Tipo:** flow
+
+**Objetivo:** Convertir los pendientes en tareas con dueño
+
+**En pantalla:**
+
+- Esquema oficial de Shopee y expected validado con el equipo de catálogo
+- Integración: la API pública lee el producto (F8); escribir publicaciones y leer tablas necesita acceso interno
+- Decidir dónde corre el batch (decisión 5) y la política de missing (decisión 12)
+- Medir el costo completo y fijar el tope (decisión 11); probar Haiku 4.5 (decisión 6)
+
+**Temas para hablar:** Cada punto necesita responsable y fecha; se completan en la última lámina. Retomar las dudas de AgentCore anotadas a la mañana y asignarlas a Juan David. El código queda en el repositorio de Alephee que Rick indique.
+
+**Transición:** Las trece decisiones.
+
+### 62 · Las 13 decisiones.
+
+**Sección:** 06 · La prueba y el camino · **Pauta:** 3 min · **Tipo:** table
+
+**Objetivo:** Cerrar con el registro completo
+
+**En pantalla:**
+
+- N / Decisión / Archivo
+- 1 / Alcance: un canal, una familia, categoría + atributos / decisiones/01-alcance.md
+- 2 / Contrato: missing y rejected con motivo / decisiones/02-contrato.md
+- 3 / Tipo de aplicación: single prompt y escalar / decisiones/03-tipo-de-aplicacion.md
+- 4 / Salida estructurada por herramienta + Pydantic / decisiones/04-salida-estructurada.md
+- 5 / Dónde corre: local hoy, chat en AgentCore, batch a medir / decisiones/05-donde-corre.md
+- 6 / Modelo: Claude Sonnet 5; Haiku 4.5 a probar / decisiones/06-modelo.md
+- 7 / Stack: Python + LlamaIndex Workflows + BedrockConverse / decisiones/07-stack.md
+- 8 / Criterio de éxito: el número de la pizarra / decisiones/08-criterio-de-exito.md
+- 9 / Dataset: 30 reales con mock rotulado / decisiones/09-dataset.md
+- 10 / La tabla manda; el agente elige valores y lo no cubierto / decisiones/10-tabla-vs-agente.md
+- 11 / Costo: tope acordado y medición por producto / decisiones/11-costo.md
+- 12 / Cuando no sabe: faltante explícito, nunca inventar / decisiones/12-cuando-no-sabe.md
+- 13 / Determinismo: caché por SKU + canal con invalidación / decisiones/13-determinismo-y-cache.md
+
+**Temas para hablar:** Cada archivo tiene contexto, opciones, decisión y razonamiento. Lo que quedó distinto a la propuesta se escribe tal como se decidió en la sala. Este registro es el método repetible: el próximo caso de uso de Alephee arranca por estas trece preguntas.
+
+**Transición:** Quién hace qué.
+
+### 63 · Quién hace qué, para cuándo.
+
+**Sección:** 06 · La prueba y el camino · **Pauta:** 1 min · **Tipo:** divider
+
+**Objetivo:** Cerrar con responsables y fechas
+
+**En pantalla:**
+
+- Se completa en la sala.
+
+**Temas para hablar:** Repartir los pendientes del camino a producción entre Alephee, Craftech y AWS, con fecha. Confirmar el repositorio donde queda el código. Agradecer y cerrar a las 17:00; preguntas hasta las 17:30.
+
+**Transición:** Fin.
 
 ## Fundamento editorial y revisión
 

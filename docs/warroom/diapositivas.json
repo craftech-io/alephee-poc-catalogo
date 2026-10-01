@@ -1562,6 +1562,571 @@
     ],
     "fallback": "resultados/v2-real-20260928-181509.json (corrida del 28/09, anterior a las correcciones)"
    }
+  },
+  {
+   "id": "s48",
+   "section": "v3",
+   "title": "V3 · control.",
+   "kind": "divider",
+   "lead": "Qué pasa cuando el agente no sabe.",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Abrir la V3",
+    "say": "La V2 consulta pero no está obligada a respetar lo que consulta. La V3 agrega tres cosas: guardrails en código que revisan cada entrega, memoria de correcciones del equipo de catálogo y caché por SKU para que el mismo producto no se mapee dos veces. Es la versión que reemplaza el publicar sin atributos.",
+    "ask": "",
+    "close": "",
+    "transition": "Qué es un guardrail acá."
+   },
+   "minutes": 1
+  },
+  {
+   "id": "s49",
+   "section": "v3",
+   "title": "Guardrail: una comprobación en código, no otra instrucción.",
+   "kind": "compare",
+   "lead": "",
+   "label": "",
+   "items": [
+    "REVISAR | Lista los problemas en lenguaje claro y se los devuelve al agente, que tiene una ronda para corregir",
+    "LIMPIAR | Red final: descarta lo inválido con motivo y marca los obligatorios que faltan",
+    "NUNCA | Inventa un valor, publica un -1 ni deja pasar un duplicado"
+   ],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Diferenciar guardrail de regla del prompt",
+    "say": "Una regla en el prompt es un pedido; un guardrail es una comprobación que no depende de que el modelo obedezca. Dos pasos: primero se le devuelven los problemas al agente para que corrija (una ronda); lo que siga mal se descarta en código. Límite honesto: valida pertenencia al esquema y al dominio por ID; no verifica que el valor sea verdad respecto del producto.",
+    "ask": "",
+    "close": "",
+    "transition": "Qué mira el validador."
+   },
+   "minutes": 3
+  },
+  {
+   "id": "s50",
+   "section": "v3",
+   "title": "Qué mira el validador.",
+   "kind": "code",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Leer las cuatro comprobaciones",
+    "say": "Recorrer las cuatro con el caso guía: ABS Plastic en Código OEM pasa la primera (el atributo existe) y la segunda (tiene dato); si Código OEM es texto libre no tiene lista y pasa también. Eso muestra el límite: el guardrail detecta lo que el esquema permite detectar. Por eso el esquema oficial de Shopee es un pendiente de primer orden.",
+    "ask": "¿Qué comprobación agregarían con lo que saben del canal?",
+    "close": "",
+    "transition": "La red final."
+   },
+   "minutes": 4,
+   "code": {
+    "file": "core/src/catalogo/guardrails.py",
+    "lines": "11-23",
+    "symbol": "_problema",
+    "highlight": [
+     13,
+     15,
+     18,
+     20
+    ],
+    "caption": "Cuatro comprobaciones por atributo: que exista en la categoría, que tenga dato, que el valueId esté en la lista del canal y que el nombre coincida con ese ID."
+   }
+  },
+  {
+   "id": "s51",
+   "section": "v3",
+   "title": "La red final no inventa: descarta y marca.",
+   "kind": "code",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Mostrar que la salida final siempre cumple el contrato",
+    "say": "Después de esta función nunca sale un valor inválido, un duplicado ni un obligatorio sin informar. Lo descartado no desaparece: queda en rejected con el motivo, para que quien revise entienda por qué. Esto es lo que vale medir en la prueba de las 16:15: cero inválidos detectables.",
+    "ask": "",
+    "close": "",
+    "transition": "Decisión 12."
+   },
+   "minutes": 4,
+   "code": {
+    "file": "core/src/catalogo/guardrails.py",
+    "lines": "41-57",
+    "symbol": "def limpiar",
+    "highlight": [
+     46,
+     53,
+     56
+    ],
+    "caption": "Lo que no pasa va a rejected con el motivo del guardrail; lo obligatorio sin dato válido va a missing; sin categoría de referencia, se pide revisión."
+   }
+  },
+  {
+   "id": "s52",
+   "section": "v3",
+   "title": "¿Qué hace cuando no sabe?",
+   "kind": "decision",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Cerrar la decisión 12 y dejar la política de revisión como pendiente",
+    "say": "Marcar missing no crea solo un circuito de revisión: hoy es una lista en la salida. Quién la mira, dónde y con qué herramienta es una decisión de producto de Alephee, no del agente. Anotar dueño.",
+    "ask": "",
+    "close": "",
+    "transition": "Memoria."
+   },
+   "minutes": 4,
+   "decision": {
+    "number": 12,
+    "question": "¿Qué hace el agente cuando no puede completar un atributo obligatorio?",
+    "options": [
+     "A · Publicar sin el atributo (hoy)",
+     "B · Faltante explícito con motivo: la publicación sale con missing y alguien decide",
+     "C · Bloquear la publicación hasta revisión humana"
+    ],
+    "proposal": "B. Reemplaza el publicar sin atributos. Quién recibe missing y si bloquea o no la publicación es la integración con la plataforma de Alephee: pendiente con dueño. C es una política válida que se puede construir sobre B.",
+    "file": "decisiones/12-cuando-no-sabe.md"
+   }
+  },
+  {
+   "id": "s53",
+   "section": "v3",
+   "title": "Memoria: correcciones del equipo de catálogo.",
+   "kind": "cards",
+   "lead": "",
+   "label": "",
+   "items": [
+    "Una corrección dice: en esta categoría, este valor del producto va a este atributo con este valor del canal",
+    "El agente la consulta como una herramienta más y manda sobre su criterio",
+    "Hoy es un archivo JSON local; en producción, AgentCore Memory o una tabla de Alephee"
+   ],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Definir memoria para este agente sin prometer aprendizaje automático",
+    "say": "Memoria acá no es que el agente aprende solo: es que reutiliza correcciones que una persona del equipo de catálogo cargó explícitamente. Se cargan con un comando; el agente las consulta por categoría. Límite honesto: la persistencia existe; que el modelo siempre las respete depende de que las consulte, por eso la instrucción lo exige y el guardrail revisa después.",
+    "ask": "",
+    "close": "",
+    "transition": "Una corrección también vacía la caché."
+   },
+   "minutes": 3
+  },
+  {
+   "id": "s54",
+   "section": "v3",
+   "title": "Una corrección vacía la caché.",
+   "kind": "code",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Mostrar la relación entre memoria y caché",
+    "say": "Dos reglas simples: una corrección nueva reemplaza a la anterior para la misma categoría, atributo y valor; y toda corrección invalida la caché completa. Es la invalidación más simple posible; en producción conviene invalidar por categoría.",
+    "ask": "",
+    "close": "",
+    "transition": "Determinismo y caché por SKU."
+   },
+   "minutes": 4,
+   "code": {
+    "file": "core/src/catalogo/memoria.py",
+    "lines": "31-41",
+    "symbol": "def corregir",
+    "highlight": [
+     34,
+     35,
+     40
+    ],
+    "caption": "La corrección se guarda con autor y fecha y reemplaza a la anterior del mismo atributo. Como puede cambiar cualquier mapeo guardado, la caché de mapeos se vacía."
+   }
+  },
+  {
+   "id": "s55",
+   "section": "v3",
+   "title": "Mismo SKU, misma salida.",
+   "kind": "code",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Recorrer el paso de la V3 completo",
+    "say": "Orden del paso: categoría desde la tabla (decisión 10 hecha código), salida temprana si no hay referencia o esquema, caché por SKU y categoría legacy revisada contra el esquema antes de reutilizarla, y recién después el loop de la V2 con guardrails en la entrega. 40 concesionarios venden el mismo SKU de GM: un solo mapeo. Límite: la clave no incluye versión de tablas ni cuenta; eso es la decisión 13.",
+    "ask": "",
+    "close": "",
+    "transition": "Decisión 13."
+   },
+   "minutes": 4,
+   "code": {
+    "file": "core/src/catalogo/v3.py",
+    "lines": "62-79",
+    "symbol": "en_cache",
+    "highlight": [
+     65,
+     66,
+     73,
+     74
+    ],
+    "caption": "La tabla fija la categoría antes de llamar al modelo; sin referencia o sin esquema, se devuelve el faltante sin invocarlo. Si hay caché válida para SKU + categoría legacy, el modelo tampoco se llama."
+   }
+  },
+  {
+   "id": "s56",
+   "section": "v3",
+   "title": "¿Cómo garantizamos determinismo?",
+   "kind": "decision",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Cerrar la decisión 13 con las extensiones de la clave como pendiente",
+    "say": "Preguntar al grupo qué cambios deberían invalidar la caché: cambio en el producto, en las tablas, en el esquema del canal. Anotar la lista: es la especificación de la clave de producción.",
+    "ask": "",
+    "close": "",
+    "transition": "Demo: corregir y repetir."
+   },
+   "minutes": 4,
+   "decision": {
+    "number": 13,
+    "question": "¿Cómo garantizamos que el mismo SKU dé la misma salida?",
+    "options": [
+     "A · Caché por SKU + canal; se invalida al corregir o al cambiar las tablas",
+     "B · Seed y temperatura 0 (lo que se intentó hoy)",
+     "C · Recalcular siempre y aceptar variación"
+    ],
+    "proposal": "A. Un mapeo por SKU y canal. B reduce la variación pero no la elimina y sigue pagando cada corrida. La clave actual es SKU + categoría legacy; falta sumar versión de las tablas y aislamiento por cuenta antes de producción.",
+    "file": "decisiones/13-determinismo-y-cache.md"
+   }
+  },
+  {
+   "id": "s57",
+   "section": "v3",
+   "title": "Demo · corregir y repetir.",
+   "kind": "demo",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Ver memoria, guardrails y caché en una sola secuencia",
+    "say": "Elegir con el grupo la corrección a cargar sobre el caso guía (un valor de lista que el modelo eligió mal). Cargarla, correr, leer. Correr de nuevo: debe salir de caché. Si algo falla, abrir la corrida guardada y decir que es vieja.",
+    "ask": "",
+    "close": "",
+    "transition": "A las 16:15, la prueba."
+   },
+   "minutes": 5,
+   "demo": {
+    "command": "scripts/corregir.sh --categoria <urn-categoria> --urn <urn-atributo> --valor-producto <valor> --value-id <id> --value <nombre>\nscripts/correr.sh --version v3 --datos real --caso error-88904447 --cache",
+    "watch": [
+     "buscar_correcciones aparece en herramientas_usadas",
+     "El valor corregido sale tal cual lo cargó catálogo",
+     "rejected explica cada descarte del guardrail",
+     "Segunda corrida del mismo caso: herramientas_usadas = [cache] y cero tokens"
+    ],
+    "fallback": "resultados/v3-real-20260928-180524.json (corrida del 28/09, anterior a las correcciones)"
+   }
+  },
+  {
+   "id": "s58",
+   "section": "prueba",
+   "title": "La prueba.",
+   "kind": "divider",
+   "lead": "Hoy contra V1, V2 y V3, sobre los 30, con el criterio de la decisión 8.",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Abrir la prueba con el criterio acordado a la vista",
+    "say": "Volver a la pizarra: el número de la decisión 8. Las corridas del lote se lanzaron durante los bloques; acá se leen. Si alguna no terminó, se usa la del 28/09 y se dice.",
+    "ask": "",
+    "close": "",
+    "transition": "Los resultados."
+   },
+   "minutes": 1
+  },
+  {
+   "id": "s59",
+   "section": "prueba",
+   "title": "Resultados (se completan en vivo).",
+   "kind": "table",
+   "lead": "",
+   "label": "Columna Hoy: publicaciones exportadas, expected MOCK. Las demás se llenan con la corrida del día",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": {
+    "headers": [
+     "Métrica",
+     "Hoy",
+     "V1",
+     "V2",
+     "V3"
+    ],
+    "rows": [
+     [
+      "Casos exactos",
+      "7",
+      "·",
+      "·",
+      "·"
+     ],
+     [
+      "Categoría correcta",
+      "28",
+      "·",
+      "·",
+      "·"
+     ],
+     [
+      "Valores inválidos (-1 o fuera de lista)",
+      "47",
+      "·",
+      "·",
+      "·"
+     ],
+     [
+      "Duplicados",
+      "5",
+      "·",
+      "·",
+      "·"
+     ],
+     [
+      "Obligatorios sin informar",
+      "2",
+      "·",
+      "·",
+      "·"
+     ]
+    ]
+   },
+   "notes": {
+    "objective": "Leer los resultados contra el criterio, sin maquillar",
+    "say": "Completar las columnas con la corrida del día. Referencia del 28/09, anterior a las correcciones: V1 5 exactos, 19 inválidos; V2 4 exactos, 30 categorías, 9 inválidos; V3 4 exactos, 28 categorías, 0 inválidos, 0 duplicados, 0 obligatorios sin informar. Si los exactos siguen bajos en todas las columnas, decirlo y explicar por qué en la lámina siguiente.",
+    "ask": "",
+    "close": "",
+    "transition": "Cómo leer la tabla."
+   },
+   "minutes": 3
+  },
+  {
+   "id": "s60",
+   "section": "prueba",
+   "title": "Cómo leer la tabla.",
+   "kind": "cards",
+   "lead": "",
+   "label": "",
+   "items": [
+    "Exactos bajos en todas las columnas: el expected hereda las omisiones del proceso actual y castiga aciertos que hoy nadie mapea",
+    "Inválidos y duplicados sí son errores seguros: la V3 no entrega ninguno detectable por este evaluador (28/09)",
+    "Categoría: la V3 dio 28/30 en la corrida vieja; la corrección del 28/09 la fija desde la tabla y hay que volver a medir"
+   ],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Dar la lectura honesta de los resultados",
+    "say": "Conclusión defendible: en este ensayo la V3 elimina los errores que estos controles detectan, pero todavía no demuestra mejor exactitud global contra un expected que es mock. Tenemos evidencia de qué controles ayudan y una lista clara de lo que falta para validar con el canal. Un control puede reducir errores quitando información: mirar control y cobertura juntos.",
+    "ask": "¿Qué evidencia pedirían antes de un piloto con un concesionario?",
+    "close": "",
+    "transition": "El camino a producción."
+   },
+   "minutes": 3
+  },
+  {
+   "id": "s61",
+   "section": "prueba",
+   "title": "Camino a producción.",
+   "kind": "flow",
+   "lead": "",
+   "label": "",
+   "items": [
+    "Esquema oficial de Shopee y expected validado con el equipo de catálogo",
+    "Integración: la API pública lee el producto (F8); escribir publicaciones y leer tablas necesita acceso interno",
+    "Decidir dónde corre el batch (decisión 5) y la política de missing (decisión 12)",
+    "Medir el costo completo y fijar el tope (decisión 11); probar Haiku 4.5 (decisión 6)"
+   ],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Convertir los pendientes en tareas con dueño",
+    "say": "Cada punto necesita responsable y fecha; se completan en la última lámina. Retomar las dudas de AgentCore anotadas a la mañana y asignarlas a Juan David. El código queda en el repositorio de Alephee que Rick indique.",
+    "ask": "",
+    "close": "",
+    "transition": "Las trece decisiones."
+   },
+   "minutes": 3
+  },
+  {
+   "id": "s62",
+   "section": "prueba",
+   "title": "Las 13 decisiones.",
+   "kind": "table",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": {
+    "headers": [
+     "N",
+     "Decisión",
+     "Archivo"
+    ],
+    "rows": [
+     [
+      "1",
+      "Alcance: un canal, una familia, categoría + atributos",
+      "decisiones/01-alcance.md"
+     ],
+     [
+      "2",
+      "Contrato: missing y rejected con motivo",
+      "decisiones/02-contrato.md"
+     ],
+     [
+      "3",
+      "Tipo de aplicación: single prompt y escalar",
+      "decisiones/03-tipo-de-aplicacion.md"
+     ],
+     [
+      "4",
+      "Salida estructurada por herramienta + Pydantic",
+      "decisiones/04-salida-estructurada.md"
+     ],
+     [
+      "5",
+      "Dónde corre: local hoy, chat en AgentCore, batch a medir",
+      "decisiones/05-donde-corre.md"
+     ],
+     [
+      "6",
+      "Modelo: Claude Sonnet 5; Haiku 4.5 a probar",
+      "decisiones/06-modelo.md"
+     ],
+     [
+      "7",
+      "Stack: Python + LlamaIndex Workflows + BedrockConverse",
+      "decisiones/07-stack.md"
+     ],
+     [
+      "8",
+      "Criterio de éxito: el número de la pizarra",
+      "decisiones/08-criterio-de-exito.md"
+     ],
+     [
+      "9",
+      "Dataset: 30 reales con mock rotulado",
+      "decisiones/09-dataset.md"
+     ],
+     [
+      "10",
+      "La tabla manda; el agente elige valores y lo no cubierto",
+      "decisiones/10-tabla-vs-agente.md"
+     ],
+     [
+      "11",
+      "Costo: tope acordado y medición por producto",
+      "decisiones/11-costo.md"
+     ],
+     [
+      "12",
+      "Cuando no sabe: faltante explícito, nunca inventar",
+      "decisiones/12-cuando-no-sabe.md"
+     ],
+     [
+      "13",
+      "Determinismo: caché por SKU + canal con invalidación",
+      "decisiones/13-determinismo-y-cache.md"
+     ]
+    ]
+   },
+   "notes": {
+    "objective": "Cerrar con el registro completo",
+    "say": "Cada archivo tiene contexto, opciones, decisión y razonamiento. Lo que quedó distinto a la propuesta se escribe tal como se decidió en la sala. Este registro es el método repetible: el próximo caso de uso de Alephee arranca por estas trece preguntas.",
+    "ask": "",
+    "close": "",
+    "transition": "Quién hace qué."
+   },
+   "minutes": 3
+  },
+  {
+   "id": "s63",
+   "section": "prueba",
+   "title": "Quién hace qué, para cuándo.",
+   "kind": "divider",
+   "lead": "Se completa en la sala.",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Cerrar con responsables y fechas",
+    "say": "Repartir los pendientes del camino a producción entre Alephee, Craftech y AWS, con fecha. Confirmar el repositorio donde queda el código. Agradecer y cerrar a las 17:00; preguntas hasta las 17:30.",
+    "ask": "",
+    "close": "",
+    "transition": "Fin."
+   },
+   "minutes": 1
   }
  ]
 }
