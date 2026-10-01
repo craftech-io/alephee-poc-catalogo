@@ -338,12 +338,12 @@
    "minutes": 3,
    "code": {
     "file": "core/src/catalog/models.py",
-    "lines": "21-37",
+    "lines": "38-53",
     "symbol": "class Listing",
     "highlight": [
-     34,
-     36,
-     37
+     50,
+     52,
+     53
     ],
     "caption": "Listing es lo que entrega la V1. Si el modelo devuelve algo que no cumple este esquema, el Workflow informa el error."
    }
@@ -573,12 +573,12 @@
    "minutes": 3,
    "code": {
     "file": "core/src/catalog/v1.py",
-    "lines": "69-77",
+    "lines": "84-98",
     "symbol": "as_structured_llm",
     "highlight": [
-     72,
-     76,
-     77
+     90,
+     95,
+     98
     ],
     "caption": "Una sola llamada. response.raw ya es un Listing validado."
    }
@@ -1160,12 +1160,12 @@
    "minutes": 3,
    "code": {
     "file": "core/src/catalog/llm.py",
-    "lines": "8-20",
+    "lines": "12-26",
     "symbol": "DEFAULT_MODEL_ID",
     "highlight": [
-     9,
-     15,
-     18
+     13,
+     20,
+     23
     ],
     "caption": "En local usa el perfil SSO; en el Runtime de AgentCore toma el rol de la cuenta."
    }
@@ -1279,12 +1279,12 @@
    "minutes": 3,
    "code": {
     "file": "core/src/catalog/evaluation.py",
-    "lines": "18-32",
+    "lines": "25-42",
     "symbol": "def exact",
     "highlight": [
-     30,
-     31,
-     32
+     39,
+     41,
+     42
     ],
     "caption": "La misma función mide el proceso de hoy y cada versión."
    }
@@ -1698,11 +1698,11 @@
    "minutes": 3,
    "code": {
     "file": "core/src/catalog/prompts.py",
-    "lines": "22-27",
+    "lines": "31-39",
     "symbol": "def get_system_prompt",
     "highlight": [
-     26,
-     27
+     36,
+     39
     ],
     "caption": "version None quiere decir que se usó la semilla."
    }
@@ -1730,12 +1730,12 @@
    "minutes": 3,
    "code": {
     "file": "core/src/catalog/v1.py",
-    "lines": "46-55",
+    "lines": "53-67",
     "symbol": "def build_messages",
     "highlight": [
-     50,
-     52,
-     53
+     62,
+     64,
+     65
     ],
     "caption": "En la traza de Langfuse se ven los tokens leídos de caché."
    }
@@ -1758,20 +1758,167 @@
     "say": "Estos son los eventos de la V1. Entra MappingRequested con el producto, pasa ContextReady con los mensajes y sale MappingCompleted. Como MappingCompleted es una subclase de StopEvent, run() lo devuelve tal cual, con el Listing tipado adentro.",
     "ask": "",
     "close": "",
-    "transition": "Lo corremos sobre el caso guía."
+    "transition": "El flujo de la V1, según LlamaIndex."
    },
    "minutes": 3,
    "code": {
     "file": "core/src/catalog/events.py",
-    "lines": "9-21",
+    "lines": "22-38",
     "symbol": "class MappingCompleted",
     "highlight": [
-     17,
-     20,
-     21
+     34,
+     37,
+     38
     ],
     "caption": "El batch, el chat y los tests leen fin.listing sin parsear nada."
    }
+  },
+  {
+   "id": "w01",
+   "section": "v1",
+   "title": "El flujo de la V1, según LlamaIndex.",
+   "kind": "diagram",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "diagram": {
+    "w": 1200,
+    "h": 200,
+    "nodes": [
+     {
+      "x": 16,
+      "y": 58,
+      "w": 200,
+      "h": 84,
+      "title": "MappingRequested",
+      "sub": [
+       "evento de entrada",
+       "product"
+      ],
+      "tone": "dato"
+     },
+     {
+      "x": 256,
+      "y": 58,
+      "w": 200,
+      "h": 84,
+      "title": "prepare",
+      "sub": [
+       "step · código",
+       "arma los mensajes"
+      ],
+      "tone": "codigo"
+     },
+     {
+      "x": 496,
+      "y": 58,
+      "w": 200,
+      "h": 84,
+      "title": "ContextReady",
+      "sub": [
+       "evento",
+       "messages"
+      ],
+      "tone": "dato"
+     },
+     {
+      "x": 736,
+      "y": 58,
+      "w": 200,
+      "h": 84,
+      "title": "map",
+      "sub": [
+       "step · Claude Sonnet 5",
+       "as_structured_llm(Listing)"
+      ],
+      "tone": "modelo"
+     },
+     {
+      "x": 976,
+      "y": 58,
+      "w": 200,
+      "h": 84,
+      "title": "MappingCompleted",
+      "sub": [
+       "StopEvent tipado",
+       "listing · error"
+      ],
+      "tone": "dato"
+     }
+    ],
+    "edges": [
+     {
+      "points": [
+       [
+        216,
+        100
+       ],
+       [
+        256,
+        100
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        456,
+        100
+       ],
+       [
+        496,
+        100
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        696,
+        100
+       ],
+       [
+        736,
+        100
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        936,
+        100
+       ],
+       [
+        976,
+        100
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     }
+    ],
+    "caption": "Este grafo lo dibuja LlamaIndex a partir de las firmas de los steps: cada step recibe un evento y devuelve otro."
+   },
+   "notes": {
+    "objective": "Mostrar que el flujo sale del código",
+    "say": "Este grafo no lo dibujamos a mano. LlamaIndex lo arma leyendo las firmas de los steps: prepare recibe MappingRequested y devuelve ContextReady, map recibe ContextReady y devuelve MappingCompleted. Si alguien cambia una firma, el grafo cambia solo. El script scripts/draw_workflows.py lo deja en docs/workflows.md y un test fija las flechas.",
+    "ask": "",
+    "close": "",
+    "transition": "Lo corremos sobre el caso guía."
+   },
+   "minutes": 2
   },
   {
    "id": "s39",
@@ -1960,7 +2107,7 @@
     "say": "Verde es código y violeta es el modelo. Son cuatro steps. check_cache busca el SKU en DynamoDB: si ya se mapeó con las mismas tablas y el mismo prompt, sale de ahí sin llamar al modelo. resolve fija la categoría y los campos con las tablas. Si no hay categoría o esquema, termina con un faltante explícito y sin modelo. run_agent le pasa al FunctionAgent la lista de lo que falta decidir. El agente puede consultar correcciones y entrega con submit_listing, que valida en código y le devuelve los problemas. Tiene hasta cinco entregas. finalize junta lo resuelto con lo del agente, y gana lo resuelto. Después pasa clean y guarda en la caché si la entrega pasó la validación.",
     "ask": "¿Qué caja sacarían a código si pudieran?",
     "close": "",
-    "transition": "Lo que resuelve el código."
+    "transition": "El flujo de la V2, según LlamaIndex."
    },
    "minutes": 3,
    "diagram": {
@@ -2248,6 +2395,614 @@
    }
   },
   {
+   "id": "w02",
+   "section": "v2",
+   "title": "El flujo de la V2, según LlamaIndex.",
+   "kind": "diagram",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "diagram": {
+    "w": 1200,
+    "h": 380,
+    "nodes": [
+     {
+      "x": 16,
+      "y": 30,
+      "w": 200,
+      "h": 84,
+      "title": "MappingRequested",
+      "sub": [
+       "evento de entrada",
+       "product"
+      ],
+      "tone": "dato"
+     },
+     {
+      "x": 256,
+      "y": 30,
+      "w": 200,
+      "h": 84,
+      "title": "check_cache",
+      "sub": [
+       "step · código",
+       "caché en DynamoDB"
+      ],
+      "tone": "codigo"
+     },
+     {
+      "x": 496,
+      "y": 30,
+      "w": 200,
+      "h": 84,
+      "title": "CacheMissed",
+      "sub": [
+       "evento",
+       "product"
+      ],
+      "tone": "dato"
+     },
+     {
+      "x": 736,
+      "y": 30,
+      "w": 200,
+      "h": 84,
+      "title": "resolve",
+      "sub": [
+       "step · código",
+       "categoría y campos por tabla"
+      ],
+      "tone": "codigo"
+     },
+     {
+      "x": 976,
+      "y": 30,
+      "w": 200,
+      "h": 84,
+      "title": "WorkReady",
+      "sub": [
+       "evento",
+       "worklist"
+      ],
+      "tone": "dato"
+     },
+     {
+      "x": 256,
+      "y": 270,
+      "w": 200,
+      "h": 84,
+      "title": "MappingCompleted",
+      "sub": [
+       "StopEvent tipado",
+       "listing · error · source"
+      ],
+      "tone": "dato"
+     },
+     {
+      "x": 496,
+      "y": 270,
+      "w": 200,
+      "h": 84,
+      "title": "finalize",
+      "sub": [
+       "step · código",
+       "merge, clean y caché"
+      ],
+      "tone": "codigo"
+     },
+     {
+      "x": 736,
+      "y": 270,
+      "w": 200,
+      "h": 84,
+      "title": "AgentDone",
+      "sub": [
+       "evento",
+       "last · valid · error"
+      ],
+      "tone": "dato"
+     },
+     {
+      "x": 976,
+      "y": 270,
+      "w": 200,
+      "h": 84,
+      "title": "run_agent",
+      "sub": [
+       "step · FunctionAgent",
+       "hasta 5 entregas"
+      ],
+      "tone": "modelo"
+     }
+    ],
+    "edges": [
+     {
+      "points": [
+       [
+        216,
+        72
+       ],
+       [
+        256,
+        72
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        456,
+        72
+       ],
+       [
+        496,
+        72
+       ]
+      ],
+      "label": "miss",
+      "dashed": false,
+      "at": [
+       476,
+       58
+      ]
+     },
+     {
+      "points": [
+       [
+        696,
+        72
+       ],
+       [
+        736,
+        72
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        936,
+        72
+       ],
+       [
+        976,
+        72
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        1076,
+        114
+       ],
+       [
+        1076,
+        270
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        976,
+        312
+       ],
+       [
+        936,
+        312
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        736,
+        312
+       ],
+       [
+        696,
+        312
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        496,
+        312
+       ],
+       [
+        456,
+        312
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        356,
+        114
+       ],
+       [
+        356,
+        270
+       ]
+      ],
+      "label": "hit",
+      "dashed": false,
+      "at": [
+       378,
+       190
+      ]
+     },
+     {
+      "points": [
+       [
+        836,
+        114
+       ],
+       [
+        836,
+        200
+       ],
+       [
+        420,
+        200
+       ],
+       [
+        420,
+        270
+       ]
+      ],
+      "label": "sin categoría o sin esquema",
+      "dashed": false,
+      "at": [
+       628,
+       190
+      ]
+     }
+    ],
+    "caption": "La V2 tiene tres salidas: desde la caché, desde las tablas sin llamar al modelo, o después del agente."
+   },
+   "notes": {
+    "objective": "Ver los caminos que no pasan por el modelo",
+    "say": "Es el mismo dibujo automático, ahora para la V2. Lo importante son las tres salidas hacia MappingCompleted. Si la caché tiene el SKU, check_cache termina ahí. Si no hay categoría en la tabla o no hay esquema, resolve termina con un faltante explícito, sin modelo. Solo lo que llega a WorkReady pasa por el agente, y finalize siempre limpia lo que entrega.",
+    "ask": "¿Qué porcentaje de los productos debería salir por la caché en producción?",
+    "close": "",
+    "transition": "Adentro de run_agent: el ciclo del FunctionAgent."
+   },
+   "minutes": 2
+  },
+  {
+   "id": "w03",
+   "section": "v2",
+   "title": "Adentro de run_agent: el ciclo del FunctionAgent.",
+   "kind": "diagram",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "diagram": {
+    "w": 1200,
+    "h": 400,
+    "nodes": [
+     {
+      "x": 16,
+      "y": 40,
+      "w": 140,
+      "h": 96,
+      "title": "user_msg",
+      "sub": [
+       "AgentWorkflow",
+       "StartEvent"
+      ],
+      "tone": "dato"
+     },
+     {
+      "x": 206,
+      "y": 40,
+      "w": 160,
+      "h": 96,
+      "title": "init_run",
+      "sub": [
+       "memoria y mensaje",
+       "emite AgentInput"
+      ],
+      "tone": "codigo"
+     },
+     {
+      "x": 416,
+      "y": 40,
+      "w": 180,
+      "h": 96,
+      "title": "setup_agent",
+      "sub": [
+       "system prompt y tools",
+       "emite AgentSetup"
+      ],
+      "tone": "codigo"
+     },
+     {
+      "x": 646,
+      "y": 40,
+      "w": 200,
+      "h": 96,
+      "title": "run_agent_step",
+      "sub": [
+       "llama a Claude",
+       "emite AgentOutput"
+      ],
+      "tone": "modelo"
+     },
+     {
+      "x": 896,
+      "y": 40,
+      "w": 288,
+      "h": 96,
+      "title": "parse_agent_output",
+      "sub": [
+       "cuenta las iteraciones",
+       "texto: StopEvent",
+       "tool call: ToolCall"
+      ],
+      "tone": "codigo"
+     },
+     {
+      "x": 896,
+      "y": 280,
+      "w": 288,
+      "h": 96,
+      "title": "call_tool",
+      "sub": [
+       "corre la herramienta",
+       "un error vuelve como texto",
+       "emite ToolCallResult"
+      ],
+      "tone": "codigo"
+     },
+     {
+      "x": 416,
+      "y": 280,
+      "w": 280,
+      "h": 96,
+      "title": "aggregate_tool_results",
+      "sub": [
+       "return_direct válido: StopEvent",
+       "si no: AgentInput"
+      ],
+      "tone": "codigo"
+     },
+     {
+      "x": 16,
+      "y": 280,
+      "w": 260,
+      "h": 96,
+      "title": "StopEvent",
+      "sub": [
+       "el Listing entregado",
+       "o la respuesta en texto"
+      ],
+      "tone": "dato"
+     }
+    ],
+    "edges": [
+     {
+      "points": [
+       [
+        156,
+        88
+       ],
+       [
+        206,
+        88
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        366,
+        88
+       ],
+       [
+        416,
+        88
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        596,
+        88
+       ],
+       [
+        646,
+        88
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        846,
+        88
+       ],
+       [
+        896,
+        88
+       ]
+      ],
+      "label": "",
+      "dashed": false
+     },
+     {
+      "points": [
+       [
+        1040,
+        136
+       ],
+       [
+        1040,
+        280
+       ]
+      ],
+      "label": "ToolCall",
+      "dashed": false,
+      "at": [
+       1080,
+       210
+      ]
+     },
+     {
+      "points": [
+       [
+        896,
+        328
+       ],
+       [
+        696,
+        328
+       ]
+      ],
+      "label": "ToolCallResult",
+      "dashed": false,
+      "at": [
+       796,
+       314
+      ]
+     },
+     {
+      "points": [
+       [
+        416,
+        328
+       ],
+       [
+        276,
+        328
+       ]
+      ],
+      "label": "StopEvent",
+      "dashed": false,
+      "at": [
+       346,
+       314
+      ]
+     },
+     {
+      "points": [
+       [
+        506,
+        280
+       ],
+       [
+        506,
+        136
+       ]
+      ],
+      "label": "AgentInput: otra vuelta",
+      "dashed": false,
+      "at": [
+       600,
+       210
+      ]
+     },
+     {
+      "points": [
+       [
+        940,
+        136
+       ],
+       [
+        940,
+        236
+       ],
+       [
+        146,
+        236
+       ],
+       [
+        146,
+        280
+       ]
+      ],
+      "label": "respuesta en texto",
+      "dashed": true,
+      "at": [
+       300,
+       226
+      ]
+     },
+     {
+      "points": [
+       [
+        990,
+        40
+       ],
+       [
+        990,
+        18
+       ],
+       [
+        506,
+        18
+       ],
+       [
+        506,
+        40
+       ]
+      ],
+      "label": "reintento",
+      "dashed": true,
+      "at": [
+       748,
+       12
+      ]
+     }
+    ],
+    "caption": "El ciclo propio del FunctionAgent, leído de la librería. submit_listing es return_direct: solo una entrega válida corta el ciclo."
+   },
+   "notes": {
+    "objective": "Entender qué hace la librería y qué hace nuestro código",
+    "say": "El FunctionAgent es otro Workflow, el de la librería. setup_agent arma el pedido, run_agent_step llama a Claude y parse_agent_output decide. Si el modelo pide una herramienta, call_tool la corre. Si submit_listing encuentra problemas, levanta un error y el texto vuelve al modelo como resultado, y el ciclo da otra vuelta. Si la entrega es válida, aggregate_tool_results corta con StopEvent porque la herramienta es return_direct. parse_agent_output también cuenta las vueltas: por eso la V2 pasa MAX_ITERATIONS más uno.",
+    "ask": "",
+    "close": "",
+    "transition": "Lo que resuelve el código."
+   },
+   "minutes": 2
+  },
+  {
    "id": "c11",
    "section": "v2",
    "title": "Lo que resuelve el código.",
@@ -2262,7 +3017,7 @@
    "table": null,
    "notes": {
     "objective": "Ver en código qué no pasa por el modelo",
-    "say": "Esto corre dentro de build_worklist, antes del agente. target_for busca el campo de Shopee en reference_attribute, entre los atributos de la categoría. Si no está, el atributo va a unmapped_product. Si el campo es texto libre y no tiene unidad, el valor se copia tal cual. Si el valor coincide con uno de la lista del canal, se toma ese. Lo demás va a to_decide, y es lo único que decide el agente.",
+    "say": "Esto corre dentro de build_worklist, antes del agente. Justo antes de estas líneas, target_for busca el campo de Shopee en reference_attribute, entre los atributos de la categoría, y si no está el atributo va a unmapped_product. Si dos campos legacy apuntan al mismo campo de Shopee, gana el primero y no hay duplicado. Si el campo es texto libre y no tiene unidad, el valor se copia tal cual. Si el valor coincide con uno de la lista del canal, se toma ese. Lo demás va a to_decide, y es lo único que decide el agente.",
     "ask": "",
     "close": "",
     "transition": "La entrega pasa por una herramienta que valida."
@@ -2270,14 +3025,13 @@
    "minutes": 3,
    "code": {
     "file": "core/src/catalog/worklist.py",
-    "lines": "42-59",
-    "symbol": "reference.target_for",
+    "lines": "62-79",
+    "symbol": "if target in covered",
     "highlight": [
-     42,
-     53,
-     54,
-     56,
-     58
+     64,
+     73,
+     77,
+     79
     ],
     "caption": "Texto libre y coincidencia exacta salen sin modelo. Lo que no coincide va a to_decide."
    }
@@ -2305,12 +3059,12 @@
    "minutes": 3,
    "code": {
     "file": "core/src/catalog/v2.py",
-    "lines": "109-121",
+    "lines": "150-162",
     "symbol": "def submit_listing",
     "highlight": [
-     111,
-     115,
-     120
+     152,
+     156,
+     161
     ],
     "caption": "Cada entrega queda en submissions. Si se agotan las cinco, finalize limpia la última."
    }
@@ -2472,12 +3226,12 @@
    "minutes": 3,
    "code": {
     "file": "core/src/catalog/guardrails.py",
-    "lines": "34-45",
+    "lines": "45-60",
     "symbol": "def validate",
     "highlight": [
-     38,
-     41,
-     43
+     51,
+     54,
+     58
     ],
     "caption": "Devuelve texto para el modelo. Una lista vacía quiere decir que la entrega pasa."
    }
@@ -2564,13 +3318,13 @@
    "minutes": 3,
    "code": {
     "file": "core/src/catalog/v2.py",
-    "lines": "69-85",
+    "lines": "95-112",
     "symbol": "async def check_cache",
     "highlight": [
-     74,
-     82,
-     83,
-     84
+     99,
+     108,
+     111,
+     112
     ],
     "caption": "Un error de DynamoDB no frena el mapeo: _safe sigue sin caché."
    }
@@ -2598,13 +3352,13 @@
    "minutes": 3,
    "code": {
     "file": "core/src/catalog/v2.py",
-    "lines": "149-164",
+    "lines": "198-215",
     "symbol": "async def finalize",
     "highlight": [
-     154,
-     156,
-     157,
-     163
+     205,
+     209,
+     210,
+     215
     ],
     "caption": "Sin ninguna entrega, el resultado lleva un error."
    }

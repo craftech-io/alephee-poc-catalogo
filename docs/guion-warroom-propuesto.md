@@ -1,6 +1,6 @@
 # Guion del warroom · por diapositiva
 
-Versión del 1/10/2026 · 64 diapositivas · 5 bloques · 13 decisiones. Diseño en `warroom/diseno-presentacion.md`; fuentes externas en `warroom/fuentes.md`. Fuente única: `docs/warroom/diapositivas.json`. Se regenera con `python3 old/deck-tools/regenerar_deck.py` (las herramientas del deck están fuera de git hasta que vuelvan al repositorio).
+Versión del 1/10/2026 · 67 diapositivas · 5 bloques · 13 decisiones. Diseño en `warroom/diseno-presentacion.md`; fuentes externas en `warroom/fuentes.md`. Fuente única: `docs/warroom/diapositivas.json`. Se regenera con `python3 old/deck-tools/regenerar_deck.py` (las herramientas del deck están fuera de git hasta que vuelvan al repositorio).
 
 [Presentación interactiva](presentacion-warroom.html) · [PDF estático](presentacion-warroom.pdf)
 
@@ -16,9 +16,9 @@ Las láminas de código leen el código del repositorio al generar el deck: si e
 |---|---|---|---|
 | 01 · Punto de partida | 09:00-09:30 | 1 a 9 | Ver el error de hoy y acordar qué construimos |
 | 02 · Diseñar el agente | 09:30-11:15 | 10 a 29 | Tomar las decisiones que definen la V1 |
-| 03 · V1 · el agente responde | 11:15-12:30 | 30 a 37 | Construir, correr y leer la primera versión |
-| 04 · V2 · tablas y control | 13:15-16:15 | 38 a 57 | Resolver con las tablas lo que saben y controlar lo que decide el agente |
-| 05 · La prueba y el camino | 16:15-17:00 | 58 a 64 | Medir contra el criterio y repartir lo que sigue |
+| 03 · V1 · el agente responde | 11:15-12:30 | 30 a 38 | Construir, correr y leer la primera versión |
+| 04 · V2 · tablas y control | 13:15-16:15 | 39 a 60 | Resolver con las tablas lo que saben y controlar lo que decide el agente |
+| 05 · La prueba y el camino | 16:15-17:00 | 61 a 67 | Medir contra el criterio y repartir lo que sigue |
 
 Pausa de 11:00 a 11:15, almuerzo de 12:30 a 13:15 y pausa de 14:45 a 15:00. El bloque de la V2 incluye la preparación de la comparación, de 16:00 a 16:15. El margen de preguntas de 17:00 a 17:30 depende de la logística.
 
@@ -30,8 +30,8 @@ Los minutos por diapositiva son una pauta. Preservar la hora de cierre. Si el bl
 |---|---:|---|---:|
 | 01 · Punto de partida | 25 min | Dolores del equipo y preguntas: 2 min | 27 min |
 | 02 · Diseñar el agente | 64 min | Pizarra: dudas de AgentCore para Juan David: 5 min; Pausa 11:00: 15 min | 84 min |
-| 03 · V1 · el agente responde | 24 min | Corridas sobre otros casos: 25 min | 49 min |
-| 04 · V2 · tablas y control | 67 min | Corrida del lote con la V2 y lectura: 30 min; Pausa 14:45: 15 min; Preguntas y cambios pedidos por la sala: 35 min; Preparar la comparación: 15 min | 162 min |
+| 03 · V1 · el agente responde | 26 min | Corridas sobre otros casos: 25 min | 51 min |
+| 04 · V2 · tablas y control | 71 min | Corrida del lote con la V2 y lectura: 30 min; Pausa 14:45: 15 min; Preguntas y cambios pedidos por la sala: 35 min; Preparar la comparación: 15 min | 166 min |
 | 05 · La prueba y el camino | 17 min | Documentar decisiones y responsables: 15 min | 32 min |
 
 Las reservas son para pizarra, corridas del lote y preguntas dentro del bloque. Son pautas ajustables de esta jornada.
@@ -198,19 +198,18 @@ Las reservas son para pizarra, corridas del lote y preguntas dentro del bloque. 
 
 **Transición:** Decisión 2: cómo se informa lo que no se pudo mapear.
 
-**Código:** `core/src/catalog/models.py` líneas 21 a 37
+**Código:** `core/src/catalog/models.py` líneas 38 a 53
 
 ```py
-class MissingAttribute(_Strict):
-    urn: str = Field(description="URN of the mandatory channel attribute (or 'category').")
-    reason: str
-
-
+# A product attribute that was discarded, with the reason. Rejections added by the guardrails
+# carry the channel urn here instead, because the validator does not know the source attribute.
 class RejectedAttribute(_Strict):
     legacyId: str = Field(description="Product attribute id, without the 'urn:attribute:' prefix.")
     reason: str
 
 
+# The full answer for one product. In V2 the category is fixed by `reference_category` and the
+# guardrails force it back if the model returns a different one.
 class Listing(_Strict):
     """Result of mapping one product to a channel listing."""
 
@@ -375,17 +374,23 @@ Listing es lo que entrega la V1. Si el modelo devuelve algo que no cumple este e
 
 **Transición:** Ahora, dónde va a correr.
 
-**Código:** `core/src/catalog/v1.py` líneas 69 a 77
+**Código:** `core/src/catalog/v1.py` líneas 84 a 98
 
 ```py
 @step
 async def map(self, ev: ContextReady) -> MappingCompleted:
+    """Call the model with `Listing` as the output schema and return what it produced."""
     try:
+        # `as_structured_llm` sends `Listing` as the schema and parses the answer into it;
+        # an answer that does not fit the schema raises here instead of leaking bad JSON.
         response = await self.llm.as_structured_llm(Listing).achat(ev.messages)
     except Exception as exc:  # noqa: BLE001, any failure becomes a reported error, except credentials
+        # Expired credentials would fail every remaining product: let them stop the run.
         if is_auth_error(exc):
             raise
         return MappingCompleted(listing=None, error=f"{type(exc).__name__}: {exc}")
+    # `raw` holds the parsed `Listing` instance. V1 has no guardrails: the listing is returned
+    # as the model wrote it, which is what the V1 column measures.
     return MappingCompleted(listing=response.raw)
 ```
 
@@ -539,7 +544,7 @@ Es la infraestructura del template en infra/sst. El chat se despliega en la cuen
 
 **Transición:** Con qué lo construimos.
 
-**Código:** `core/src/catalog/llm.py` líneas 8 a 20
+**Código:** `core/src/catalog/llm.py` líneas 12 a 26
 
 ```py
 # Converse accepts the `us.` and `global.` profiles; the bare model id has no on-demand throughput.
@@ -548,11 +553,13 @@ _AUTH_ERRORS = (NoCredentialsError, SSOError, TokenRetrievalError, UnauthorizedS
 
 
 def create_llm(env=os.environ) -> BedrockConverse:
+    """Build the Bedrock Converse client from the environment (MODEL_ID, AWS_REGION, AWS_PROFILE)."""
     return BedrockConverse(
         model=env.get("MODEL_ID", DEFAULT_MODEL_ID),
         region_name=env.get("AWS_REGION", "us-east-1"),
         # Local runs use the SSO profile; inside the Runtime boto3 takes the role.
         profile_name=env.get("AWS_PROFILE") or None,
+        # High ceiling on purpose: an answer cut off at the limit is not a valid Listing.
         max_tokens=16000,
     )
 ```
@@ -634,11 +641,13 @@ En local usa el perfil SSO; en el Runtime de AgentCore toma el rol de la cuenta.
 
 **Transición:** Decisiones 8 y 9.
 
-**Código:** `core/src/catalog/evaluation.py` líneas 18 a 32
+**Código:** `core/src/catalog/evaluation.py` líneas 25 a 42
 
 ```py
-@dataclass
 class CaseResult:
+    """Score of one case: attribute counts (true/false positives, false negatives) and the
+    urns behind each kind of error, so a Langfuse comment can name them."""
+
     category_ok: bool
     tp: int
     fp: int
@@ -650,6 +659,7 @@ class CaseResult:
 
     @property
     def exact(self) -> bool:
+        """All checks pass at once: the strictest metric of the table."""
         return (self.category_ok and self.fp == 0 and self.fn == 0 and not self.invalid
                 and not self.duplicates and not self.missing_not_detected and not self.extra_missing)
 ```
@@ -790,14 +800,17 @@ Esta copia es la semilla. La versión que se usa vive en Langfuse con el label p
 
 **Transición:** Lo fijo primero, el producto al final.
 
-**Código:** `core/src/catalog/prompts.py` líneas 22 a 27
+**Código:** `core/src/catalog/prompts.py` líneas 31 a 39
 
 ```py
 
 def get_system_prompt(name: str, client) -> SystemPrompt:
+    """The `production` prompt from Langfuse, or the seed when there is no client or Langfuse fails."""
     seed = load_seed(name)
     if client is None:
         return SystemPrompt(seed, name, None)
+    # With `fallback`, the SDK returns the seed instead of raising when Langfuse is unreachable,
+    # and flags it with `is_fallback`, so the version is reported as None (the seed), not a number.
     prompt = client.get_prompt(name, label=LABEL, fallback=seed)
 ```
 
@@ -816,10 +829,15 @@ version None quiere decir que se usó la semilla.
 
 **Transición:** El Workflow cierra con un evento tipado.
 
-**Código:** `core/src/catalog/v1.py` líneas 46 a 55
+**Código:** `core/src/catalog/v1.py` líneas 53 a 67
 
 ```py
 def build_messages(system_prompt: str, schemas: dict[str, dict], product: dict) -> list[ChatMessage]:
+    """System prompt, then the static catalog, then the product.
+
+    Today's prompts put the product first and the big lists after it, which defeats prompt
+    caching. Here the order is reversed: everything static comes first.
+    """
     return [
         ChatMessage(role="system", content=system_prompt),
         ChatMessage(role="user", blocks=[
@@ -844,17 +862,21 @@ En la traza de Langfuse se ven los tokens leídos de caché.
 
 **Temas para hablar:** Estos son los eventos de la V1. Entra MappingRequested con el producto, pasa ContextReady con los mensajes y sale MappingCompleted. Como MappingCompleted es una subclase de StopEvent, run() lo devuelve tal cual, con el Listing tipado adentro.
 
-**Transición:** Lo corremos sobre el caso guía.
+**Transición:** El flujo de la V1, según LlamaIndex.
 
-**Código:** `core/src/catalog/events.py` líneas 9 a 21
+**Código:** `core/src/catalog/events.py` líneas 22 a 38
 
 ```py
 
 class MappingRequested(StartEvent):
+    """Start of both workflows: `workflow.run(product=...)` builds this event from the kwargs."""
+
     product: dict
 
 
 class ContextReady(Event):
+    """V1: the messages for the single structured call, already in cache-friendly order."""
+
     messages: list[ChatMessage]
 
 
@@ -866,7 +888,30 @@ class MappingCompleted(StopEvent):
 
 El batch, el chat y los tests leen fin.listing sin parsear nada.
 
-### 36 · Demo · la V1 sobre un producto real.
+### 36 · El flujo de la V1, según LlamaIndex.
+
+**Sección:** 03 · V1 · el agente responde · **Pauta:** 2 min · **Tipo:** diagram
+
+**Objetivo:** Mostrar que el flujo sale del código
+
+**En pantalla:**
+
+
+**Temas para hablar:** Este grafo no lo dibujamos a mano. LlamaIndex lo arma leyendo las firmas de los steps: prepare recibe MappingRequested y devuelve ContextReady, map recibe ContextReady y devuelve MappingCompleted. Si alguien cambia una firma, el grafo cambia solo. El script scripts/draw_workflows.py lo deja en docs/workflows.md y un test fija las flechas.
+
+**Transición:** Lo corremos sobre el caso guía.
+
+**Diagrama (cajas):**
+
+- MappingRequested: evento de entrada · product
+- prepare: step · código · arma los mensajes
+- ContextReady: evento · messages
+- map: step · Claude Sonnet 5 · as_structured_llm(Listing)
+- MappingCompleted: StopEvent tipado · listing · error
+
+Este grafo lo dibuja LlamaIndex a partir de las firmas de los steps: cada step recibe un evento y devuelve otro.
+
+### 37 · Demo · la V1 sobre un producto real.
 
 **Sección:** 03 · V1 · el agente responde · **Pauta:** 5 min · **Tipo:** demo
 
@@ -892,7 +937,7 @@ scripts/experiment.sh --version v1 --data mock --case 01-real-calota-aro14
 
 **Respaldo:** el experimento v1-mock que corrimos antes de la sesión, abierto en Langfuse
 
-### 37 · Qué falló en la V1 y qué capa lo resuelve.
+### 38 · Qué falló en la V1 y qué capa lo resuelve.
 
 **Sección:** 03 · V1 · el agente responde · **Pauta:** 3 min · **Tipo:** table
 
@@ -914,7 +959,7 @@ scripts/experiment.sh --version v1 --data mock --case 01-real-calota-aro14
 
 **Transición:** Almuerzo. A las 13:15, la V2.
 
-### 38 · V2 · tablas y control.
+### 39 · V2 · tablas y control.
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 1 min · **Tipo:** divider
 
@@ -928,7 +973,7 @@ scripts/experiment.sh --version v1 --data mock --case 01-real-calota-aro14
 
 **Transición:** Qué es una herramienta.
 
-### 39 · Una herramienta es una función que el modelo pide y el código ejecuta.
+### 40 · Una herramienta es una función que el modelo pide y el código ejecuta.
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 3 min · **Tipo:** flow
 
@@ -945,7 +990,7 @@ scripts/experiment.sh --version v1 --data mock --case 01-real-calota-aro14
 
 **Transición:** Decisión 10: qué decide la tabla y qué decide el agente.
 
-### 40 · ¿Qué decide la tabla y qué decide el agente?
+### 41 · ¿Qué decide la tabla y qué decide el agente?
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 4 min · **Tipo:** decision
 
@@ -969,7 +1014,7 @@ scripts/experiment.sh --version v1 --data mock --case 01-real-calota-aro14
 
 **Archivo:** `decisiones/10-tabla-vs-agente.md`
 
-### 41 · La V2 por dentro.
+### 42 · La V2 por dentro.
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 3 min · **Tipo:** diagram
 
@@ -982,7 +1027,7 @@ scripts/experiment.sh --version v1 --data mock --case 01-real-calota-aro14
 
 **Pregunta / participación:** ¿Qué caja sacarían a código si pudieran?
 
-**Transición:** Lo que resuelve el código.
+**Transición:** El flujo de la V2, según LlamaIndex.
 
 **Diagrama (cajas):**
 
@@ -999,7 +1044,62 @@ scripts/experiment.sh --version v1 --data mock --case 01-real-calota-aro14
 
 Verde es código y violeta es el modelo. El código resuelve lo que saben las tablas; el agente decide valores y entrega por una herramienta que valida.
 
-### 42 · Lo que resuelve el código.
+### 43 · El flujo de la V2, según LlamaIndex.
+
+**Sección:** 04 · V2 · tablas y control · **Pauta:** 2 min · **Tipo:** diagram
+
+**Objetivo:** Ver los caminos que no pasan por el modelo
+
+**En pantalla:**
+
+
+**Temas para hablar:** Es el mismo dibujo automático, ahora para la V2. Lo importante son las tres salidas hacia MappingCompleted. Si la caché tiene el SKU, check_cache termina ahí. Si no hay categoría en la tabla o no hay esquema, resolve termina con un faltante explícito, sin modelo. Solo lo que llega a WorkReady pasa por el agente, y finalize siempre limpia lo que entrega.
+
+**Pregunta / participación:** ¿Qué porcentaje de los productos debería salir por la caché en producción?
+
+**Transición:** Adentro de run_agent: el ciclo del FunctionAgent.
+
+**Diagrama (cajas):**
+
+- MappingRequested: evento de entrada · product
+- check_cache: step · código · caché en DynamoDB
+- CacheMissed: evento · product
+- resolve: step · código · categoría y campos por tabla
+- WorkReady: evento · worklist
+- MappingCompleted: StopEvent tipado · listing · error · source
+- finalize: step · código · merge, clean y caché
+- AgentDone: evento · last · valid · error
+- run_agent: step · FunctionAgent · hasta 5 entregas
+
+La V2 tiene tres salidas: desde la caché, desde las tablas sin llamar al modelo, o después del agente.
+
+### 44 · Adentro de run_agent: el ciclo del FunctionAgent.
+
+**Sección:** 04 · V2 · tablas y control · **Pauta:** 2 min · **Tipo:** diagram
+
+**Objetivo:** Entender qué hace la librería y qué hace nuestro código
+
+**En pantalla:**
+
+
+**Temas para hablar:** El FunctionAgent es otro Workflow, el de la librería. setup_agent arma el pedido, run_agent_step llama a Claude y parse_agent_output decide. Si el modelo pide una herramienta, call_tool la corre. Si submit_listing encuentra problemas, levanta un error y el texto vuelve al modelo como resultado, y el ciclo da otra vuelta. Si la entrega es válida, aggregate_tool_results corta con StopEvent porque la herramienta es return_direct. parse_agent_output también cuenta las vueltas: por eso la V2 pasa MAX_ITERATIONS más uno.
+
+**Transición:** Lo que resuelve el código.
+
+**Diagrama (cajas):**
+
+- user_msg: AgentWorkflow · StartEvent
+- init_run: memoria y mensaje · emite AgentInput
+- setup_agent: system prompt y tools · emite AgentSetup
+- run_agent_step: llama a Claude · emite AgentOutput
+- parse_agent_output: cuenta las iteraciones · texto: StopEvent · tool call: ToolCall
+- call_tool: corre la herramienta · un error vuelve como texto · emite ToolCallResult
+- aggregate_tool_results: return_direct válido: StopEvent · si no: AgentInput
+- StopEvent: el Listing entregado · o la respuesta en texto
+
+El ciclo propio del FunctionAgent, leído de la librería. submit_listing es return_direct: solo una entrega válida corta el ciclo.
+
+### 45 · Lo que resuelve el código.
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 3 min · **Tipo:** code
 
@@ -1008,36 +1108,36 @@ Verde es código y violeta es el modelo. El código resuelve lo que saben las ta
 **En pantalla:**
 
 
-**Temas para hablar:** Esto corre dentro de build_worklist, antes del agente. target_for busca el campo de Shopee en reference_attribute, entre los atributos de la categoría. Si no está, el atributo va a unmapped_product. Si el campo es texto libre y no tiene unidad, el valor se copia tal cual. Si el valor coincide con uno de la lista del canal, se toma ese. Lo demás va a to_decide, y es lo único que decide el agente.
+**Temas para hablar:** Esto corre dentro de build_worklist, antes del agente. Justo antes de estas líneas, target_for busca el campo de Shopee en reference_attribute, entre los atributos de la categoría, y si no está el atributo va a unmapped_product. Si dos campos legacy apuntan al mismo campo de Shopee, gana el primero y no hay duplicado. Si el campo es texto libre y no tiene unidad, el valor se copia tal cual. Si el valor coincide con uno de la lista del canal, se toma ese. Lo demás va a to_decide, y es lo único que decide el agente.
 
 **Transición:** La entrega pasa por una herramienta que valida.
 
-**Código:** `core/src/catalog/worklist.py` líneas 42 a 59
+**Código:** `core/src/catalog/worklist.py` líneas 62 a 79
 
 ```py
-target = reference.target_for(attribute["urn"], schema)
-if target is None:
-    unmapped.append({"legacy_id": attribute["urn"], "name": attribute.get("name"), "value": value,
-                     "unit": attribute.get("unit")})
-    continue
+# First product attribute wins a target: two legacy fields pointing to the same Shopee
+# attribute must not produce a duplicate (the kind of duplicate today's output shows).
 if target in covered:
     continue
 covered.add(target)
 definition = definitions[target]
 values = _values(definition)
 unit = str(attribute.get("unit") or "").strip()
+# Free text with no unit: the product value is copied as is. With a unit it goes to the
+# agent, which decides whether and how the unit fits the channel.
 if not values and unit in NO_DATA:
     resolved.append(MappedAttribute(urn=target, valueId="0", value=value, unit=None))
     continue
+# List attribute whose value matches a channel value by name: take the channel's id and
+# spelling. Anything else needs judgment and goes to the agent.
 match = next((v for v in values if normalize(v["name"]) == normalize(value)), None)
 if match is not None:
     resolved.append(MappedAttribute(urn=target, valueId=match["id"], value=match["name"], unit=None))
-    continue
 ```
 
 Texto libre y coincidencia exacta salen sin modelo. Lo que no coincide va a to_decide.
 
-### 43 · La entrega pasa por una herramienta que valida.
+### 46 · La entrega pasa por una herramienta que valida.
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 3 min · **Tipo:** code
 
@@ -1050,7 +1150,7 @@ Texto libre y coincidencia exacta salen sin modelo. Lo que no coincide va a to_d
 
 **Transición:** Lo corremos.
 
-**Código:** `core/src/catalog/v2.py` líneas 109 a 121
+**Código:** `core/src/catalog/v2.py` líneas 150 a 162
 
 ```py
 def submit_listing(**listing) -> dict:
@@ -1070,7 +1170,7 @@ tools = [
 
 Cada entrega queda en submissions. Si se agotan las cinco, finalize limpia la última.
 
-### 44 · Demo · la V2 sobre el mismo caso.
+### 47 · Demo · la V2 sobre el mismo caso.
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 5 min · **Tipo:** demo
 
@@ -1096,7 +1196,7 @@ scripts/experiment.sh --version v2 --data mock --case 01-real-calota-aro14
 
 **Respaldo:** el experimento v2-mock del 1/10, abierto en Langfuse
 
-### 45 · Costo por producto, medido.
+### 48 · Costo por producto, medido.
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 3 min · **Tipo:** table
 
@@ -1113,7 +1213,7 @@ scripts/experiment.sh --version v2 --data mock --case 01-real-calota-aro14
 
 **Transición:** Decisión 11: el costo.
 
-### 46 · ¿Cuánto puede costar?
+### 49 · ¿Cuánto puede costar?
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 4 min · **Tipo:** decision
 
@@ -1137,7 +1237,7 @@ scripts/experiment.sh --version v2 --data mock --case 01-real-calota-aro14
 
 **Archivo:** `decisiones/11-costo.md`
 
-### 47 · Guardrail: una comprobación en código.
+### 50 · Guardrail: una comprobación en código.
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 3 min · **Tipo:** compare
 
@@ -1153,7 +1253,7 @@ scripts/experiment.sh --version v2 --data mock --case 01-real-calota-aro14
 
 **Transición:** La validación, en código.
 
-### 48 · La validación, en código.
+### 51 · La validación, en código.
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 3 min · **Tipo:** code
 
@@ -1166,17 +1266,21 @@ scripts/experiment.sh --version v2 --data mock --case 01-real-calota-aro14
 
 **Transición:** Decisión 12.
 
-**Código:** `core/src/catalog/guardrails.py` líneas 34 a 45
+**Código:** `core/src/catalog/guardrails.py` líneas 45 a 60
 
 ```py
 def validate(listing: Listing, schema: dict, category_urn: str) -> list[str]:
+    """Every contract problem of a listing, as messages for the agent. Empty list means valid."""
     definitions = _definitions(schema)
     problems = []
+    # The reference table decides the category; the model cannot change it.
     if listing.category != category_urn:
         problems.append(f"category must be {category_urn} (it comes from the reference table)")
     problems += [p for a in listing.attributes if (p := _attribute_problem(a, definitions, category_urn))]
     counts = Counter(a.urn for a in listing.attributes)
     problems += [f"{urn} appears {n} times; keep only one" for urn, n in counts.items() if n > 1]
+    # A mandatory attribute must be either filled or declared missing with a reason. Silently
+    # leaving it out is what today's process does when the budget runs out.
     missing = {m.urn for m in listing.missing}
     problems += [f"{urn} ({d.get('name')}) is mandatory: fill it or add it to missing with the reason"
                  for urn, d in definitions.items() if d.get("mandatory") and urn not in counts and urn not in missing]
@@ -1185,7 +1289,7 @@ def validate(listing: Listing, schema: dict, category_urn: str) -> list[str]:
 
 Devuelve texto para el modelo. Una lista vacía quiere decir que la entrega pasa.
 
-### 49 · ¿Qué hace cuando no sabe?
+### 52 · ¿Qué hace cuando no sabe?
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 4 min · **Tipo:** decision
 
@@ -1209,7 +1313,7 @@ Devuelve texto para el modelo. Una lista vacía quiere decir que la entrega pasa
 
 **Archivo:** `decisiones/12-cuando-no-sabe.md`
 
-### 50 · Memoria: correcciones del equipo de catálogo.
+### 53 · Memoria: correcciones del equipo de catálogo.
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 3 min · **Tipo:** cards
 
@@ -1225,7 +1329,7 @@ Devuelve texto para el modelo. Una lista vacía quiere decir que la entrega pasa
 
 **Transición:** La caché: la clave y la lectura.
 
-### 51 · La caché: la clave y la lectura.
+### 54 · La caché: la clave y la lectura.
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 3 min · **Tipo:** code
 
@@ -1238,10 +1342,9 @@ Devuelve texto para el modelo. Una lista vacía quiere decir que la entrega pasa
 
 **Transición:** finalize: qué se guarda.
 
-**Código:** `core/src/catalog/v2.py` líneas 69 a 85
+**Código:** `core/src/catalog/v2.py` líneas 95 a 112
 
 ```py
-def _cache_key(self, product: dict) -> tuple[str, str] | None:
     sku = str(product.get("sku") or "").strip()
     categories = product.get("categories") or []
     if not sku or not categories:
@@ -1250,19 +1353,21 @@ def _cache_key(self, product: dict) -> tuple[str, str] | None:
 
 @step
 async def check_cache(self, ev: MappingRequested) -> MappingCompleted | CacheMissed:
+    """Return the cached listing if there is one and it still passes validation."""
     key = self._cache_key(ev.product)
     category = self.reference.category_for(ev.product)
     schema = self.schemas.get(category["urn"]) if category else None
     if key and schema:
         hit = _safe(lambda: self.cache.get(*key, self.reference.version, self.prompt_version), None, "cache get")
+        # Re-validated against the current schema: a cached listing that no longer fits the
+        # channel (schema changed, bad entry) is ignored and the product is mapped again.
         if hit is not None and not validate(hit, schema, category["urn"]):
             return MappingCompleted(listing=hit, source="cache")
-    return CacheMissed(product=ev.product)
 ```
 
 Un error de DynamoDB no frena el mapeo: _safe sigue sin caché.
 
-### 52 · finalize: gana lo resuelto y se guarda lo válido.
+### 55 · finalize: gana lo resuelto y se guarda lo válido.
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 3 min · **Tipo:** code
 
@@ -1275,16 +1380,20 @@ Un error de DynamoDB no frena el mapeo: _safe sigue sin caché.
 
 **Transición:** Decisión 13.
 
-**Código:** `core/src/catalog/v2.py` líneas 149 a 164
+**Código:** `core/src/catalog/v2.py` líneas 198 a 215
 
 ```py
-@step
 async def finalize(self, ev: AgentDone) -> MappingCompleted:
+    """Merge, clean and, only if the agent's listing was valid, store it in the cache."""
     if ev.last is None:
         return MappingCompleted(listing=None, error=ev.error or "the agent never submitted a listing", source="agent")
     schema = self.schemas[ev.category_urn]
+    # Last safety net: whatever the agent left, the output is forced back into contract
+    # (category from the table, invalid values dropped, mandatory gaps listed in `missing`).
     final = clean(merge_resolved(ev.last, ev.worklist.resolved), schema, ev.category_urn)
     key = self._cache_key(ev.product)
+    # A listing the guardrails had to clean is not cached: the next run gets another chance
+    # instead of repeating a degraded answer for every dealer that sells the SKU.
     if ev.valid and key:
         _safe(lambda: self.cache.put(*key, self.reference.version, self.prompt_version, ev.category_urn, final),
               None, "cache put")
@@ -1292,13 +1401,11 @@ async def finalize(self, ev: AgentDone) -> MappingCompleted:
     # error gets a specific reason instead of silently looking like a clean success.
     error = ev.error
     if error is None and ev.exhausted and not ev.valid:
-        error = "max iterations reached; last submission cleaned"
-    return MappingCompleted(listing=final, source="agent", error=error)
 ```
 
 Sin ninguna entrega, el resultado lleva un error.
 
-### 53 · ¿Cómo garantizamos determinismo?
+### 56 · ¿Cómo garantizamos determinismo?
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 4 min · **Tipo:** decision
 
@@ -1322,7 +1429,7 @@ Sin ninguna entrega, el resultado lleva un error.
 
 **Archivo:** `decisiones/13-determinismo-y-cache.md`
 
-### 54 · Demo · corregir y repetir.
+### 57 · Demo · corregir y repetir.
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 5 min · **Tipo:** demo
 
@@ -1348,7 +1455,7 @@ scripts/correct.sh --category urn:category:102529:vendor:shopee --attribute urn:
 
 **Respaldo:** las corridas del experimento v2-mock del 1/10, en Langfuse
 
-### 55 · Demo · la V2 desde el chat.
+### 58 · Demo · la V2 desde el chat.
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 4 min · **Tipo:** demo
 
@@ -1374,7 +1481,7 @@ API_URL=<Function URL del BFF> CHAT_HMAC_SECRET=<secreto HMAC> npm start -w apps
 
 **Respaldo:** npm run dev en localhost:3000: modo mock del chat, con una respuesta de ejemplo que no corre la V2
 
-### 56 · Cómo lo probamos.
+### 59 · Cómo lo probamos.
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 3 min · **Tipo:** cards
 
@@ -1390,7 +1497,7 @@ API_URL=<Function URL del BFF> CHAT_HMAC_SECRET=<secreto HMAC> npm start -w apps
 
 **Transición:** Un test e2e, en código.
 
-### 57 · Un test e2e, en código.
+### 60 · Un test e2e, en código.
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 3 min · **Tipo:** code
 
@@ -1419,7 +1526,7 @@ async def test_v2_never_delivers_invalid_listings(case_id, stores):
 
 Corre con scripts/e2e.sh, que pone RUN_E2E=1. Sin eso, se omite.
 
-### 58 · La prueba.
+### 61 · La prueba.
 
 **Sección:** 05 · La prueba y el camino · **Pauta:** 1 min · **Tipo:** divider
 
@@ -1433,7 +1540,7 @@ Corre con scripts/e2e.sh, que pone RUN_E2E=1. Sin eso, se omite.
 
 **Transición:** Los resultados.
 
-### 59 · Resultados del 1/10.
+### 62 · Resultados del 1/10.
 
 **Sección:** 05 · La prueba y el camino · **Pauta:** 3 min · **Tipo:** table
 
@@ -1455,7 +1562,7 @@ Corre con scripts/e2e.sh, que pone RUN_E2E=1. Sin eso, se omite.
 
 **Transición:** Cómo leer la tabla.
 
-### 60 · Cómo leer la tabla.
+### 63 · Cómo leer la tabla.
 
 **Sección:** 05 · La prueba y el camino · **Pauta:** 3 min · **Tipo:** cards
 
@@ -1474,7 +1581,7 @@ Corre con scripts/e2e.sh, que pone RUN_E2E=1. Sin eso, se omite.
 
 **Transición:** El camino a producción.
 
-### 61 · Camino a producción.
+### 64 · Camino a producción.
 
 **Sección:** 05 · La prueba y el camino · **Pauta:** 3 min · **Tipo:** flow
 
@@ -1491,7 +1598,7 @@ Corre con scripts/e2e.sh, que pone RUN_E2E=1. Sin eso, se omite.
 
 **Transición:** Las trece decisiones.
 
-### 62 · Las 13 decisiones (1 a 7).
+### 65 · Las 13 decisiones (1 a 7).
 
 **Sección:** 05 · La prueba y el camino · **Pauta:** 3 min · **Tipo:** table
 
@@ -1512,7 +1619,7 @@ Corre con scripts/e2e.sh, que pone RUN_E2E=1. Sin eso, se omite.
 
 **Transición:** Las de la tarde.
 
-### 63 · Las 13 decisiones (8 a 13).
+### 66 · Las 13 decisiones (8 a 13).
 
 **Sección:** 05 · La prueba y el camino · **Pauta:** 3 min · **Tipo:** table
 
@@ -1532,7 +1639,7 @@ Corre con scripts/e2e.sh, que pone RUN_E2E=1. Sin eso, se omite.
 
 **Transición:** Quién hace qué.
 
-### 64 · Quién hace qué, para cuándo.
+### 67 · Quién hace qué, para cuándo.
 
 **Sección:** 05 · La prueba y el camino · **Pauta:** 1 min · **Tipo:** divider
 
