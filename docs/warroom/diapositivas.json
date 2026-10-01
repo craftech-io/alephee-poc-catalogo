@@ -98,9 +98,36 @@
     "say": "Después de la portada viene la agenda y un producto real: qué entra y qué queremos que salga. A las 17:00 queremos tres cosas. El agente corriendo con el código en el repositorio, un método que sirva para el próximo caso de uso y trece decisiones escritas con su razonamiento. Hoy no damos teoría. Diseñamos y construimos en el mismo orden. Gastón conduce y el grupo decide en cada punto.",
     "ask": "",
     "close": "",
-    "transition": "Lo que vamos a hacer hoy."
+    "transition": "El código está en el repositorio."
    },
    "minutes": 1
+  },
+  {
+   "id": "r01",
+   "section": "partida",
+   "title": "El código está en el repositorio.",
+   "kind": "cards",
+   "lead": "",
+   "label": "https://github.com/craftech-io/alephee-poc-catalogo",
+   "items": [
+    "Repositorio: https://github.com/craftech-io/alephee-poc-catalogo",
+    "El agente: core/src/catalog/, con v1.py y v2.py como punto de entrada",
+    "Versiones: la rama main y los tags reinicio-v1 y reinicio-v2",
+    "Los grafos de los Workflows: docs/workflows.md, generados desde el código"
+   ],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "notes": {
+    "objective": "Que todos puedan seguir el código desde su máquina",
+    "say": "Todo lo que vamos a ver hoy está en este repositorio, en la rama main. El agente vive en core/src/catalog, y cada lámina de código dice de qué archivo y de qué líneas sale. La V1 y la V2 tienen su tag. El repositorio es privado: si alguien de Alephee no tiene acceso, lo damos ahora.",
+    "ask": "",
+    "close": "",
+    "transition": "Lo que vamos a hacer hoy."
+   },
+   "minutes": 2
   },
   {
    "id": "s02",
@@ -2997,6 +3024,104 @@
     "objective": "Entender qué hace la librería y qué hace nuestro código",
     "say": "El FunctionAgent es otro Workflow, el de la librería. setup_agent arma el pedido, run_agent_step llama a Claude y parse_agent_output decide. Si el modelo pide una herramienta, call_tool la corre. Si submit_listing encuentra problemas, levanta un error y el texto vuelve al modelo como resultado, y el ciclo da otra vuelta. Si la entrega es válida, aggregate_tool_results corta con StopEvent porque la herramienta es return_direct. parse_agent_output también cuenta las vueltas: por eso la V2 pasa MAX_ITERATIONS más uno.",
     "ask": "",
+    "close": "",
+    "transition": "Las dos herramientas del agente."
+   },
+   "minutes": 2
+  },
+  {
+   "id": "t01",
+   "section": "v2",
+   "title": "Las dos herramientas del agente.",
+   "kind": "table",
+   "lead": "",
+   "label": "El agente solo recibe lo que falta decidir: to_decide, unmapped_product y uncovered_channel",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": {
+    "headers": [
+     "Herramienta",
+     "Qué recibe",
+     "Qué devuelve",
+     "Para qué sirve"
+    ],
+    "rows": [
+     [
+      "lookup_corrections",
+      "attribute_urn y product_value",
+      "La corrección del equipo de catálogo, o correction: null",
+      "Ver si catálogo ya corrigió ese valor. La corrección manda sobre el modelo"
+     ],
+     [
+      "submit_listing",
+      "El Listing completo: category, attributes, missing y rejected",
+      "Si pasa la validación, el Listing y fin del ciclo. Si no, la lista de problemas",
+      "Entregar. Lo valida el código, no el modelo"
+     ]
+    ]
+   },
+   "notes": {
+    "objective": "Entender qué puede hacer el agente y qué no",
+    "say": "El agente de la V2 tiene solo dos herramientas. lookup_corrections le pregunta al equipo de catálogo si ya corrigió ese valor para esa categoría; si hay corrección, manda sobre lo que piense el modelo. submit_listing es la única forma de entregar. El código valida la entrega: si tiene problemas, se los devuelve al modelo como texto y el ciclo sigue. Si pasa, es return_direct y corta el ciclo. El modelo nunca decide si su propia respuesta está bien.",
+    "ask": "¿Qué otra herramienta le darían, y qué riesgo trae?",
+    "close": "",
+    "transition": "Un caso real: pastillas de freno, SKU 98550735."
+   },
+   "minutes": 2
+  },
+  {
+   "id": "t02",
+   "section": "v2",
+   "title": "Un caso real: pastillas de freno, SKU 98550735.",
+   "kind": "table",
+   "lead": "",
+   "label": "Datos reales · corrida de la V2 del 1/10, leída de Langfuse · el esquema de Shopee es MOCK",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": {
+    "headers": [
+     "Paso",
+     "Quién",
+     "Qué pasó"
+    ],
+    "rows": [
+     [
+      "Hoy",
+      "Proceso actual",
+      "Shopee rechazó la publicación: faltaba Inmetro Certification, que es obligatorio"
+     ],
+     [
+      "resolve",
+      "Código",
+      "Categoría Pastilha de Freio por reference_category. Cuatro campos sin modelo: Novo, Brasil, Inmetro 007077/2015 y Modelo"
+     ],
+     [
+      "lookup_corrections × 3",
+      "Agente",
+      "lookup_corrections(101826, \"1\"), (100134, \"Metal\") y (100037, \"Brasil\"): las tres devuelven correction: null"
+     ],
+     [
+      "submit_listing",
+      "Agente, validado por el código",
+      "10 atributos: \"1\" pasa a Sim, 4 pastillas, Dianteira. Pasa la validación al primer intento"
+     ],
+     [
+      "finalize",
+      "Código",
+      "Sale el Listing con Inmetro incluido, 17 atributos rechazados con motivo y 0 faltantes. Cuatro llamadas al modelo"
+     ]
+    ]
+   },
+   "notes": {
+    "objective": "Ver las herramientas funcionando con un producto real",
+    "say": "Es un producto real de GM. Hoy Shopee rechazó su publicación porque faltaba Inmetro Certification, que es obligatorio. En la V2, resolve fija la categoría con la tabla y resuelve cuatro campos en código, entre ellos Inmetro Certification, sin llamar al modelo. Al agente le quedan pocos valores. Primero consulta correcciones tres veces, por ejemplo lookup_corrections con el atributo 101826 y el valor 1, y recibe correction null. Después entrega con submit_listing: 1 pasa a Sim, la cantidad de pastillas a 4 y la posición a Dianteira. La entrega pasa la validación al primer intento. Fueron cuatro llamadas al modelo. Ojo: Metal pasa a Others porque el dominio de Material del esquema es MOCK.",
+    "ask": "¿Qué atributo de este caso debería resolver la tabla y hoy decide el agente?",
     "close": "",
     "transition": "Lo que resuelve el código."
    },

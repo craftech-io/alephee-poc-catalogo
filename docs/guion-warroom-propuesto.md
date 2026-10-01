@@ -1,6 +1,6 @@
 # Guion del warroom · por diapositiva
 
-Versión del 1/10/2026 · 67 diapositivas · 5 bloques · 13 decisiones. Diseño en `warroom/diseno-presentacion.md`; fuentes externas en `warroom/fuentes.md`. Fuente única: `docs/warroom/diapositivas.json`. Se regenera con `python3 old/deck-tools/regenerar_deck.py` (las herramientas del deck están fuera de git hasta que vuelvan al repositorio).
+Versión del 1/10/2026 · 70 diapositivas · 5 bloques · 13 decisiones. Diseño en `warroom/diseno-presentacion.md`; fuentes externas en `warroom/fuentes.md`. Fuente única: `docs/warroom/diapositivas.json`. Se regenera con `python3 old/deck-tools/regenerar_deck.py` (las herramientas del deck están fuera de git hasta que vuelvan al repositorio).
 
 [Presentación interactiva](presentacion-warroom.html) · [PDF estático](presentacion-warroom.pdf)
 
@@ -14,11 +14,11 @@ Las láminas de código leen el código del repositorio al generar el deck: si e
 
 | Sección | Horario | Diapositivas | Resultado |
 |---|---|---|---|
-| 01 · Punto de partida | 09:00-09:30 | 1 a 9 | Ver el error de hoy y acordar qué construimos |
-| 02 · Diseñar el agente | 09:30-11:15 | 10 a 29 | Tomar las decisiones que definen la V1 |
-| 03 · V1 · el agente responde | 11:15-12:30 | 30 a 38 | Construir, correr y leer la primera versión |
-| 04 · V2 · tablas y control | 13:15-16:15 | 39 a 60 | Resolver con las tablas lo que saben y controlar lo que decide el agente |
-| 05 · La prueba y el camino | 16:15-17:00 | 61 a 67 | Medir contra el criterio y repartir lo que sigue |
+| 01 · Punto de partida | 09:00-09:30 | 1 a 10 | Ver el error de hoy y acordar qué construimos |
+| 02 · Diseñar el agente | 09:30-11:15 | 11 a 30 | Tomar las decisiones que definen la V1 |
+| 03 · V1 · el agente responde | 11:15-12:30 | 31 a 39 | Construir, correr y leer la primera versión |
+| 04 · V2 · tablas y control | 13:15-16:15 | 40 a 63 | Resolver con las tablas lo que saben y controlar lo que decide el agente |
+| 05 · La prueba y el camino | 16:15-17:00 | 64 a 70 | Medir contra el criterio y repartir lo que sigue |
 
 Pausa de 11:00 a 11:15, almuerzo de 12:30 a 13:15 y pausa de 14:45 a 15:00. El bloque de la V2 incluye la preparación de la comparación, de 16:00 a 16:15. El margen de preguntas de 17:00 a 17:30 depende de la logística.
 
@@ -28,10 +28,10 @@ Los minutos por diapositiva son una pauta. Preservar la hora de cierre. Si el bl
 
 | Bloque | Diapositivas y demos | Trabajo reservado | Total |
 |---|---:|---|---:|
-| 01 · Punto de partida | 25 min | Dolores del equipo y preguntas: 2 min | 27 min |
+| 01 · Punto de partida | 27 min | Dolores del equipo y preguntas: 2 min | 29 min |
 | 02 · Diseñar el agente | 64 min | Pizarra: dudas de AgentCore para Juan David: 5 min; Pausa 11:00: 15 min | 84 min |
 | 03 · V1 · el agente responde | 26 min | Corridas sobre otros casos: 25 min | 51 min |
-| 04 · V2 · tablas y control | 71 min | Corrida del lote con la V2 y lectura: 30 min; Pausa 14:45: 15 min; Preguntas y cambios pedidos por la sala: 35 min; Preparar la comparación: 15 min | 166 min |
+| 04 · V2 · tablas y control | 75 min | Corrida del lote con la V2 y lectura: 30 min; Pausa 14:45: 15 min; Preguntas y cambios pedidos por la sala: 35 min; Preparar la comparación: 15 min | 170 min |
 | 05 · La prueba y el camino | 17 min | Documentar decisiones y responsables: 15 min | 32 min |
 
 Las reservas son para pizarra, corridas del lote y preguntas dentro del bloque. Son pautas ajustables de esta jornada.
@@ -59,9 +59,27 @@ Las reservas son para pizarra, corridas del lote y preguntas dentro del bloque. 
 
 **Temas para hablar:** Después de la portada viene la agenda y un producto real: qué entra y qué queremos que salga. A las 17:00 queremos tres cosas. El agente corriendo con el código en el repositorio, un método que sirva para el próximo caso de uso y trece decisiones escritas con su razonamiento. Hoy no damos teoría. Diseñamos y construimos en el mismo orden. Gastón conduce y el grupo decide en cada punto.
 
+**Transición:** El código está en el repositorio.
+
+### 02 · El código está en el repositorio.
+
+**Sección:** 01 · Punto de partida · **Pauta:** 2 min · **Tipo:** cards
+
+**Objetivo:** Que todos puedan seguir el código desde su máquina
+
+**En pantalla:**
+
+- https://github.com/craftech-io/alephee-poc-catalogo
+- Repositorio: https://github.com/craftech-io/alephee-poc-catalogo
+- El agente: core/src/catalog/, con v1.py y v2.py como punto de entrada
+- Versiones: la rama main y los tags reinicio-v1 y reinicio-v2
+- Los grafos de los Workflows: docs/workflows.md, generados desde el código
+
+**Temas para hablar:** Todo lo que vamos a ver hoy está en este repositorio, en la rama main. El agente vive en core/src/catalog, y cada lámina de código dice de qué archivo y de qué líneas sale. La V1 y la V2 tienen su tag. El repositorio es privado: si alguien de Alephee no tiene acceso, lo damos ahora.
+
 **Transición:** Lo que vamos a hacer hoy.
 
-### 02 · Lo que vamos a hacer hoy.
+### 03 · Lo que vamos a hacer hoy.
 
 **Sección:** 01 · Punto de partida · **Pauta:** 3 min · **Tipo:** compare
 
@@ -80,7 +98,7 @@ Las reservas son para pizarra, corridas del lote y preguntas dentro del bloque. 
 
 **Transición:** Un producto real para ver qué entra y qué queremos que salga.
 
-### 03 · De un producto de Alephee a una publicación de Shopee.
+### 04 · De un producto de Alephee a una publicación de Shopee.
 
 **Sección:** 01 · Punto de partida · **Pauta:** 3 min · **Tipo:** table
 
@@ -101,7 +119,7 @@ Las reservas son para pizarra, corridas del lote y preguntas dentro del bloque. 
 
 **Transición:** Cómo lo hace hoy el proceso actual.
 
-### 04 · Hoy: dos llamadas, un merge y un presupuesto que se agota.
+### 05 · Hoy: dos llamadas, un merge y un presupuesto que se agota.
 
 **Sección:** 01 · Punto de partida · **Pauta:** 3 min · **Tipo:** cards
 
@@ -121,7 +139,7 @@ Las reservas son para pizarra, corridas del lote y preguntas dentro del bloque. 
 
 **Transición:** Qué pasó con esas publicaciones en Shopee.
 
-### 05 · Lo que Shopee rechazó y lo que aceptó mal.
+### 06 · Lo que Shopee rechazó y lo que aceptó mal.
 
 **Sección:** 01 · Punto de partida · **Pauta:** 3 min · **Tipo:** table
 
@@ -142,7 +160,7 @@ Las reservas son para pizarra, corridas del lote y preguntas dentro del bloque. 
 
 **Transición:** Cómo vamos a trabajar hoy.
 
-### 06 · ¿Qué hace y qué no hace?
+### 07 · ¿Qué hace y qué no hace?
 
 **Sección:** 01 · Punto de partida · **Pauta:** 3 min · **Tipo:** decision
 
@@ -169,7 +187,7 @@ Las reservas son para pizarra, corridas del lote y preguntas dentro del bloque. 
 
 **Archivo:** `decisiones/01-alcance.md`
 
-### 07 · Entra un producto. Sale una propuesta de publicación.
+### 08 · Entra un producto. Sale una propuesta de publicación.
 
 **Sección:** 01 · Punto de partida · **Pauta:** 3 min · **Tipo:** cards
 
@@ -185,7 +203,7 @@ Las reservas son para pizarra, corridas del lote y preguntas dentro del bloque. 
 
 **Transición:** El contrato, en código.
 
-### 08 · El contrato, en código.
+### 09 · El contrato, en código.
 
 **Sección:** 01 · Punto de partida · **Pauta:** 3 min · **Tipo:** code
 
@@ -221,7 +239,7 @@ class Listing(_Strict):
 
 Listing es lo que entrega la V1. Si el modelo devuelve algo que no cumple este esquema, el Workflow informa el error.
 
-### 09 · ¿Qué recibe y qué entrega?
+### 10 · ¿Qué recibe y qué entrega?
 
 **Sección:** 01 · Punto de partida · **Pauta:** 3 min · **Tipo:** decision
 
@@ -244,7 +262,7 @@ Listing es lo que entrega la V1. Si el modelo devuelve algo que no cumple este e
 
 **Archivo:** `decisiones/02-contrato.md`
 
-### 10 · Diseñar antes de escribir.
+### 11 · Diseñar antes de escribir.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 1 min · **Tipo:** divider
 
@@ -258,7 +276,7 @@ Listing es lo que entrega la V1. Si el modelo devuelve algo que no cumple este e
 
 **Transición:** Primero, qué tipos de aplicación existen.
 
-### 11 · Cuatro formas de usar un modelo.
+### 12 · Cuatro formas de usar un modelo.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 3 min · **Tipo:** compare
 
@@ -279,7 +297,7 @@ Listing es lo que entrega la V1. Si el modelo devuelve algo que no cumple este e
 
 **Transición:** Decisión 3.
 
-### 12 · ¿Single prompt o agente?
+### 13 · ¿Single prompt o agente?
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** decision
 
@@ -303,7 +321,7 @@ Listing es lo que entrega la V1. Si el modelo devuelve algo que no cumple este e
 
 **Archivo:** `decisiones/03-tipo-de-aplicacion.md`
 
-### 13 · Un prompt tiene cinco partes.
+### 14 · Un prompt tiene cinco partes.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 3 min · **Tipo:** flow
 
@@ -321,7 +339,7 @@ Listing es lo que entrega la V1. Si el modelo devuelve algo que no cumple este e
 
 **Transición:** Tres prácticas que cambian el resultado.
 
-### 14 · Buenas prácticas que cambian el resultado.
+### 15 · Buenas prácticas que cambian el resultado.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 3 min · **Tipo:** cards
 
@@ -337,7 +355,7 @@ Listing es lo que entrega la V1. Si el modelo devuelve algo que no cumple este e
 
 **Transición:** Decisión 4.
 
-### 15 · ¿Cómo garantizamos el formato?
+### 16 · ¿Cómo garantizamos el formato?
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** decision
 
@@ -361,7 +379,7 @@ Listing es lo que entrega la V1. Si el modelo devuelve algo que no cumple este e
 
 **Archivo:** `decisiones/04-salida-estructurada.md`
 
-### 16 · Salida estructurada en LlamaIndex.
+### 17 · Salida estructurada en LlamaIndex.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 3 min · **Tipo:** code
 
@@ -396,7 +414,7 @@ async def map(self, ev: ContextReady) -> MappingCompleted:
 
 Una sola llamada. response.raw ya es un Listing validado.
 
-### 17 · Dónde corre: AgentCore o contenedor propio.
+### 18 · Dónde corre: AgentCore o contenedor propio.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 3 min · **Tipo:** compare
 
@@ -415,7 +433,7 @@ Una sola llamada. response.raw ya es un Listing validado.
 
 **Transición:** La infraestructura completa, en un dibujo.
 
-### 18 · La infraestructura, de punta a punta.
+### 19 · La infraestructura, de punta a punta.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 2 min · **Tipo:** diagram
 
@@ -448,7 +466,7 @@ Una sola llamada. response.raw ya es un Listing validado.
 
 Es la infraestructura del template en infra/sst. El chat se despliega en la cuenta sandbox con el stage warroom, y las trazas del agente van a Langfuse. AgentCore Memory se sacó del stack.
 
-### 19 · ¿Dónde corre?
+### 20 · ¿Dónde corre?
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** decision
 
@@ -471,7 +489,7 @@ Es la infraestructura del template en infra/sst. El chat se despliega en la cuen
 
 **Archivo:** `decisiones/05-donde-corre.md`
 
-### 20 · Elegir el modelo: qué pesa en este caso.
+### 21 · Elegir el modelo: qué pesa en este caso.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 3 min · **Tipo:** cards
 
@@ -488,7 +506,7 @@ Es la infraestructura del template en infra/sst. El chat se despliega en la cuen
 
 **Transición:** Qué hay disponible en Bedrock.
 
-### 21 · Qué hay en Bedrock.
+### 22 · Qué hay en Bedrock.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 3 min · **Tipo:** table
 
@@ -507,7 +525,7 @@ Es la infraestructura del template en infra/sst. El chat se despliega en la cuen
 
 **Transición:** Decisión 6.
 
-### 22 · ¿Qué modelo?
+### 23 · ¿Qué modelo?
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** decision
 
@@ -531,7 +549,7 @@ Es la infraestructura del template en infra/sst. El chat se despliega en la cuen
 
 **Archivo:** `decisiones/06-modelo.md`
 
-### 23 · El único módulo que sabe de Bedrock.
+### 24 · El único módulo que sabe de Bedrock.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 3 min · **Tipo:** code
 
@@ -566,7 +584,7 @@ def create_llm(env=os.environ) -> BedrockConverse:
 
 En local usa el perfil SSO; en el Runtime de AgentCore toma el rol de la cuenta.
 
-### 24 · Stack y harness.
+### 25 · Stack y harness.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 3 min · **Tipo:** cards
 
@@ -587,7 +605,7 @@ En local usa el perfil SSO; en el Runtime de AgentCore toma el rol de la cuenta.
 
 **Transición:** Decisión 7.
 
-### 25 · ¿Con qué lo construimos?
+### 26 · ¿Con qué lo construimos?
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** decision
 
@@ -611,7 +629,7 @@ En local usa el perfil SSO; en el Runtime de AgentCore toma el rol de la cuenta.
 
 **Archivo:** `decisiones/07-stack.md`
 
-### 26 · ¿Cuándo está bien hecho?
+### 27 · ¿Cuándo está bien hecho?
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 3 min · **Tipo:** cards
 
@@ -628,7 +646,7 @@ En local usa el perfil SSO; en el Runtime de AgentCore toma el rol de la cuenta.
 
 **Transición:** La métrica, en código.
 
-### 27 · La métrica, en código.
+### 28 · La métrica, en código.
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 3 min · **Tipo:** code
 
@@ -666,7 +684,7 @@ class CaseResult:
 
 La misma función mide el proceso de hoy y cada versión.
 
-### 28 · ¿Cuál es el número que aceptamos?
+### 29 · ¿Cuál es el número que aceptamos?
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** decision
 
@@ -689,7 +707,7 @@ La misma función mide el proceso de hoy y cada versión.
 
 **Archivo:** `decisiones/08-criterio-de-exito.md`
 
-### 29 · ¿Con qué dataset?
+### 30 · ¿Con qué dataset?
 
 **Sección:** 02 · Diseñar el agente · **Pauta:** 4 min · **Tipo:** decision
 
@@ -712,7 +730,7 @@ La misma función mide el proceso de hoy y cada versión.
 
 **Archivo:** `decisiones/09-dataset.md`
 
-### 30 · V1 · el agente responde.
+### 31 · V1 · el agente responde.
 
 **Sección:** 03 · V1 · el agente responde · **Pauta:** 1 min · **Tipo:** divider
 
@@ -726,7 +744,7 @@ La misma función mide el proceso de hoy y cada versión.
 
 **Transición:** La V1 por dentro.
 
-### 31 · La V1 por dentro.
+### 32 · La V1 por dentro.
 
 **Sección:** 03 · V1 · el agente responde · **Pauta:** 3 min · **Tipo:** diagram
 
@@ -753,7 +771,7 @@ La misma función mide el proceso de hoy y cada versión.
 
 La V1 es un Workflow de dos steps. El experimento y el chat corren el mismo Workflow, y Langfuse guarda el prompt, las trazas y los resultados.
 
-### 32 · El prompt de sistema.
+### 33 · El prompt de sistema.
 
 **Sección:** 03 · V1 · el agente responde · **Pauta:** 3 min · **Tipo:** code
 
@@ -787,7 +805,7 @@ Rules:
 
 Esta copia es la semilla. La versión que se usa vive en Langfuse con el label production.
 
-### 33 · El prompt vive en Langfuse.
+### 34 · El prompt vive en Langfuse.
 
 **Sección:** 03 · V1 · el agente responde · **Pauta:** 3 min · **Tipo:** code
 
@@ -816,7 +834,7 @@ def get_system_prompt(name: str, client) -> SystemPrompt:
 
 version None quiere decir que se usó la semilla.
 
-### 34 · Lo fijo primero, el producto al final.
+### 35 · Lo fijo primero, el producto al final.
 
 **Sección:** 03 · V1 · el agente responde · **Pauta:** 3 min · **Tipo:** code
 
@@ -851,7 +869,7 @@ def build_messages(system_prompt: str, schemas: dict[str, dict], product: dict) 
 
 En la traza de Langfuse se ven los tokens leídos de caché.
 
-### 35 · El Workflow cierra con un evento tipado.
+### 36 · El Workflow cierra con un evento tipado.
 
 **Sección:** 03 · V1 · el agente responde · **Pauta:** 3 min · **Tipo:** code
 
@@ -888,7 +906,7 @@ class MappingCompleted(StopEvent):
 
 El batch, el chat y los tests leen fin.listing sin parsear nada.
 
-### 36 · El flujo de la V1, según LlamaIndex.
+### 37 · El flujo de la V1, según LlamaIndex.
 
 **Sección:** 03 · V1 · el agente responde · **Pauta:** 2 min · **Tipo:** diagram
 
@@ -911,7 +929,7 @@ El batch, el chat y los tests leen fin.listing sin parsear nada.
 
 Este grafo lo dibuja LlamaIndex a partir de las firmas de los steps: cada step recibe un evento y devuelve otro.
 
-### 37 · Demo · la V1 sobre un producto real.
+### 38 · Demo · la V1 sobre un producto real.
 
 **Sección:** 03 · V1 · el agente responde · **Pauta:** 5 min · **Tipo:** demo
 
@@ -937,7 +955,7 @@ scripts/experiment.sh --version v1 --data mock --case 01-real-calota-aro14
 
 **Respaldo:** el experimento v1-mock que corrimos antes de la sesión, abierto en Langfuse
 
-### 38 · Qué falló en la V1 y qué capa lo resuelve.
+### 39 · Qué falló en la V1 y qué capa lo resuelve.
 
 **Sección:** 03 · V1 · el agente responde · **Pauta:** 3 min · **Tipo:** table
 
@@ -959,7 +977,7 @@ scripts/experiment.sh --version v1 --data mock --case 01-real-calota-aro14
 
 **Transición:** Almuerzo. A las 13:15, la V2.
 
-### 39 · V2 · tablas y control.
+### 40 · V2 · tablas y control.
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 1 min · **Tipo:** divider
 
@@ -973,7 +991,7 @@ scripts/experiment.sh --version v1 --data mock --case 01-real-calota-aro14
 
 **Transición:** Qué es una herramienta.
 
-### 40 · Una herramienta es una función que el modelo pide y el código ejecuta.
+### 41 · Una herramienta es una función que el modelo pide y el código ejecuta.
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 3 min · **Tipo:** flow
 
@@ -990,7 +1008,7 @@ scripts/experiment.sh --version v1 --data mock --case 01-real-calota-aro14
 
 **Transición:** Decisión 10: qué decide la tabla y qué decide el agente.
 
-### 41 · ¿Qué decide la tabla y qué decide el agente?
+### 42 · ¿Qué decide la tabla y qué decide el agente?
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 4 min · **Tipo:** decision
 
@@ -1014,7 +1032,7 @@ scripts/experiment.sh --version v1 --data mock --case 01-real-calota-aro14
 
 **Archivo:** `decisiones/10-tabla-vs-agente.md`
 
-### 42 · La V2 por dentro.
+### 43 · La V2 por dentro.
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 3 min · **Tipo:** diagram
 
@@ -1044,7 +1062,7 @@ scripts/experiment.sh --version v1 --data mock --case 01-real-calota-aro14
 
 Verde es código y violeta es el modelo. El código resuelve lo que saben las tablas; el agente decide valores y entrega por una herramienta que valida.
 
-### 43 · El flujo de la V2, según LlamaIndex.
+### 44 · El flujo de la V2, según LlamaIndex.
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 2 min · **Tipo:** diagram
 
@@ -1073,7 +1091,7 @@ Verde es código y violeta es el modelo. El código resuelve lo que saben las ta
 
 La V2 tiene tres salidas: desde la caché, desde las tablas sin llamar al modelo, o después del agente.
 
-### 44 · Adentro de run_agent: el ciclo del FunctionAgent.
+### 45 · Adentro de run_agent: el ciclo del FunctionAgent.
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 2 min · **Tipo:** diagram
 
@@ -1084,7 +1102,7 @@ La V2 tiene tres salidas: desde la caché, desde las tablas sin llamar al modelo
 
 **Temas para hablar:** El FunctionAgent es otro Workflow, el de la librería. setup_agent arma el pedido, run_agent_step llama a Claude y parse_agent_output decide. Si el modelo pide una herramienta, call_tool la corre. Si submit_listing encuentra problemas, levanta un error y el texto vuelve al modelo como resultado, y el ciclo da otra vuelta. Si la entrega es válida, aggregate_tool_results corta con StopEvent porque la herramienta es return_direct. parse_agent_output también cuenta las vueltas: por eso la V2 pasa MAX_ITERATIONS más uno.
 
-**Transición:** Lo que resuelve el código.
+**Transición:** Las dos herramientas del agente.
 
 **Diagrama (cajas):**
 
@@ -1099,7 +1117,48 @@ La V2 tiene tres salidas: desde la caché, desde las tablas sin llamar al modelo
 
 El ciclo propio del FunctionAgent, leído de la librería. submit_listing es return_direct: solo una entrega válida corta el ciclo.
 
-### 45 · Lo que resuelve el código.
+### 46 · Las dos herramientas del agente.
+
+**Sección:** 04 · V2 · tablas y control · **Pauta:** 2 min · **Tipo:** table
+
+**Objetivo:** Entender qué puede hacer el agente y qué no
+
+**En pantalla:**
+
+- El agente solo recibe lo que falta decidir: to_decide, unmapped_product y uncovered_channel
+- Herramienta / Qué recibe / Qué devuelve / Para qué sirve
+- lookup_corrections / attribute_urn y product_value / La corrección del equipo de catálogo, o correction: null / Ver si catálogo ya corrigió ese valor. La corrección manda sobre el modelo
+- submit_listing / El Listing completo: category, attributes, missing y rejected / Si pasa la validación, el Listing y fin del ciclo. Si no, la lista de problemas / Entregar. Lo valida el código, no el modelo
+
+**Temas para hablar:** El agente de la V2 tiene solo dos herramientas. lookup_corrections le pregunta al equipo de catálogo si ya corrigió ese valor para esa categoría; si hay corrección, manda sobre lo que piense el modelo. submit_listing es la única forma de entregar. El código valida la entrega: si tiene problemas, se los devuelve al modelo como texto y el ciclo sigue. Si pasa, es return_direct y corta el ciclo. El modelo nunca decide si su propia respuesta está bien.
+
+**Pregunta / participación:** ¿Qué otra herramienta le darían, y qué riesgo trae?
+
+**Transición:** Un caso real: pastillas de freno, SKU 98550735.
+
+### 47 · Un caso real: pastillas de freno, SKU 98550735.
+
+**Sección:** 04 · V2 · tablas y control · **Pauta:** 2 min · **Tipo:** table
+
+**Objetivo:** Ver las herramientas funcionando con un producto real
+
+**En pantalla:**
+
+- Datos reales · corrida de la V2 del 1/10, leída de Langfuse · el esquema de Shopee es MOCK
+- Paso / Quién / Qué pasó
+- Hoy / Proceso actual / Shopee rechazó la publicación: faltaba Inmetro Certification, que es obligatorio
+- resolve / Código / Categoría Pastilha de Freio por reference_category. Cuatro campos sin modelo: Novo, Brasil, Inmetro 007077/2015 y Modelo
+- lookup_corrections × 3 / Agente / lookup_corrections(101826, "1"), (100134, "Metal") y (100037, "Brasil"): las tres devuelven correction: null
+- submit_listing / Agente, validado por el código / 10 atributos: "1" pasa a Sim, 4 pastillas, Dianteira. Pasa la validación al primer intento
+- finalize / Código / Sale el Listing con Inmetro incluido, 17 atributos rechazados con motivo y 0 faltantes. Cuatro llamadas al modelo
+
+**Temas para hablar:** Es un producto real de GM. Hoy Shopee rechazó su publicación porque faltaba Inmetro Certification, que es obligatorio. En la V2, resolve fija la categoría con la tabla y resuelve cuatro campos en código, entre ellos Inmetro Certification, sin llamar al modelo. Al agente le quedan pocos valores. Primero consulta correcciones tres veces, por ejemplo lookup_corrections con el atributo 101826 y el valor 1, y recibe correction null. Después entrega con submit_listing: 1 pasa a Sim, la cantidad de pastillas a 4 y la posición a Dianteira. La entrega pasa la validación al primer intento. Fueron cuatro llamadas al modelo. Ojo: Metal pasa a Others porque el dominio de Material del esquema es MOCK.
+
+**Pregunta / participación:** ¿Qué atributo de este caso debería resolver la tabla y hoy decide el agente?
+
+**Transición:** Lo que resuelve el código.
+
+### 48 · Lo que resuelve el código.
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 3 min · **Tipo:** code
 
@@ -1137,7 +1196,7 @@ if match is not None:
 
 Texto libre y coincidencia exacta salen sin modelo. Lo que no coincide va a to_decide.
 
-### 46 · La entrega pasa por una herramienta que valida.
+### 49 · La entrega pasa por una herramienta que valida.
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 3 min · **Tipo:** code
 
@@ -1170,7 +1229,7 @@ tools = [
 
 Cada entrega queda en submissions. Si se agotan las cinco, finalize limpia la última.
 
-### 47 · Demo · la V2 sobre el mismo caso.
+### 50 · Demo · la V2 sobre el mismo caso.
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 5 min · **Tipo:** demo
 
@@ -1196,7 +1255,7 @@ scripts/experiment.sh --version v2 --data mock --case 01-real-calota-aro14
 
 **Respaldo:** el experimento v2-mock del 1/10, abierto en Langfuse
 
-### 48 · Costo por producto, medido.
+### 51 · Costo por producto, medido.
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 3 min · **Tipo:** table
 
@@ -1213,7 +1272,7 @@ scripts/experiment.sh --version v2 --data mock --case 01-real-calota-aro14
 
 **Transición:** Decisión 11: el costo.
 
-### 49 · ¿Cuánto puede costar?
+### 52 · ¿Cuánto puede costar?
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 4 min · **Tipo:** decision
 
@@ -1237,7 +1296,7 @@ scripts/experiment.sh --version v2 --data mock --case 01-real-calota-aro14
 
 **Archivo:** `decisiones/11-costo.md`
 
-### 50 · Guardrail: una comprobación en código.
+### 53 · Guardrail: una comprobación en código.
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 3 min · **Tipo:** compare
 
@@ -1253,7 +1312,7 @@ scripts/experiment.sh --version v2 --data mock --case 01-real-calota-aro14
 
 **Transición:** La validación, en código.
 
-### 51 · La validación, en código.
+### 54 · La validación, en código.
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 3 min · **Tipo:** code
 
@@ -1289,7 +1348,7 @@ def validate(listing: Listing, schema: dict, category_urn: str) -> list[str]:
 
 Devuelve texto para el modelo. Una lista vacía quiere decir que la entrega pasa.
 
-### 52 · ¿Qué hace cuando no sabe?
+### 55 · ¿Qué hace cuando no sabe?
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 4 min · **Tipo:** decision
 
@@ -1313,7 +1372,7 @@ Devuelve texto para el modelo. Una lista vacía quiere decir que la entrega pasa
 
 **Archivo:** `decisiones/12-cuando-no-sabe.md`
 
-### 53 · Memoria: correcciones del equipo de catálogo.
+### 56 · Memoria: correcciones del equipo de catálogo.
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 3 min · **Tipo:** cards
 
@@ -1329,7 +1388,7 @@ Devuelve texto para el modelo. Una lista vacía quiere decir que la entrega pasa
 
 **Transición:** La caché: la clave y la lectura.
 
-### 54 · La caché: la clave y la lectura.
+### 57 · La caché: la clave y la lectura.
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 3 min · **Tipo:** code
 
@@ -1367,7 +1426,7 @@ async def check_cache(self, ev: MappingRequested) -> MappingCompleted | CacheMis
 
 Un error de DynamoDB no frena el mapeo: _safe sigue sin caché.
 
-### 55 · finalize: gana lo resuelto y se guarda lo válido.
+### 58 · finalize: gana lo resuelto y se guarda lo válido.
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 3 min · **Tipo:** code
 
@@ -1405,7 +1464,7 @@ async def finalize(self, ev: AgentDone) -> MappingCompleted:
 
 Sin ninguna entrega, el resultado lleva un error.
 
-### 56 · ¿Cómo garantizamos determinismo?
+### 59 · ¿Cómo garantizamos determinismo?
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 4 min · **Tipo:** decision
 
@@ -1429,7 +1488,7 @@ Sin ninguna entrega, el resultado lleva un error.
 
 **Archivo:** `decisiones/13-determinismo-y-cache.md`
 
-### 57 · Demo · corregir y repetir.
+### 60 · Demo · corregir y repetir.
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 5 min · **Tipo:** demo
 
@@ -1455,7 +1514,7 @@ scripts/correct.sh --category urn:category:102529:vendor:shopee --attribute urn:
 
 **Respaldo:** las corridas del experimento v2-mock del 1/10, en Langfuse
 
-### 58 · Demo · la V2 desde el chat.
+### 61 · Demo · la V2 desde el chat.
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 4 min · **Tipo:** demo
 
@@ -1481,7 +1540,7 @@ API_URL=<Function URL del BFF> CHAT_HMAC_SECRET=<secreto HMAC> npm start -w apps
 
 **Respaldo:** npm run dev en localhost:3000: modo mock del chat, con una respuesta de ejemplo que no corre la V2
 
-### 59 · Cómo lo probamos.
+### 62 · Cómo lo probamos.
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 3 min · **Tipo:** cards
 
@@ -1497,7 +1556,7 @@ API_URL=<Function URL del BFF> CHAT_HMAC_SECRET=<secreto HMAC> npm start -w apps
 
 **Transición:** Un test e2e, en código.
 
-### 60 · Un test e2e, en código.
+### 63 · Un test e2e, en código.
 
 **Sección:** 04 · V2 · tablas y control · **Pauta:** 3 min · **Tipo:** code
 
@@ -1526,7 +1585,7 @@ async def test_v2_never_delivers_invalid_listings(case_id, stores):
 
 Corre con scripts/e2e.sh, que pone RUN_E2E=1. Sin eso, se omite.
 
-### 61 · La prueba.
+### 64 · La prueba.
 
 **Sección:** 05 · La prueba y el camino · **Pauta:** 1 min · **Tipo:** divider
 
@@ -1540,7 +1599,7 @@ Corre con scripts/e2e.sh, que pone RUN_E2E=1. Sin eso, se omite.
 
 **Transición:** Los resultados.
 
-### 62 · Resultados del 1/10.
+### 65 · Resultados del 1/10.
 
 **Sección:** 05 · La prueba y el camino · **Pauta:** 3 min · **Tipo:** table
 
@@ -1562,7 +1621,7 @@ Corre con scripts/e2e.sh, que pone RUN_E2E=1. Sin eso, se omite.
 
 **Transición:** Cómo leer la tabla.
 
-### 63 · Cómo leer la tabla.
+### 66 · Cómo leer la tabla.
 
 **Sección:** 05 · La prueba y el camino · **Pauta:** 3 min · **Tipo:** cards
 
@@ -1581,7 +1640,7 @@ Corre con scripts/e2e.sh, que pone RUN_E2E=1. Sin eso, se omite.
 
 **Transición:** El camino a producción.
 
-### 64 · Camino a producción.
+### 67 · Camino a producción.
 
 **Sección:** 05 · La prueba y el camino · **Pauta:** 3 min · **Tipo:** flow
 
@@ -1598,7 +1657,7 @@ Corre con scripts/e2e.sh, que pone RUN_E2E=1. Sin eso, se omite.
 
 **Transición:** Las trece decisiones.
 
-### 65 · Las 13 decisiones (1 a 7).
+### 68 · Las 13 decisiones (1 a 7).
 
 **Sección:** 05 · La prueba y el camino · **Pauta:** 3 min · **Tipo:** table
 
@@ -1619,7 +1678,7 @@ Corre con scripts/e2e.sh, que pone RUN_E2E=1. Sin eso, se omite.
 
 **Transición:** Las de la tarde.
 
-### 66 · Las 13 decisiones (8 a 13).
+### 69 · Las 13 decisiones (8 a 13).
 
 **Sección:** 05 · La prueba y el camino · **Pauta:** 3 min · **Tipo:** table
 
@@ -1639,7 +1698,7 @@ Corre con scripts/e2e.sh, que pone RUN_E2E=1. Sin eso, se omite.
 
 **Transición:** Quién hace qué.
 
-### 67 · Quién hace qué, para cuándo.
+### 70 · Quién hace qué, para cuándo.
 
 **Sección:** 05 · La prueba y el camino · **Pauta:** 1 min · **Tipo:** divider
 
