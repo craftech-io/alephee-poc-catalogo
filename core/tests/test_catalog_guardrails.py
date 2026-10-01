@@ -73,3 +73,21 @@ def test_merge_resolved_wins_over_the_agent():
     merged = merge_resolved(agent, [MappedAttribute(urn=CONDITION, valueId="14703", value="Novo")])
     assert [(a.urn, a.value) for a in merged.attributes] == [(CONDITION, "Novo")]
     assert CONDITION not in {m.urn for m in merged.missing}
+
+
+def test_merge_resolved_deduplicates_resolved_by_urn_keeping_the_first():
+    agent = _listing()
+    a_novo = MappedAttribute(urn=CONDITION, valueId="14703", value="Novo")
+    a_other_same_urn = MappedAttribute(urn=CONDITION, valueId="14704", value="Usado")
+    merged = merge_resolved(agent, [a_novo, a_other_same_urn])
+    assert [a.urn for a in merged.attributes].count(CONDITION) == 1
+    assert [(a.urn, a.value) for a in merged.attributes] == [(CONDITION, "Novo")]
+
+
+def test_clean_deduplicates_missing_by_urn_keeping_the_first():
+    result = clean(_listing(missing=[MissingAttribute(urn=CONDITION, reason="first"),
+                                     MissingAttribute(urn=CONDITION, reason="second")]),
+                   SCHEMA, CALOTAS)
+    matches = [m for m in result.missing if m.urn == CONDITION]
+    assert len(matches) == 1
+    assert matches[0].reason == "first"

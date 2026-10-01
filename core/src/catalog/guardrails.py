@@ -2,7 +2,9 @@
 
 `validate` lists the problems in plain language (the agent gets them back and fixes them).
 `clean` is the final net: it fixes the category, discards what is invalid and marks the
-mandatory attributes that are missing. It never invents a value.
+mandatory attributes that are missing. It never invents a value. Guardrail rejections carry
+the channel attribute urn in `legacyId`, because the validator does not know which product
+attribute produced the value.
 """
 
 from collections import Counter
@@ -56,16 +58,31 @@ def clean(listing: Listing, schema: dict, category_urn: str) -> Listing:
             continue
         seen.add(attribute.urn)
         kept.append(attribute)
-    missing = [m for m in listing.missing if m.urn not in seen and m.urn != "category"]
-    already = {m.urn for m in missing}
+    missing: list[MissingAttribute] = []
+    already: set[str] = set()
+    for m in listing.missing:
+        if m.urn in seen or m.urn == "category" or m.urn in already:
+            continue
+        already.add(m.urn)
+        missing.append(m)
     missing += [MissingAttribute(urn=urn, reason="mandatory with no valid value (guardrail)")
                 for urn, d in definitions.items() if d.get("mandatory") and urn not in seen and urn not in already]
     return Listing(category=category_urn, attributes=kept, missing=missing, rejected=rejected)
 
 
 def merge_resolved(listing: Listing, resolved: list[MappedAttribute]) -> Listing:
-    """What the code resolved from the reference table wins over the agent."""
-    fixed = {a.urn for a in resolved}
-    attributes = [*resolved, *(a for a in listing.attributes if a.urn not in fixed)]
+    """What the code resolved from the reference table wins over the agent.
+
+    `resolved` is deduplicated by urn, keeping the first occurrence, so a caller that
+    passes two entries for the same urn never produces two attributes in the output.
+    """
+    deduplicated: list[MappedAttribute] = []
+    fixed: set[str] = set()
+    for a in resolved:
+        if a.urn in fixed:
+            continue
+        fixed.add(a.urn)
+        deduplicated.append(a)
+    attributes = [*deduplicated, *(a for a in listing.attributes if a.urn not in fixed)]
     missing = [m for m in listing.missing if m.urn not in fixed]
     return Listing(category=listing.category, attributes=attributes, missing=missing, rejected=list(listing.rejected))
