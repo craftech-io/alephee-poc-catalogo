@@ -181,7 +181,35 @@ old/                           código anterior al reinicio del 1/10, fuera de g
   uv run pytest core/tests
   npm test
   scripts/experiment.sh --version v1 --data mock
+  scripts/experiment.sh --version v2 --data mock
+  scripts/correct.sh --category <urn> --attribute <urn> --product-value <valor> --value-id <id> --value <nombre>
+  scripts/e2e.sh    # contra Bedrock, DynamoDB y el chat desplegado (RUN_E2E=1; API_URL del BFF como env var)
   ```
+
+## Resultados del 1/10 en Langfuse (30 reales, salida esperada MOCK)
+
+Corridas del 1/10 con `scripts/experiment.sh --data real --allow-real-upload` sobre el dataset `alephee-shopee-real` (30 productos de GM en Shopee). La V2 corrió una sola vez (sin entradas en caché de DynamoDB todavía); una segunda corrida leería varios casos de `source=cache` y no sería comparable con esta tabla sin aclararlo.
+
+| Métrica | Proceso de hoy | V1 | V2 |
+|---|---|---|---|
+| Casos exactos | 7 | 3 | 5 |
+| Categoría correcta | 28 | 28 | 27 |
+| Valores inválidos | 47 | 3 | 0 |
+| Duplicados | 5 | 0 | 0 |
+| Obligatorios sin informar | 2 | 1 | 1 |
+| Precisión | 0,70 | 0,70 | 0,69 |
+| Recall | 0,97 | 0,57 | 0,60 |
+| Tokens de entrada por producto (sin caché / leídos de caché) | — | ~4.560 (+14.780 de caché) | ~9.970 (0 de caché) |
+| Segundos por producto | ~0,6* | ~3,3 | ~12,4 |
+
+*El tiempo de "Proceso de hoy" no es la latencia real de Alephee (13 s en promedio, informados en la reunión del 25/08): el runner `current` solo relee la publicación `actual` ya guardada en el dataset, sin llamar a ningún modelo.
+
+**Lectura de la tabla, no solo los números:**
+- **La categoría correcta de la V1 es optimista.** La V1 no tiene tabla de referencia ni herramientas: cuando acierta la categoría puede estar acertándola por nombre mientras alucina atributos o pasa por alto obligatorios que el caso no esperaba (mismo patrón que el caso 09 del dataset mock). No leer "28/30" como "la V1 entiende la categoría tan bien como hoy".
+- **El `expected` sigue siendo MOCK:** hereda las omisiones del proceso actual (un atributo que hoy no se mapea tampoco está en `expected`), por lo que el recall de "Proceso de hoy" sale inflado y un atributo extra bien mapeado por V1 o V2 cuenta como error de precisión. Los "exactos" bajos en las tres columnas reflejan esta vara, no necesariamente peor desempeño.
+- **V2 no muestra tokens leídos de caché en esta corrida (0 de 30 productos):** a diferencia de la V1, el agente con herramientas no reusó caché de prompt en esta ventana. Queda pendiente confirmar si es porque era la primera vez que corría esa combinación de prompt y tools, o un efecto del loop de llamadas a herramientas que invalida el prefijo cacheado en cada ronda.
+- **V2 es la única columna con 0 valores inválidos y 0 duplicados** de las tres, consistente con que las herramientas restringen los valores de lista al dominio del canal en vez de dejar que el modelo los invente.
+- Tokens y segundos salen de Langfuse (`GET /api/public/v2/observations`, generaciones `BedrockConverse.achat`) sumando las ventanas de cada corrida del 1/10; no se registran en `resultados/` (ese directorio no se usa en el reinicio del 1/10).
 
 ## Reglas para trabajar en este repo
 - **Todo el código en inglés** (decisión de Gastón, 1/10), aunque el template escriba en español.
