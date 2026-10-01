@@ -183,6 +183,7 @@ old/                           código anterior al reinicio del 1/10, fuera de g
   scripts/experiment.sh --version v1 --data mock
   scripts/experiment.sh --version v2 --data mock
   scripts/experiment.sh --version v2 --data mock --fresh   # stores en memoria, no lee la caché de DynamoDB
+  scripts/map.sh 94701411 --version v2   # imprime el JSON de la publicación (urn, valueId) de un SKU, sin DynamoDB ni Langfuse
   scripts/correct.sh --category <urn> --attribute <urn> --product-value <valor> --value-id <id> --value <nombre>
   scripts/e2e.sh    # contra Bedrock, DynamoDB y el chat desplegado (RUN_E2E=1; API_URL del BFF como env var)
   ```
