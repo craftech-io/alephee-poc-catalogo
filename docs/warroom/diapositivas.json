@@ -1696,7 +1696,7 @@
    "table": null,
    "notes": {
     "objective": "Ver la caché de prompt en el código",
-    "say": "Así se aplica la buena práctica de la caché. Todo lo que va antes del CachePoint es igual para los 30 productos: el prompt y el catálogo. Bedrock lo guarda 5 minutos desde el último uso y lo cobra más barato. Solo cambia el producto, que va al final.",
+    "say": "Así se aplica la buena práctica de la caché. Todo lo que va antes del CachePoint es igual para los 30 productos: el prompt y el catálogo. Bedrock lo guarda 5 minutos desde el último uso y lo cobra más barato. Solo cambia el producto, que va al final. Con los datos reales el catálogo ronda los 7.500 tokens. Con el mock no llega al mínimo, así que la caché no aparece en esas corridas.",
     "ask": "",
     "close": "",
     "transition": "El Workflow cierra con un evento tipado."
@@ -1750,7 +1750,7 @@
   {
    "id": "s39",
    "section": "v1",
-   "title": "Demo · un caso real por V1.",
+   "title": "Demo · la V1 sobre un producto real.",
    "kind": "demo",
    "lead": "",
    "label": "",
@@ -1761,23 +1761,54 @@
    "exercise": null,
    "table": null,
    "notes": {
-    "objective": "Ver una salida real y leerla con el contrato en la mano",
-    "say": "Antes de correr, pedir una predicción: ¿qué va a poner en Código OEM? Correr y leer la salida en el orden de la lista. Después abrir la traza en Langfuse y mostrar el prompt, la respuesta y los tokens. Si todavía no tenemos el OK de Alephee para subir los datos reales a Langfuse, usar el caso mock 01-real-calota-aro14 con --data mock. Si Bedrock no responde, por sesión SSO vencida o por throttling, mostrar la corrida de la mañana y decirlo. El lote completo corre en segundo plano mientras seguimos.",
+    "objective": "Ver la V1 funcionando sobre un caso y leer el resultado en Langfuse",
+    "say": "El caso 01-real-calota-aro14 es el producto real del ejemplo de Alephee, la calota 94701411, y vive en el dataset mock. Antes de correr, pedir una predicción: ¿qué categoría y qué atributos va a devolver? Correr y leer la salida en el orden de la lista. Después abrir Langfuse: primero la traza, con el prompt, la respuesta y los tokens, y después los scores del caso. Los 30 productos reales se usan recién cuando Alephee confirme que pueden quedar en Langfuse Cloud: ahí se corre con --data real --allow-real-upload. Si Bedrock no responde, por sesión SSO vencida o por throttling, mostrar el experimento guardado y decirlo.",
+    "ask": "",
+    "close": "",
+    "transition": "Demo · la V1 desde el chat."
+   },
+   "minutes": 5,
+   "demo": {
+    "command": "scripts/experiment.sh --version v1 --data mock --case 01-real-calota-aro14",
+    "watch": [
+     "La categoría que eligió el modelo y la esperada",
+     "Cada atributo: de dónde sale el valor y si está en la lista del canal",
+     "missing y rejected: si informa lo que no pudo o completa igual",
+     "En Langfuse: la traza con el prompt, la respuesta, los tokens y los segundos, y los scores del caso"
+    ],
+    "fallback": "el experimento v1-mock que corrimos antes de la sesión, abierto en Langfuse"
+   }
+  },
+  {
+   "id": "c10",
+   "section": "v1",
+   "title": "Demo · la V1 desde el chat.",
+   "kind": "demo",
+   "lead": "",
+   "label": "",
+   "items": [],
+   "question": "",
+   "options": [],
+   "answer": "",
+   "exercise": null,
+   "table": null,
+   "demo": {
+    "command": "API_URL=<Function URL del BFF> CHAT_HMAC_SECRET=<secreto HMAC> npm start -w apps/web",
+    "watch": [
+     "Escribir en el chat: Mapea el SKU 94701411",
+     "El asistente llama a map_product y muestra una tabla con la categoría, los atributos y los faltantes",
+     "En Langfuse: la traza del turno del chat, con la llamada a map_product y, adentro, la llamada de la V1"
+    ],
+    "fallback": "npm run dev en localhost:3000: modo mock del chat, con una respuesta de ejemplo que no corre la V1"
+   },
+   "notes": {
+    "objective": "Mostrar que la misma V1 sirve desde el chat del template",
+    "say": "Es el mismo Workflow que corrimos en el experimento, ahora detrás de una herramienta del chat. El chat corre en AgentCore, en el stage warroom de la cuenta sandbox. Por defecto mapea solo el dataset mock, porque las trazas del chat llevan el contenido a Langfuse Cloud. Si el deploy no está listo, mostrar el modo mock local y decir que esa respuesta es de ejemplo.",
     "ask": "",
     "close": "",
     "transition": "Qué falló y qué capa lo resuelve."
    },
-   "minutes": 5,
-   "demo": {
-    "command": "scripts/experiment.sh --version v1 --data real --case error-88904447",
-    "watch": [
-     "La categoría que eligió el modelo y la que dice reference_category",
-     "Cada atributo: de dónde sale el valor y si está en la lista del canal",
-     "missing y rejected: si informa lo que no pudo o completa igual",
-     "En la traza de Langfuse: tokens de entrada, tokens leídos de caché y segundos"
-    ],
-    "fallback": "la corrida del experimento v1-real de la mañana, en Langfuse"
-   }
+   "minutes": 4
   },
   {
    "id": "s40",
@@ -1814,7 +1845,7 @@
       "V3 · validación en código"
      ],
      [
-      "Unos 20.000 tokens de entrada por producto",
+      "Unos 7.500 tokens de catálogo en cada llamada",
       "Tokens de cada traza en Langfuse",
       "V2 · herramientas en lugar del catálogo entero"
      ],
@@ -1827,7 +1858,7 @@
    },
    "notes": {
     "objective": "Convertir cada fallo de la V1 en la justificación de una capa",
-    "say": "Esto es lo que buscamos con la V1: evidencia. Si inventa la categoría cuando el producto no trae una, eso justifica la V2, porque sin referencia la respuesta tiene que salir de la tabla y no del modelo. Los valores fuera de lista y los obligatorios sin informar justifican la V3: una regla escrita en el prompt no garantiza que se cumpla, y hay que comprobarla en código. Los tokens son el costo de mandar el catálogo entero en cada llamada. Un aviso: la V1 elige entre 23 categorías que siempre incluyen la correcta, así que su número de categorías sale optimista. Completar la columna con lo que muestre Langfuse.",
+    "say": "Esto es lo que buscamos con la V1: evidencia. Si inventa la categoría cuando el producto no trae una, eso justifica la V2, porque sin referencia la respuesta tiene que salir de la tabla y no del modelo. Los valores fuera de lista y los obligatorios sin informar justifican la V3: una regla escrita en el prompt no garantiza que se cumpla, y hay que comprobarla en código. Los tokens son el costo de mandar el catálogo entero en cada llamada: unos 7.500 con los datos reales. Con el dataset mock el catálogo no llega al mínimo de 1.024 tokens, así que ahí no se ve caché. Un aviso: la V1 elige entre 23 categorías que siempre incluyen la correcta, así que su número de categorías sale optimista. Completar la columna con lo que muestre Langfuse.",
     "ask": "¿Alguno de estos fallos les sorprende? ¿Cuál esperaban?",
     "close": "",
     "transition": "Almuerzo. A las 13:15, herramientas."

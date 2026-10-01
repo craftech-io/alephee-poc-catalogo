@@ -1,5 +1,5 @@
 // La "API del cliente" de ejemplo: una Lambda con Function URL que juega el rol
-// de la API que un cliente real ya tiene (ver examples/api-cliente/README.md —
+// de la API que un cliente real ya tiene (ver apps/api/README.md —
 // en un deploy real esta pieza no existe y el Gateway/las tools apuntan a la
 // API del cliente).
 import { permisosTrazas, trazasActivas } from "./observabilidad";
@@ -7,7 +7,7 @@ import { permisosTrazas, trazasActivas } from "./observabilidad";
 export const apiClienteDemo = new sst.aws.Function("ApiClienteDemo", {
   // Formato de sst: ruta al archivo sin extensión + export (mismo patrón que
   // Chat/Worker), no el nombre del archivo con su `.mjs`.
-  handler: "examples/api-cliente/handler.handler",
+  handler: "apps/api/handler.handler",
   runtime: "nodejs24.x",
   // Dos GET de datos fijos: 10s sobra.
   timeout: "10 seconds",

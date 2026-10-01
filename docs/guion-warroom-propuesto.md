@@ -1,6 +1,6 @@
 # Guion del warroom · por diapositiva
 
-Versión del 1/10/2026 · 57 diapositivas · 6 bloques · 13 decisiones. Diseño en `warroom/diseno-presentacion.md`; fuentes externas en `warroom/fuentes.md`. Fuente única: `docs/warroom/diapositivas.json`. Se regenera con `python3 old/deck-tools/regenerar_deck.py` (las herramientas del deck están fuera de git hasta que vuelvan al repositorio).
+Versión del 1/10/2026 · 58 diapositivas · 6 bloques · 13 decisiones. Diseño en `warroom/diseno-presentacion.md`; fuentes externas en `warroom/fuentes.md`. Fuente única: `docs/warroom/diapositivas.json`. Se regenera con `python3 old/deck-tools/regenerar_deck.py` (las herramientas del deck están fuera de git hasta que vuelvan al repositorio).
 
 [Presentación interactiva](presentacion-warroom.html) · [PDF estático](presentacion-warroom.pdf)
 
@@ -16,10 +16,10 @@ Las láminas de código leen el código del repositorio al generar el deck: si e
 |---|---|---|---|
 | 01 · Punto de partida | 09:00-09:30 | 1 a 9 | Ver el error de hoy y acordar qué construimos |
 | 02 · Diseñar el agente | 09:30-11:15 | 10 a 29 | Tomar las decisiones que definen la V1 |
-| 03 · V1 · el agente responde | 11:15-12:30 | 30 a 37 | Construir, correr y leer la primera versión |
-| 04 · V2 · herramientas | 13:15-14:45 | 38 a 43 | Decidir qué resuelve la tabla y conectarla |
-| 05 · V3 · control | 15:00-16:15 | 44 a 50 | Decidir qué pasa cuando el agente no sabe |
-| 06 · La prueba y el camino | 16:15-17:00 | 51 a 57 | Medir contra el criterio y repartir lo que sigue |
+| 03 · V1 · el agente responde | 11:15-12:30 | 30 a 38 | Construir, correr y leer la primera versión |
+| 04 · V2 · herramientas | 13:15-14:45 | 39 a 44 | Decidir qué resuelve la tabla y conectarla |
+| 05 · V3 · control | 15:00-16:15 | 45 a 51 | Decidir qué pasa cuando el agente no sabe |
+| 06 · La prueba y el camino | 16:15-17:00 | 52 a 58 | Medir contra el criterio y repartir lo que sigue |
 
 Pausa de 11:00 a 11:15, almuerzo de 12:30 a 13:15 y pausa de 14:45 a 15:00. El bloque V3 incluye la preparación de la comparación, de 16:00 a 16:15. El margen de preguntas de 17:00 a 17:30 depende de la logística.
 
@@ -31,7 +31,7 @@ Los minutos por diapositiva son una pauta. Preservar la hora de cierre. Si el bl
 |---|---:|---|---:|
 | 01 · Punto de partida | 25 min | Dolores del equipo y preguntas: 2 min | 27 min |
 | 02 · Diseñar el agente | 64 min | Pizarra: dudas de AgentCore para Juan David: 5 min; Pausa 11:00: 15 min | 84 min |
-| 03 · V1 · el agente responde | 24 min | Corridas sobre otros casos: 25 min | 49 min |
+| 03 · V1 · el agente responde | 28 min | Corridas sobre otros casos: 25 min | 53 min |
 | 04 · V2 · herramientas | 20 min | Corrida del lote y lectura: 25 min | 45 min |
 | 05 · V3 · control | 23 min | Corrida del lote con V3: 20 min | 43 min |
 | 06 · La prueba y el camino | 17 min | Documentar decisiones y responsables: 15 min | 32 min |
@@ -815,7 +815,7 @@ version None quiere decir que se usó la semilla.
 **En pantalla:**
 
 
-**Temas para hablar:** Así se aplica la buena práctica de la caché. Todo lo que va antes del CachePoint es igual para los 30 productos: el prompt y el catálogo. Bedrock lo guarda 5 minutos desde el último uso y lo cobra más barato. Solo cambia el producto, que va al final.
+**Temas para hablar:** Así se aplica la buena práctica de la caché. Todo lo que va antes del CachePoint es igual para los 30 productos: el prompt y el catálogo. Bedrock lo guarda 5 minutos desde el último uso y lo cobra más barato. Solo cambia el producto, que va al final. Con los datos reales el catálogo ronda los 7.500 tokens. Con el mock no llega al mínimo, así que la caché no aparece en esas corridas.
 
 **Transición:** El Workflow cierra con un evento tipado.
 
@@ -869,33 +869,58 @@ class MappingCompleted(StopEvent):
 
 El batch, el chat y los tests leen fin.listing sin parsear nada.
 
-### 36 · Demo · un caso real por V1.
+### 36 · Demo · la V1 sobre un producto real.
 
 **Sección:** 03 · V1 · el agente responde · **Pauta:** 5 min · **Tipo:** demo
 
-**Objetivo:** Ver una salida real y leerla con el contrato en la mano
+**Objetivo:** Ver la V1 funcionando sobre un caso y leer el resultado en Langfuse
 
 **En pantalla:**
 
 
-**Temas para hablar:** Antes de correr, pedir una predicción: ¿qué va a poner en Código OEM? Correr y leer la salida en el orden de la lista. Después abrir la traza en Langfuse y mostrar el prompt, la respuesta y los tokens. Si todavía no tenemos el OK de Alephee para subir los datos reales a Langfuse, usar el caso mock 01-real-calota-aro14 con --data mock. Si Bedrock no responde, por sesión SSO vencida o por throttling, mostrar la corrida de la mañana y decirlo. El lote completo corre en segundo plano mientras seguimos.
+**Temas para hablar:** El caso 01-real-calota-aro14 es el producto real del ejemplo de Alephee, la calota 94701411, y vive en el dataset mock. Antes de correr, pedir una predicción: ¿qué categoría y qué atributos va a devolver? Correr y leer la salida en el orden de la lista. Después abrir Langfuse: primero la traza, con el prompt, la respuesta y los tokens, y después los scores del caso. Los 30 productos reales se usan recién cuando Alephee confirme que pueden quedar en Langfuse Cloud: ahí se corre con --data real --allow-real-upload. Si Bedrock no responde, por sesión SSO vencida o por throttling, mostrar el experimento guardado y decirlo.
 
-**Transición:** Qué falló y qué capa lo resuelve.
+**Transición:** Demo · la V1 desde el chat.
 
 ```bash
-scripts/experiment.sh --version v1 --data real --case error-88904447
+scripts/experiment.sh --version v1 --data mock --case 01-real-calota-aro14
 ```
 
 **Mirar:**
 
-- La categoría que eligió el modelo y la que dice reference_category
+- La categoría que eligió el modelo y la esperada
 - Cada atributo: de dónde sale el valor y si está en la lista del canal
 - missing y rejected: si informa lo que no pudo o completa igual
-- En la traza de Langfuse: tokens de entrada, tokens leídos de caché y segundos
+- En Langfuse: la traza con el prompt, la respuesta, los tokens y los segundos, y los scores del caso
 
-**Respaldo:** la corrida del experimento v1-real de la mañana, en Langfuse
+**Respaldo:** el experimento v1-mock que corrimos antes de la sesión, abierto en Langfuse
 
-### 37 · Qué esperamos que falle en la V1 y qué capa lo resuelve.
+### 37 · Demo · la V1 desde el chat.
+
+**Sección:** 03 · V1 · el agente responde · **Pauta:** 4 min · **Tipo:** demo
+
+**Objetivo:** Mostrar que la misma V1 sirve desde el chat del template
+
+**En pantalla:**
+
+
+**Temas para hablar:** Es el mismo Workflow que corrimos en el experimento, ahora detrás de una herramienta del chat. El chat corre en AgentCore, en el stage warroom de la cuenta sandbox. Por defecto mapea solo el dataset mock, porque las trazas del chat llevan el contenido a Langfuse Cloud. Si el deploy no está listo, mostrar el modo mock local y decir que esa respuesta es de ejemplo.
+
+**Transición:** Qué falló y qué capa lo resuelve.
+
+```bash
+API_URL=<Function URL del BFF> CHAT_HMAC_SECRET=<secreto HMAC> npm start -w apps/web
+```
+
+**Mirar:**
+
+- Escribir en el chat: Mapea el SKU 94701411
+- El asistente llama a map_product y muestra una tabla con la categoría, los atributos y los faltantes
+- En Langfuse: la traza del turno del chat, con la llamada a map_product y, adentro, la llamada de la V1
+
+**Respaldo:** npm run dev en localhost:3000: modo mock del chat, con una respuesta de ejemplo que no corre la V1
+
+### 38 · Qué esperamos que falle en la V1 y qué capa lo resuelve.
 
 **Sección:** 03 · V1 · el agente responde · **Pauta:** 3 min · **Tipo:** table
 
@@ -908,16 +933,16 @@ scripts/experiment.sh --version v1 --data real --case error-88904447
 - Categoría inventada cuando el producto no trae una / Caso mock 09, sin categoría de origen / V2 · la tabla de categorías
 - Valor fuera de la lista del canal / Score invalid_values en Langfuse / V3 · validación en código
 - Obligatorio sin informar en missing / Score missing_ok en Langfuse / V3 · validación en código
-- Unos 20.000 tokens de entrada por producto / Tokens de cada traza en Langfuse / V2 · herramientas en lugar del catálogo entero
+- Unos 7.500 tokens de catálogo en cada llamada / Tokens de cada traza en Langfuse / V2 · herramientas en lugar del catálogo entero
 - Categoría acertada con ayuda / Elige entre 23 categorías que incluyen la correcta / V2 · la tabla de categorías
 
-**Temas para hablar:** Esto es lo que buscamos con la V1: evidencia. Si inventa la categoría cuando el producto no trae una, eso justifica la V2, porque sin referencia la respuesta tiene que salir de la tabla y no del modelo. Los valores fuera de lista y los obligatorios sin informar justifican la V3: una regla escrita en el prompt no garantiza que se cumpla, y hay que comprobarla en código. Los tokens son el costo de mandar el catálogo entero en cada llamada. Un aviso: la V1 elige entre 23 categorías que siempre incluyen la correcta, así que su número de categorías sale optimista. Completar la columna con lo que muestre Langfuse.
+**Temas para hablar:** Esto es lo que buscamos con la V1: evidencia. Si inventa la categoría cuando el producto no trae una, eso justifica la V2, porque sin referencia la respuesta tiene que salir de la tabla y no del modelo. Los valores fuera de lista y los obligatorios sin informar justifican la V3: una regla escrita en el prompt no garantiza que se cumpla, y hay que comprobarla en código. Los tokens son el costo de mandar el catálogo entero en cada llamada: unos 7.500 con los datos reales. Con el dataset mock el catálogo no llega al mínimo de 1.024 tokens, así que ahí no se ve caché. Un aviso: la V1 elige entre 23 categorías que siempre incluyen la correcta, así que su número de categorías sale optimista. Completar la columna con lo que muestre Langfuse.
 
 **Pregunta / participación:** ¿Alguno de estos fallos les sorprende? ¿Cuál esperaban?
 
 **Transición:** Almuerzo. A las 13:15, herramientas.
 
-### 38 · V2 · herramientas.
+### 39 · V2 · herramientas.
 
 **Sección:** 04 · V2 · herramientas · **Pauta:** 1 min · **Tipo:** divider
 
@@ -931,7 +956,7 @@ scripts/experiment.sh --version v1 --data real --case error-88904447
 
 **Transición:** Qué es una herramienta.
 
-### 39 · Una herramienta es una función que el modelo pide y el código ejecuta.
+### 40 · Una herramienta es una función que el modelo pide y el código ejecuta.
 
 **Sección:** 04 · V2 · herramientas · **Pauta:** 3 min · **Tipo:** flow
 
@@ -948,7 +973,7 @@ scripts/experiment.sh --version v1 --data real --case error-88904447
 
 **Transición:** Decisión 10: qué decide la tabla y qué decide el agente.
 
-### 40 · ¿Qué decide la tabla y qué decide el agente?
+### 41 · ¿Qué decide la tabla y qué decide el agente?
 
 **Sección:** 04 · V2 · herramientas · **Pauta:** 4 min · **Tipo:** decision
 
@@ -972,7 +997,7 @@ scripts/experiment.sh --version v1 --data real --case error-88904447
 
 **Archivo:** `decisiones/10-tabla-vs-agente.md`
 
-### 41 · Costo por producto, medido.
+### 42 · Costo por producto, medido.
 
 **Sección:** 04 · V2 · herramientas · **Pauta:** 3 min · **Tipo:** table
 
@@ -989,7 +1014,7 @@ scripts/experiment.sh --version v1 --data real --case error-88904447
 
 **Transición:** Decisión 11: el costo.
 
-### 42 · ¿Cuánto puede costar?
+### 43 · ¿Cuánto puede costar?
 
 **Sección:** 04 · V2 · herramientas · **Pauta:** 4 min · **Tipo:** decision
 
@@ -1013,7 +1038,7 @@ scripts/experiment.sh --version v1 --data real --case error-88904447
 
 **Archivo:** `decisiones/11-costo.md`
 
-### 43 · Demo · el mismo caso por V2.
+### 44 · Demo · el mismo caso por V2.
 
 **Sección:** 04 · V2 · herramientas · **Pauta:** 5 min · **Tipo:** demo
 
@@ -1039,7 +1064,7 @@ scripts/experiment.sh --version v2 --data real --case error-88904447
 
 **Respaldo:** la corrida del experimento v2-real, en Langfuse
 
-### 44 · V3 · control.
+### 45 · V3 · control.
 
 **Sección:** 05 · V3 · control · **Pauta:** 1 min · **Tipo:** divider
 
@@ -1053,7 +1078,7 @@ scripts/experiment.sh --version v2 --data real --case error-88904447
 
 **Transición:** El agente completo, en un dibujo.
 
-### 45 · El agente por dentro: código y modelo.
+### 46 · El agente por dentro: código y modelo.
 
 **Sección:** 05 · V3 · control · **Pauta:** 3 min · **Tipo:** diagram
 
@@ -1084,7 +1109,7 @@ scripts/experiment.sh --version v2 --data real --case error-88904447
 
 La V1 es solo la caja del modelo, con una llamada estructurada. La V2 suma las herramientas y el FunctionAgent. La V3 suma la categoría por tabla, la caché, las correcciones y las validaciones.
 
-### 46 · Guardrail: una comprobación en código.
+### 47 · Guardrail: una comprobación en código.
 
 **Sección:** 05 · V3 · control · **Pauta:** 3 min · **Tipo:** compare
 
@@ -1100,7 +1125,7 @@ La V1 es solo la caja del modelo, con una llamada estructurada. La V2 suma las h
 
 **Transición:** Decisión 12.
 
-### 47 · ¿Qué hace cuando no sabe?
+### 48 · ¿Qué hace cuando no sabe?
 
 **Sección:** 05 · V3 · control · **Pauta:** 4 min · **Tipo:** decision
 
@@ -1124,7 +1149,7 @@ La V1 es solo la caja del modelo, con una llamada estructurada. La V2 suma las h
 
 **Archivo:** `decisiones/12-cuando-no-sabe.md`
 
-### 48 · Memoria: correcciones del equipo de catálogo.
+### 49 · Memoria: correcciones del equipo de catálogo.
 
 **Sección:** 05 · V3 · control · **Pauta:** 3 min · **Tipo:** cards
 
@@ -1140,7 +1165,7 @@ La V1 es solo la caja del modelo, con una llamada estructurada. La V2 suma las h
 
 **Transición:** Decisión 13.
 
-### 49 · ¿Cómo garantizamos determinismo?
+### 50 · ¿Cómo garantizamos determinismo?
 
 **Sección:** 05 · V3 · control · **Pauta:** 4 min · **Tipo:** decision
 
@@ -1164,7 +1189,7 @@ La V1 es solo la caja del modelo, con una llamada estructurada. La V2 suma las h
 
 **Archivo:** `decisiones/13-determinismo-y-cache.md`
 
-### 50 · Demo · corregir y repetir.
+### 51 · Demo · corregir y repetir.
 
 **Sección:** 05 · V3 · control · **Pauta:** 5 min · **Tipo:** demo
 
@@ -1190,7 +1215,7 @@ scripts/experiment.sh --version v3 --data real --case error-88904447
 
 **Respaldo:** la corrida del experimento v3-real, en Langfuse
 
-### 51 · La prueba.
+### 52 · La prueba.
 
 **Sección:** 06 · La prueba y el camino · **Pauta:** 1 min · **Tipo:** divider
 
@@ -1204,7 +1229,7 @@ scripts/experiment.sh --version v3 --data real --case error-88904447
 
 **Transición:** Los resultados.
 
-### 52 · Resultados (se completan en vivo).
+### 53 · Resultados (se completan en vivo).
 
 **Sección:** 06 · La prueba y el camino · **Pauta:** 3 min · **Tipo:** table
 
@@ -1224,7 +1249,7 @@ scripts/experiment.sh --version v3 --data real --case error-88904447
 
 **Transición:** Cómo leer la tabla.
 
-### 53 · Cómo leer la tabla.
+### 54 · Cómo leer la tabla.
 
 **Sección:** 06 · La prueba y el camino · **Pauta:** 3 min · **Tipo:** cards
 
@@ -1242,7 +1267,7 @@ scripts/experiment.sh --version v3 --data real --case error-88904447
 
 **Transición:** El camino a producción.
 
-### 54 · Camino a producción.
+### 55 · Camino a producción.
 
 **Sección:** 06 · La prueba y el camino · **Pauta:** 3 min · **Tipo:** flow
 
@@ -1259,7 +1284,7 @@ scripts/experiment.sh --version v3 --data real --case error-88904447
 
 **Transición:** Las trece decisiones.
 
-### 55 · Las 13 decisiones (1 a 7).
+### 56 · Las 13 decisiones (1 a 7).
 
 **Sección:** 06 · La prueba y el camino · **Pauta:** 3 min · **Tipo:** table
 
@@ -1280,7 +1305,7 @@ scripts/experiment.sh --version v3 --data real --case error-88904447
 
 **Transición:** Las de la tarde.
 
-### 56 · Las 13 decisiones (8 a 13).
+### 57 · Las 13 decisiones (8 a 13).
 
 **Sección:** 06 · La prueba y el camino · **Pauta:** 3 min · **Tipo:** table
 
@@ -1300,7 +1325,7 @@ scripts/experiment.sh --version v3 --data real --case error-88904447
 
 **Transición:** Quién hace qué.
 
-### 57 · Quién hace qué, para cuándo.
+### 58 · Quién hace qué, para cuándo.
 
 **Sección:** 06 · La prueba y el camino · **Pauta:** 1 min · **Tipo:** divider
 
