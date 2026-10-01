@@ -115,3 +115,32 @@ async def test_v1_tool_never_reports_a_warning_key():
         listing=Listing.model_validate({k: CASE["expected"][k] for k in ("category", "attributes", "missing", "rejected")}))
     ).acall(sku=CASE["product"]["sku"])))
     assert "warning" not in out
+
+
+async def test_v2_tool_builds_the_stores_once_across_calls():
+    """Task 3 (final fix wave): `stores_factory(env)` used to run on every `map_product_v2`
+    call. It must be built once, lazily, and reused."""
+    expected = CASE["expected"]
+    listing = Listing.model_validate({k: expected[k] for k in ("category", "attributes", "missing", "rejected")})
+
+    class FakeV2:
+        def __init__(self, **kwargs):
+            pass
+
+        async def run(self, product):
+            return MappingCompleted(listing=listing, source="agent")
+
+    calls = []
+
+    def stores_factory(env):
+        calls.append(env)
+        return (None, None, "in-memory")
+
+    tools = {t.metadata.name: t for t in create_catalog_tools(
+        llm_factory=lambda: None, workflow_v2_cls=FakeV2, directories=[data_dir("mock")],
+        stores_factory=stores_factory)}
+
+    await tools["map_product_v2"].acall(sku=CASE["product"]["sku"])
+    await tools["map_product_v2"].acall(sku=CASE["product"]["sku"])
+
+    assert len(calls) == 1

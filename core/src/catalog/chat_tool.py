@@ -50,6 +50,16 @@ def create_catalog_tools(llm_factory=create_llm, workflow_cls=MappingV1, workflo
         directories = [data_dir("real"), data_dir("mock")] if env.get("CATALOG_ALLOW_REAL_DATA") == "1" \
             else [data_dir("mock")]
 
+    stores: list = []
+
+    def _stores():
+        # Built lazily on first use (so creating the tools stays cheap, and tests with
+        # fakes never need a real store) and cached across calls: `stores_factory(env)`
+        # used to run again on every `map_product_v2` call.
+        if not stores:
+            stores.append(stores_factory(env))
+        return stores[0]
+
     async def _map(sku: str, build) -> str:
         found = find_product(sku, directories)
         if found is None:
@@ -76,7 +86,7 @@ def create_catalog_tools(llm_factory=create_llm, workflow_cls=MappingV1, workflo
         """Map a product of the Alephee catalog to a Shopee listing with V2 (reference tables, validation,
         corrections and cache)."""
         prompt = get_system_prompt(PROMPT_NAME_V2, langfuse_client())
-        corrections, cache, _ = stores_factory(env)
+        corrections, cache, _ = _stores()
         return await _map(sku, lambda product, directory, schemas: workflow_v2_cls(
             llm=llm_factory(), system_prompt=prompt.text, prompt_version=str(prompt.version or "seed"),
             schemas=schemas, reference=load_reference(directory), corrections=corrections, cache=cache,
