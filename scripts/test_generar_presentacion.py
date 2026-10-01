@@ -46,3 +46,39 @@ def test_fragmento_rechaza_mas_de_18_lineas(repo):
     (repo / "largo.py").write_text("x = 1\n" * 30)
     with pytest.raises(ValueError, match="18"):
         gp.fragmento({"file": "largo.py", "lines": "1-19", "symbol": "x"}, repo)
+
+
+def base(**extra):
+    s = {"id": "s99", "section": "x", "title": "T", "kind": "cards", "lead": "", "label": "", "items": [],
+         "question": "", "options": [], "answer": "", "exercise": None, "table": None, "minutes": 1,
+         "notes": {"objective": "o", "say": "", "ask": "", "close": "", "transition": ""}}
+    s.update(extra)
+    return s
+
+
+def test_render_code_escapa_y_numera(repo, monkeypatch):
+    monkeypatch.setattr(gp, "RAIZ", repo)
+    out = gp.content(base(kind="code", code={"file": "mod.py", "lines": "3-4", "symbol": "revisar", "highlight": [4], "caption": "Mira"}))
+    assert 'data-n="3"' in out and 'data-n="4"' in out
+    assert "x &lt; 2 &amp; True" in out
+    assert 'class="ln hl" data-n="4"' in out
+    assert "mod.py · líneas 3–4" in out
+    assert '<p class="caption">Mira</p>' in out
+
+
+def test_render_decision():
+    out = gp.content(base(kind="decision", decision={"number": 12, "question": "¿Q?", "options": ["A · uno", "B · dos"],
+                                                      "proposal": "B porque", "file": "decisiones/12-x.md"}))
+    assert "Decisión 12" in out and "¿Q?" in out and "<li>A · uno</li>" in out
+    assert "Propuesta para discutir" in out and "B porque" in out and "decisiones/12-x.md" in out
+
+
+def test_render_demo():
+    out = gp.content(base(kind="demo", demo={"command": "scripts/correr.sh --version v1", "watch": ["w1"], "fallback": "resultados/x.json"}))
+    assert "scripts/correr.sh --version v1" in out and "<li>w1</li>" in out and "Respaldo: resultados/x.json" in out
+
+
+def test_eyebrow_por_tipo():
+    assert gp.eyebrow(base(kind="code")) == "Leer el código"
+    assert gp.eyebrow(base(kind="decision")) == "Decisión · se cierra antes de seguir"
+    assert gp.eyebrow(base(kind="demo")) == "Demo conducida por Gastón"

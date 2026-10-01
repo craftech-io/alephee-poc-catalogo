@@ -33,8 +33,49 @@ def cargar(raiz: Path = RAIZ) -> dict:
     return json.loads((raiz / "docs/warroom/diapositivas.json").read_text())
 
 
+EYEBROWS = {"quiz": "Tu turno · elegí y justificá", "exercise": "Práctica en parejas", "example": "Ejemplo paso a paso",
+            "demo": "Demo conducida por Gastón", "code": "Leer el código",
+            "decision": "Decisión · se cierra antes de seguir"}
+
+
+def eyebrow(s: dict) -> str:
+    return EYEBROWS.get(s["kind"], "Construir · comprobar · decidir")
+
+
+def _code(s: dict) -> str:
+    f = fragmento(s["code"], RAIZ)
+    lineas = "".join(
+        f'<span class="ln{" hl" if n in f["highlight"] else ""}" data-n="{n}">{E(l) or " "}</span>\n'
+        for n, l in enumerate(f["lineas"], start=f["inicio"]))
+    fin = f["inicio"] + len(f["lineas"]) - 1
+    return (f'<figure class="code"><figcaption>{E(f["file"])} · líneas {f["inicio"]}–{fin}</figcaption>'
+            f'<pre><code>{lineas}</code></pre>'
+            + (f'<p class="caption">{E(f["caption"])}</p>' if f["caption"] else "") + "</figure>")
+
+
+def _decision(s: dict) -> str:
+    d = s["decision"]
+    return (f'<div class="decision"><span class="d-num">Decisión {d["number"]}</span><p class="d-question">{E(d["question"])}</p>'
+            '<ol class="d-options">' + "".join(f"<li>{E(o)}</li>" for o in d["options"]) + "</ol>"
+            f'<details class="answer"><summary>Propuesta para discutir</summary><p>{E(d["proposal"])}</p></details>'
+            f'<p class="d-file">{E(d["file"])}</p></div>')
+
+
+def _demo(s: dict) -> str:
+    d = s["demo"]
+    return (f'<div class="demo"><pre class="cmd"><code>{E(d["command"])}</code></pre><ul class="watch">'
+            + "".join(f"<li>{E(w)}</li>" for w in d["watch"]) + "</ul>"
+            + (f'<p class="fallback">Respaldo: {E(d["fallback"])}</p>' if d.get("fallback") else "") + "</div>")
+
+
 def content(s):
     items = s['items']
+    if s['kind'] == 'code':
+        return _code(s)
+    if s['kind'] == 'decision':
+        return _decision(s)
+    if s['kind'] == 'demo' and s.get('demo'):
+        return _demo(s)
     if s['kind'] == 'table':
         t = s['table']
         return '<div class="table-wrap"><table><thead><tr>' + ''.join(f'<th scope="col">{E(x)}</th>' for x in t['headers']) + '</tr></thead><tbody>' + ''.join('<tr>' + ''.join(f'<{"th scope=\"row\"" if i == 0 else "td"}>{E(x)}</{"th" if i == 0 else "td"}>' for i, x in enumerate(row)) + '</tr>' for row in t['rows']) + '</tbody></table></div>'
@@ -58,7 +99,7 @@ def render_slide(i, s, data):
         choices = '<div class="choices" role="group" aria-label="Elegí una opción para discutir">' + ''.join(f'<button class="choice" aria-pressed="false">{E(o)}</button>' for o in s['options']) + '</div><p class="hint">Voten a mano o por el chat de la reunión. La selección en pantalla no cuenta votos.</p>'
     answer = f'<details class="answer"><summary>Revelar respuesta y discutir</summary><p>{E(s["answer"])}</p></details>' if s['answer'] else ''
     notes = '<dl>' + ''.join(f'<dt>{label}</dt><dd>{E(s["notes"][key])}</dd>' for key,label in [('objective','Objetivo'),('say','Temas para hablar'),('ask','Pregunta al grupo'),('close','Devolución'),('transition','Transición')] if s['notes'][key]) + '</dl>'
-    return f'<section id="{s["id"]}" class="slide slide--{s["kind"]}{" active" if i==0 else ""}" data-section="{E(s["section"])}" aria-label="Diapositiva {i+1} de {len(slides)}" aria-hidden="{str(i!=0).lower()}"{(" hidden" if i != 0 else "")}><header><span>ALEPHEE × CRAFTECH × AWS</span><span>{E(section["title"])} · {E(section["time"])}</span></header><div class="body"><div class="eyebrow">{E(section["goal"] if s["kind"]=="divider" else {"quiz":"Tu turno · elegí y justificá","exercise":"Práctica en parejas","example":"Ejemplo paso a paso","demo":"Demo conducida por Gastón"}.get(s["kind"],"Construir · comprobar · decidir"))}</div><h1>{E(s["title"])}</h1>' + (f'<p class="lead">{E(s["lead"])}</p>' if s['lead'] else '') + (f'<p class="source">{E(s["label"])}</p>' if s['label'] else '') + content(s) + (f'<p class="question">{E(s["question"])}</p>' if s['question'] else '') + choices + answer + '</div><div class="notes-content" hidden>'+notes+'</div></section>'
+    return f'<section id="{s["id"]}" class="slide slide--{s["kind"]}{" active" if i==0 else ""}" data-section="{E(s["section"])}" aria-label="Diapositiva {i+1} de {len(slides)}" aria-hidden="{str(i!=0).lower()}"{(" hidden" if i != 0 else "")}><header><span>ALEPHEE × CRAFTECH × AWS</span><span>{E(section["title"])} · {E(section["time"])}</span></header><div class="body"><div class="eyebrow">{E(section["goal"] if s["kind"]=="divider" else eyebrow(s))}</div><h1>{E(s["title"])}</h1>' + (f'<p class="lead">{E(s["lead"])}</p>' if s['lead'] else '') + (f'<p class="source">{E(s["label"])}</p>' if s['label'] else '') + content(s) + (f'<p class="question">{E(s["question"])}</p>' if s['question'] else '') + choices + answer + '</div><div class="notes-content" hidden>'+notes+'</div></section>'
 
 
 def render_html(data):
