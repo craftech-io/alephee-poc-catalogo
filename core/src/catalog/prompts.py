@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 PROMPT_NAME = "catalog-v1-system"
+PROMPT_NAME_V2 = "catalog-v2-system"
 LABEL = "production"
 _SEEDS = Path(__file__).resolve().parent / "prompts"
 
